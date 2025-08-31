@@ -1,0 +1,21 @@
+// Better-T-Stack configuration file
+// safe to delete
+
+{
+	"$schema": "https://r2.better-t-stack.dev/schema.json",
+	"version": "2.39.0",
+	"createdAt": "2025-08-31T21:50:02.466Z",
+	"database": "mongodb",
+	"orm": "prisma",
+	"backend": "elysia",
+	"runtime": "bun",
+	"frontend": ["react-router"],
+	"addons": ["biome", "turborepo"],
+	"examples": [],
+	"auth": "better-auth",
+	"packageManager": "bun",
+	"dbSetup": "docker",
+	"api": "none",
+	"webDeploy": "none",
+	"serverDeploy": "none"
+}
