@@ -9,10 +9,10 @@
 		"baseUrl": "./",
 		"paths": {
 			"@/*": ["./src/*"],
-			"prisma": ["node_modules/prisma"]
+			"prisma/*": ["node_modules/prisma/*"]
 		},
 		"outDir": "./dist",
-		"types": ["bun"],
+		"types": [],
 		"composite": true,
 		"jsx": "react-jsx"
 	}
