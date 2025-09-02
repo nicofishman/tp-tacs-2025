@@ -27,8 +27,7 @@ export interface Evento {
   descripcion: string;
   fecha: string;       // formato ISO
   horaInicio: string;  // "HH:mm"
-  duracionHoras: number;
-  duracionMinutos: number;
+  duracion: Duracion;
   ubicacion: string;
   cupoMaximo: number;
   cupoMinimo?: number;
@@ -44,4 +43,9 @@ export interface Inscripcion {
   evento: Evento;
   estado: EstadoInscripcion;
   fechaRegistro: string; // formato ISO
+}
+
+export interface Duracion {
+  horas: number;
+  minutos: number;
 }
