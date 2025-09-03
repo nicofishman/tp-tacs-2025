@@ -1,0 +1,18 @@
+# Imagen base de Bun
+FROM oven/bun:1 AS base
+
+WORKDIR /app
+
+# Copiamos package.json
+COPY package.json ./
+
+# Instalamos dependencias
+RUN bun install
+
+# Copiamos el resto del código
+COPY . .
+
+EXPOSE 3000
+
+CMD ["bun", "run", "dev"]
+

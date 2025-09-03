@@ -1,26 +1,3 @@
-export enum EstadoEvento {
-  FINALIZADO = "FINALIZADO",
-  EN_PROCESO = "EN_PROCESO",
-  CANCELADO = "CANCELADO",
-  PENDIENTE = "PENDIENTE",
-}
-
-export enum EstadoInscripcion {
-  CONFIRMADO = "CONFIRMADO",
-  WAITLIST = "WAITLIST",
-}
-
-export interface Usuario {
-  id: string;
-  nombre: string;
-  email: string;
-}
-
-export interface Categoria {
-  id: string;
-  nombre: string;
-}
-
 export interface Evento {
   id: string;
   titulo: string;
@@ -37,12 +14,41 @@ export interface Evento {
   organizador: Usuario;
 }
 
+export enum EstadoEvento {
+  FINALIZADO = "FINALIZADO",
+  EN_PROCESO = "EN_PROCESO",
+  CANCELADO = "CANCELADO",
+  PENDIENTE = "PENDIENTE",
+}
+
+export interface Categoria {
+  id: string;
+  nombre: string;
+}
+
+export interface Usuario {
+  id: string;
+  nombre: string;
+  email: string;
+}
+
+enum RolUsuario {
+  ADMIN = "ADMIN",
+  ORGANIZADOR = "ORGANIZADOR",
+  PARTICIPANTE = "PARTICIPANTE"
+}
+
 export interface Inscripcion {
   id: string;
   usuario: Usuario;
   evento: Evento;
   estado: EstadoInscripcion;
   fechaRegistro: string; // formato ISO
+}
+
+export enum EstadoInscripcion {
+  CONFIRMADO = "CONFIRMADO",
+  WAITLIST = "WAITLIST",
 }
 
 export interface Duracion {
