@@ -75,26 +75,31 @@ tp-tacs/
 
 ## Comandos
 
-1. Una vez parado dentro de apps\server
-
-``` bash
-docker compose exec tacs-backend bunx prisma generate --schema=prisma/schema.prisma
-```
-
-2. Siguiendo dentro de apps\server
+1. Dentro de apps\server
 
 ```bash
 docker compose up -d --build
 ```
 
-3.
+2.
 
 ```bash
-docker exec -it tacs-mongo mongosh --eval "rs.initiate({_id:'rs0', members:[{ _id:0, host:'tacs-mongo:27017' }]})"
+docker exec -it tacs-mongo mongosh
 ```
 
-4. Verificar estado. Deberia mostrar ```json "stateStr": "PRIMARY"```
+3. Este comando deberia devoler ```json {ok:1}```
 
 ```bash
-docker exec -it tacs-mongo mongosh --eval "rs.status()"
+rs.initiate({
+_id: "rs0",
+members: [{ _id: 0, host: "tacs-mongo:27017" }]
+})
 ```
+
+4. Este comando, dentro de members, deberia decir ```json stateSte:'PRIMARY'```
+
+```bash
+rs.status()
+```
+
+5. Ahora quedaria correr requests en Postman.
