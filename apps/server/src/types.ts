@@ -30,6 +30,7 @@ export interface Usuario {
   id: string;
   nombre: string;
   email: string;
+  rol: RolUsuario;
 }
 
 enum RolUsuario {

@@ -1,10 +1,11 @@
-# Imagen base de Bun
-FROM oven/bun:1 AS base
+# Imagen base oficial de Bun
+FROM oven/bun:1.1
 
+# Carpeta de trabajo
 WORKDIR /app
 
-# Copiamos package.json
-COPY package.json ./
+# Copiamos package.json y lockfile
+COPY package.json bun.lockb* ./
 
 # Instalamos dependencias
 RUN bun install
@@ -12,7 +13,11 @@ RUN bun install
 # Copiamos el resto del código
 COPY . .
 
+# Generamos Prisma Client dentro del contenedor
+RUN bunx prisma generate --schema=prisma/schema.prisma
+
+# Exponemos el puerto de la API
 EXPOSE 3000
 
-CMD ["bun", "run", "dev"]
-
+# Comando por defecto
+CMD ["bun", "run", "src/index.ts"]
