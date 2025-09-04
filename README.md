@@ -70,7 +70,7 @@ tp-tacs/
 
 ## Requisitos
 
-- Docker Desktop
+- Abrir Docker Desktop
 - Postman
 
 ## Comandos
