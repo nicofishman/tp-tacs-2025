@@ -103,3 +103,14 @@ rs.status()
 ```
 
 5. Ahora quedaria correr requests en Postman.
+
+
+bunx prisma generate --schema="apps/server/prisma\schema.prisma"
+bunx prisma db push
+
+docker compose exec backend bunx prisma generate --schema=prisma/schema.prisma
+docker compose exec backend bunx prisma db push --schema=prisma/schema.prisma
+
+
+docker compose exec tacs-backend bunx prisma generate
+docker compose exec tacs-backend bunx prisma db push   # si también querés actualizar la DB

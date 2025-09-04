@@ -13,9 +13,8 @@ model Evento {
   titulo              String
   descripcion         String
   fechaInicio         DateTime
-  duracionHoras       Int
-  duracionMinutos     Int
-  ubicacion           String
+  duracion            Json
+  ubicacion           Json
   cupoMaximo          Int
   cupoMinimo          Int?
   precio              Float

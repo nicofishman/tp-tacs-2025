@@ -1,13 +1,13 @@
-import { usuarioController } from "@/controllers/usuarios.controller";
 import { Elysia } from "elysia";
+import { EventosRouter } from "./routers/eventos.router";
+import { HealthRouter } from "./routers/health.router";
+import { UsuariosRouter } from "./routers/usuarios.router";
 
 const app = new Elysia();
 
-usuarioController(app);
-
-app.get("/health", () => ({
-    status: "ok"
-}));
+HealthRouter(app);
+UsuariosRouter(app);
+EventosRouter(app);
 
 app.listen(3000);
 

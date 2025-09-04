@@ -1,58 +1,61 @@
 export interface Evento {
-  id: string;
-  titulo: string;
-  descripcion: string;
-  fecha: string;       // formato ISO
-  horaInicio: string;  // "HH:mm"
-  duracion: Duracion;
-  ubicacion: string;
-  cupoMaximo: number;
-  cupoMinimo?: number;
-  precio: number;
-  categoria: Categoria;
-  estado: EstadoEvento;
-  organizador: Usuario;
+	id: string;
+	titulo: string;
+	descripcion: string;
+	fechaInicio: string; // formato ISO (ej: "2025-09-20T15:30:00Z")
+	duracion: Duracion;
+	ubicacion: {
+		direccion: string;
+		lat: number;
+		lng: number;
+	};
+	cupoMaximo: number;
+	cupoMinimo?: number;
+	precio: number;
+	categoriaId: string;
+	estado: EstadoEvento;
+	organizadorId: string;
 }
 
 export enum EstadoEvento {
-  FINALIZADO = "FINALIZADO",
-  EN_PROCESO = "EN_PROCESO",
-  CANCELADO = "CANCELADO",
-  PENDIENTE = "PENDIENTE",
+	FINALIZADO = "FINALIZADO",
+	EN_PROCESO = "EN_PROCESO",
+	CANCELADO = "CANCELADO",
+	PENDIENTE = "PENDIENTE",
 }
 
 export interface Categoria {
-  id: string;
-  nombre: string;
+	id: string;
+	nombre: string;
 }
 
 export interface Usuario {
-  id: string;
-  nombre: string;
-  email: string;
-  rol: RolUsuario;
+	id: string;
+	nombre: string;
+	email: string;
+	rol: RolUsuario;
 }
 
-enum RolUsuario {
-  ADMIN = "ADMIN",
-  ORGANIZADOR = "ORGANIZADOR",
-  PARTICIPANTE = "PARTICIPANTE"
+export enum RolUsuario {
+	ADMIN = "ADMIN",
+	ORGANIZADOR = "ORGANIZADOR",
+	PARTICIPANTE = "PARTICIPANTE",
 }
 
 export interface Inscripcion {
-  id: string;
-  usuario: Usuario;
-  evento: Evento;
-  estado: EstadoInscripcion;
-  fechaRegistro: string; // formato ISO
+	id: string;
+	usuario: Usuario;
+	evento: Evento;
+	estado: EstadoInscripcion;
+	fechaRegistro: string; // formato ISO
 }
 
 export enum EstadoInscripcion {
-  CONFIRMADO = "CONFIRMADO",
-  WAITLIST = "WAITLIST",
+	CONFIRMADO = "CONFIRMADO",
+	WAITLIST = "WAITLIST",
 }
 
 export interface Duracion {
-  horas: number;
-  minutos: number;
+	horas: number;
+	minutos: number;
 }
