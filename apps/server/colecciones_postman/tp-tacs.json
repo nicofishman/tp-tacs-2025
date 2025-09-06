@@ -1,0 +1,572 @@
+{
+	"info": {
+		"_postman_id": "a1c3725e-5fd1-491e-9f7b-06e1f670a777",
+		"name": "TP-TACS-API",
+		"description": "Colección completa para probar el CRUD de usuarios, con casos de éxito y error.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "43690168"
+	},
+	"item": [
+		{
+			"name": "Usuarios",
+			"item": [
+				{
+					"name": "Crear Usuario",
+					"item": [
+						{
+							"name": "Crear usuario - éxito",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear usuario - email inválido",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Ana\",\n  \"email\": \"no-es-un-email\",\n  \"rol\": \"ADMIN\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear usuario - rol inválido",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Pedro\",\n  \"email\": \"pedro@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear usuario - email repetido",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear usuario - nombre vacío",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"\",\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear usuario - sin nombre",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Obtener Usuario",
+					"item": [
+						{
+							"name": "Listar usuarios",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{baseURL}}/usuarios"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener usuario por ID - éxito",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener usuario por ID - ID inexistente",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Reemplazar Usuario",
+					"item": [
+						{
+							"name": "Reemplazar usuario - éxito",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Reemplazar usuario - rol inválido",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Reemplazar usuario - email inválido",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Reemplazar usuario - usuario inexistente",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Actualizar Usuario",
+					"item": [
+						{
+							"name": "Actualizar usuario - éxito",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"nuevo.eemail@example.com\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar usuario - body vacío",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar usuario - email inválido",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"no-es-email\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar usuario - usuario inexistente",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"email\": \"nuevo.emaill@example.com\"\n}"
+								},
+								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Eliminar Usuario",
+					"item": [
+						{
+							"name": "Eliminar usuario - éxito",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": "{{baseURL}}/usuarios/{{usuarioId1}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Eliminar usuario - usuario inexistente",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Categoría",
+			"item": [
+				{
+					"name": "Crear categoría",
+					"item": [
+						{
+							"name": "Crear categoría - éxito",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Conferencias\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{baseURL}}/categorias"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear categoría - nombre repetido",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{baseURL}}/categorias"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear categoría - nombre vacío",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{baseURL}}/categorias"
+							},
+							"response": []
+						},
+						{
+							"name": "Crear categoría - sin nombre",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": "{{baseURL}}/categorias"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Obtener Categoría",
+					"item": [
+						{
+							"name": "Listar categorías",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+								},
+								"url": "{{baseURL}}/categorias"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener categoría por ID - éxito",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+								},
+								"url": "{{baseURL}}/categorias"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener categoría por ID -  ID inexistente",
+							"request": {
+								"method": "GET",
+								"header": []
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Eliminar Categoría",
+					"item": [
+						{
+							"name": "Obtener categoría por ID - éxito",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+								},
+								"url": "{{baseURL}}/categorias/{{categoriaId1}}"
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener categoría por ID - éxito Copy",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+								},
+								"url": "{{baseURL}}/categorias/{{categoriaIdInvalido}}"
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "HealthCheck",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
+				},
+				"url": "{{baseURL}}/health"
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseURL",
+			"value": ""
+		},
+		{
+			"key": "usuarioId",
+			"value": ""
+		},
+		{
+			"key": "usuarioId1",
+			"value": ""
+		},
+		{
+			"key": "usuarioIdInvalido",
+			"value": ""
+		},
+		{
+			"key": "categoriaId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "categoriaIdInvalido",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "categoriaId1",
+			"value": "",
+			"type": "default"
+		}
+	]
+}

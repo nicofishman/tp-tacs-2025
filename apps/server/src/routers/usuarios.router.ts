@@ -9,8 +9,11 @@ import { handleRoute } from "./handleRoute";
 // Params => PathVariable
 // Query => QueryParam
 // Body => RequestBody
+
+const RUTA_USUARIOS = "/usuarios";
+
 export const UsuariosRouter = (app: Elysia) => {
-	app.get("/usuarios", async ({ set }) =>
+	app.get(RUTA_USUARIOS, async ({ set }: { set: { status: number } }) =>
 		handleRoute(async () => {
 			const usuarios = await UsuariosController.findAll();
 			set.status = 200;
@@ -18,16 +21,24 @@ export const UsuariosRouter = (app: Elysia) => {
 		}),
 	);
 
-	app.get("/usuarios/:id", async ({ params, set }) =>
-		handleRoute(async () => {
-			const usuario = await UsuariosController.findById(params.id);
-			set.status = 200;
-			return usuario;
-		}),
+	app.get(
+		`${RUTA_USUARIOS}/:id`,
+		async ({
+			params,
+			set,
+		}: {
+			params: { id: string };
+			set: { status: number };
+		}) =>
+			handleRoute(async () => {
+				const usuario = await UsuariosController.findById(params.id);
+				set.status = 200;
+				return usuario;
+			}),
 	);
 
 	app.post(
-		"/usuarios",
+		RUTA_USUARIOS,
 		async ({
 			body,
 			set,
@@ -43,7 +54,7 @@ export const UsuariosRouter = (app: Elysia) => {
 	);
 
 	app.put(
-		"/usuarios/:id",
+		`${RUTA_USUARIOS}/:id`,
 		async ({
 			params,
 			body,
@@ -61,7 +72,7 @@ export const UsuariosRouter = (app: Elysia) => {
 	);
 
 	app.patch(
-		"/usuarios/:id",
+		`${RUTA_USUARIOS}/:id`,
 		async ({
 			params,
 			body,
@@ -79,7 +90,7 @@ export const UsuariosRouter = (app: Elysia) => {
 	);
 
 	app.delete(
-		"/usuarios/:id",
+		`${RUTA_USUARIOS}/:id`,
 		async ({
 			params,
 			set,

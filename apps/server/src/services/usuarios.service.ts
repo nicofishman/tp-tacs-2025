@@ -51,6 +51,14 @@ export const UsuariosService = {
 				"Debes enviar al menos un campo para actualizar",
 			);
 		}
+		// Validacion de email repetido SOLO si se quiere cambiar el email
+		if (data.email) {
+			const emailExistente = await UsuariosRepository.findByEmail(data.email);
+			// Si existe y no es el mismo usuario
+			if (emailExistente && emailExistente.id !== id) {
+				throw new ConflictError("El email ya está registrado");
+			}
+		}
 
 		const usuarioActualizado = await UsuariosRepository.update(id, data);
 		if (!usuarioActualizado) {

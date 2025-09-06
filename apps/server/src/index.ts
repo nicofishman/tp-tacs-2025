@@ -1,4 +1,5 @@
 import { Elysia } from "elysia";
+import { CategoriasRouter } from "./routers/categorias.router";
 import { HealthRouter } from "./routers/health.router";
 import { UsuariosRouter } from "./routers/usuarios.router";
 
@@ -6,7 +7,7 @@ const app = new Elysia();
 
 HealthRouter(app);
 UsuariosRouter(app);
-//EventosRouter(app);
+CategoriasRouter(app);
 
 app.listen(3000);
 

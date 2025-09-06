@@ -22,10 +22,6 @@ export const CreateUsuarioSchema = z.object({
 
 export type CreateUsuarioInput = z.infer<typeof CreateUsuarioSchema>;
 
-export const IdSchema = z
-	.string()
-	.min(1, "ID de usuario requerido y debe ser tipo string");
-
 export const ReplaceUsuarioSchema = z.object({
 	nombre: z
 		.string({
@@ -61,3 +57,8 @@ export const UpdateUsuarioSchema = z.object({
 });
 
 export type UpdateUsuarioInput = z.infer<typeof UpdateUsuarioSchema>;
+
+export const IdSchema = z.string({
+	required_error: "El ID de usuario es requerido",
+	invalid_type_error: "El ID de usuario debe ser un texto",
+});

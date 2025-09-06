@@ -12,7 +12,6 @@ export const UsuarioOutputSchema = z.object({
 	}),
 });
 
-// Puedes usar el tipo manual para tipar funciones y el schema para validar la salida:
 export function mapUsuarioToOutput(usuario: Usuario): UsuarioOutputDto {
 	return UsuarioOutputSchema.parse(usuario);
 }
