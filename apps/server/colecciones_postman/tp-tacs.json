@@ -3,12 +3,12 @@
 		"_postman_id": "a1c3725e-5fd1-491e-9f7b-06e1f670a777",
 		"name": "TP-TACS-API",
 		"description": "Colección completa para probar el CRUD de usuarios, con casos de éxito y error.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "43690168"
 	},
 	"item": [
 		{
-			"name": "Usuarios",
+			"name": "Usuario",
 			"item": [
 				{
 					"name": "Crear Usuario",
@@ -27,7 +27,15 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios"
+								"url": {
+									"raw": "{{baseURL}}/usuarios",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
 							},
 							"response": []
 						},
@@ -45,7 +53,15 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Ana\",\n  \"email\": \"no-es-un-email\",\n  \"rol\": \"ADMIN\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios"
+								"url": {
+									"raw": "{{baseURL}}/usuarios",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
 							},
 							"response": []
 						},
@@ -63,7 +79,15 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Pedro\",\n  \"email\": \"pedro@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios"
+								"url": {
+									"raw": "{{baseURL}}/usuarios",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
 							},
 							"response": []
 						},
@@ -81,7 +105,15 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios"
+								"url": {
+									"raw": "{{baseURL}}/usuarios",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
 							},
 							"response": []
 						},
@@ -99,7 +131,15 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"\",\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios"
+								"url": {
+									"raw": "{{baseURL}}/usuarios",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
 							},
 							"response": []
 						},
@@ -117,7 +157,15 @@
 									"mode": "raw",
 									"raw": "{\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios"
+								"url": {
+									"raw": "{{baseURL}}/usuarios",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
 							},
 							"response": []
 						}
@@ -131,7 +179,15 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": "{{baseURL}}/usuarios"
+								"url": {
+									"raw": "{{baseURL}}/usuarios",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios"
+									]
+								}
 							},
 							"response": []
 						},
@@ -140,16 +196,34 @@
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId}}"
+									]
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Obtener usuario por ID - ID inexistente",
+							"name": "Obtener usuario por ID - ID invalido",
 							"request": {
 								"method": "GET",
 								"header": [],
-								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioIdInvalido}}"
+									]
+								}
 							},
 							"response": []
 						}
@@ -172,7 +246,16 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId}}"
+									]
+								}
 							},
 							"response": []
 						},
@@ -190,7 +273,16 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId}}"
+									]
+								}
 							},
 							"response": []
 						},
@@ -208,12 +300,21 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId}}"
+									]
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Reemplazar usuario - usuario inexistente",
+							"name": "Reemplazar usuario - ID invalido",
 							"request": {
 								"method": "PUT",
 								"header": [
@@ -226,7 +327,16 @@
 									"mode": "raw",
 									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioIdInvalido}}"
+									]
+								}
 							},
 							"response": []
 						}
@@ -249,7 +359,16 @@
 									"mode": "raw",
 									"raw": "{\n  \"email\": \"nuevo.eemail@example.com\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId}}"
+									]
+								}
 							},
 							"response": []
 						},
@@ -267,7 +386,16 @@
 									"mode": "raw",
 									"raw": "{}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId}}"
+									]
+								}
 							},
 							"response": []
 						},
@@ -285,12 +413,21 @@
 									"mode": "raw",
 									"raw": "{\n  \"email\": \"no-es-email\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioId}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId}}"
+									]
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Actualizar usuario - usuario inexistente",
+							"name": "Actualizar usuario - ID invalido",
 							"request": {
 								"method": "PATCH",
 								"header": [
@@ -303,7 +440,16 @@
 									"mode": "raw",
 									"raw": "{\n  \"email\": \"nuevo.emaill@example.com\"\n}"
 								},
-								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioIdInvalido}}"
+									]
+								}
 							},
 							"response": []
 						}
@@ -317,16 +463,458 @@
 							"request": {
 								"method": "DELETE",
 								"header": [],
-								"url": "{{baseURL}}/usuarios/{{usuarioId1}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioId1}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioId1}}"
+									]
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Eliminar usuario - usuario inexistente",
+							"name": "Eliminar usuario - ID invalido",
 							"request": {
 								"method": "DELETE",
 								"header": [],
-								"url": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+								"url": {
+									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"usuarios",
+										"{{usuarioIdInvalido}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "Evento",
+			"item": [
+				{
+					"name": "Crear Evento",
+					"item": [
+						{
+							"name": "Crear evento - éxito",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Seminario de Cloud Computing\",\n  \"descripcion\": \"Todo sobre servicios en la nube\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 4, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 200,\n  \"precio\": 1500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"PENDIENTE\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear evento - datos inválidos",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"\",\n  \"descripcion\": \"\",\n  \"fechaInicio\": \"fecha-invalida\",\n  \"duracion\": { \"horas\": -1, \"minutos\": 70 },\n  \"ubicacion\": { \"direccion\": \"\", \"lat\": \"no-numero\", \"lng\": null },\n  \"cupoMaximo\": 0,\n  \"precio\": -100,\n  \"categoriaId\": \"\",\n  \"estado\": \"NO_EXISTE\",\n  \"organizadorId\": \"\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear evento - categoria invalida",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Evento con categoría inválida\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaIdInvalido}}\",\n  \"estado\": \"PENDIENTE\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear evento - organizador invalido",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Obtener Evento",
+					"item": [
+						{
+							"name": "Listar eventos",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": ""
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener evento por ID - éxito",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener evento por ID - ID invalido",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoIdInvalido}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Reemplazar Evento",
+					"item": [
+						{
+							"name": "Reemplazar evento - éxito",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Workshop de React\",\n  \"descripcion\": \"Desarrollo de interfaces modernas\",\n  \"fechaInicio\": \"2025-10-10T14:00:00Z\",\n  \"duracion\": { \"horas\": 3, \"minutos\": 30 },\n  \"ubicacion\": { \"direccion\": \"Córdoba 1234\", \"lat\": -34.6037, \"lng\": -58.3816 },\n  \"cupoMaximo\": 80,\n  \"cupoMinimo\": 10,\n  \"precio\": 800,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reemplazar evento - estado inválido",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Workshop de React\",\n  \"descripcion\": \"Desarrollo de interfaces modernas\",\n  \"fechaInicio\": \"2025-10-10T14:00:00Z\",\n  \"duracion\": { \"horas\": 3, \"minutos\": 30 },\n  \"ubicacion\": { \"direccion\": \"Córdoba 1234\", \"lat\": -34.6037, \"lng\": -58.3816 },\n  \"cupoMaximo\": 80,\n  \"cupoMinimo\": 10,\n  \"precio\": 800,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"INVALIDO\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reemplazar evento - organizador invalido",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Reemplazar evento - ID invalido",
+							"request": {
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoIdInvalido}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Actualizar Evento",
+					"item": [
+						{
+							"name": "Actualizar evento - éxito",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"ubicacion\": { \"direccion\": \"Nueva sede, Piso 2\", \"lat\": -34.6000, \"lng\": -58.3800 },\n  \"estado\": \"CANCELADO\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar evento - body vacío",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar evento - categoria inválida",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"categoriaId\": \"{{categoriaIdInvalido}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Eliminar Evento",
+					"item": [
+						{
+							"name": "Eliminar evento - éxito",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{EventoId1}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{EventoId1}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Eliminar evento - ID invalido",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"eventos",
+										"{{eventoIdInvalido}}"
+									]
+								}
 							},
 							"response": []
 						}
@@ -354,7 +942,15 @@
 										}
 									}
 								},
-								"url": "{{baseURL}}/categorias"
+								"url": {
+									"raw": "{{baseURL}}/categorias",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias"
+									]
+								}
 							},
 							"response": []
 						},
@@ -372,7 +968,15 @@
 										}
 									}
 								},
-								"url": "{{baseURL}}/categorias"
+								"url": {
+									"raw": "{{baseURL}}/categorias",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias"
+									]
+								}
 							},
 							"response": []
 						},
@@ -390,7 +994,15 @@
 										}
 									}
 								},
-								"url": "{{baseURL}}/categorias"
+								"url": {
+									"raw": "{{baseURL}}/categorias",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias"
+									]
+								}
 							},
 							"response": []
 						},
@@ -408,7 +1020,15 @@
 										}
 									}
 								},
-								"url": "{{baseURL}}/categorias"
+								"url": {
+									"raw": "{{baseURL}}/categorias",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias"
+									]
+								}
 							},
 							"response": []
 						}
@@ -429,7 +1049,15 @@
 									"mode": "raw",
 									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
 								},
-								"url": "{{baseURL}}/categorias"
+								"url": {
+									"raw": "{{baseURL}}/categorias",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias"
+									]
+								}
 							},
 							"response": []
 						},
@@ -445,15 +1073,41 @@
 									"mode": "raw",
 									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
 								},
-								"url": "{{baseURL}}/categorias"
+								"url": {
+									"raw": "{{baseURL}}/categorias/{{categoriaId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias",
+										"{{categoriaId}}"
+									]
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Obtener categoría por ID -  ID inexistente",
+							"name": "Obtener categoría por ID -  ID invalido",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
 							"request": {
 								"method": "GET",
-								"header": []
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/categorias/{{categoriaIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias",
+										"{{categoriaIdInvalido}}"
+									]
+								}
 							},
 							"response": []
 						}
@@ -471,12 +1125,21 @@
 									"mode": "raw",
 									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
 								},
-								"url": "{{baseURL}}/categorias/{{categoriaId1}}"
+								"url": {
+									"raw": "{{baseURL}}/categorias/{{categoriaId1}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias",
+										"{{categoriaId1}}"
+									]
+								}
 							},
 							"response": []
 						},
 						{
-							"name": "Obtener categoría por ID - éxito Copy",
+							"name": "Obtener categoría por ID - ID invalido",
 							"request": {
 								"method": "DELETE",
 								"header": [],
@@ -484,7 +1147,16 @@
 									"mode": "raw",
 									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
 								},
-								"url": "{{baseURL}}/categorias/{{categoriaIdInvalido}}"
+								"url": {
+									"raw": "{{baseURL}}/categorias/{{categoriaIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"categorias",
+										"{{categoriaIdInvalido}}"
+									]
+								}
 							},
 							"response": []
 						}
@@ -509,7 +1181,15 @@
 					"mode": "raw",
 					"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
 				},
-				"url": "{{baseURL}}/health"
+				"url": {
+					"raw": "{{baseURL}}/health",
+					"host": [
+						"{{baseURL}}"
+					],
+					"path": [
+						"health"
+					]
+				}
 			},
 			"response": []
 		}
@@ -565,6 +1245,21 @@
 		},
 		{
 			"key": "categoriaId1",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "eventoIdInvalido",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "eventoId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "EventoId1",
 			"value": "",
 			"type": "default"
 		}

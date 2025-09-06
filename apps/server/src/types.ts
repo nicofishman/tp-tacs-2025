@@ -10,17 +10,13 @@ export interface Evento {
 	descripcion: string;
 	fechaInicio: string; // formato ISO (ej: "2025-09-20T15:30:00Z")
 	duracion: Duracion;
-	ubicacion: {
-		direccion: string;
-		lat: number;
-		lng: number;
-	};
+	ubicacion: Ubicacion;
 	cupoMaximo: number;
 	cupoMinimo?: number;
 	precio: number;
-	categoriaId: string;
+	categoria: Categoria;
 	estado: EstadoEvento;
-	organizadorId: string;
+	organizador: Usuario;
 }
 
 export interface Categoria {
@@ -46,4 +42,10 @@ export interface Inscripcion {
 export interface Duracion {
 	horas: number;
 	minutos: number;
+}
+
+export interface Ubicacion {
+	direccion: string;
+	lat: number;
+	lng: number;
 }

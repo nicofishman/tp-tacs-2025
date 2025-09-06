@@ -32,12 +32,25 @@ export const UsuariosService = {
 		if (emailExistente) {
 			throw new ConflictError("El email ya está registrado");
 		}
-		const usuario = await UsuariosRepository.create(data);
+		const usuarioParaCrear: Omit<Usuario, "id"> = { ...data }; // Actualmente no hay campos adicionales que transformar
+		const usuario = await UsuariosRepository.create(usuarioParaCrear);
 		return mapUsuarioToOutput(usuario);
 	},
 
 	async replace(id: string, data: ReplaceUsuarioInput) {
-		const usuarioActualizado = await UsuariosRepository.update(id, data);
+		// Validacion de email repetido SOLO si se quiere cambiar el email
+		if (data.email) {
+			const emailExistente = await UsuariosRepository.findByEmail(data.email);
+			// Si existe y no es el mismo usuario
+			if (emailExistente && emailExistente.id !== id) {
+				throw new ConflictError("El email ya está registrado");
+			}
+		}
+		const usuarioParaActualizar: Usuario = { id, ...data }; // Actualmente no hay campos adicionales que transformar
+		const usuarioActualizado = await UsuariosRepository.update(
+			id,
+			usuarioParaActualizar,
+		);
 		if (!usuarioActualizado) {
 			throw new NotFoundError("Usuario no encontrado");
 		}
@@ -60,7 +73,11 @@ export const UsuariosService = {
 			}
 		}
 
-		const usuarioActualizado = await UsuariosRepository.update(id, data);
+		const usuarioParaActualizar: Partial<Usuario> = { ...data }; // Actualmente no hay campos adicionales que transformar
+		const usuarioActualizado = await UsuariosRepository.update(
+			id,
+			usuarioParaActualizar,
+		);
 		if (!usuarioActualizado) {
 			throw new NotFoundError("Usuario no encontrado");
 		}
