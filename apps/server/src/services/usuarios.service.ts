@@ -1,84 +1,68 @@
-import type { CreateUsuarioDto } from "@/dtos/usuarios/input/create-usuario.dto";
-import type { ReplaceUsuarioDto } from "@/dtos/usuarios/input/replace-usuario.dto";
-import type { UpdateUsuarioDto } from "@/dtos/usuarios/input/update-usuario.dto";
-
+import { ConflictError } from "@/exceptions/ConflictError";
+import { NotFoundError } from "@/exceptions/NotFoundError";
+import { ValidationError } from "@/exceptions/ValidationError";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
-
+import type {
+	CreateUsuarioInput,
+	ReplaceUsuarioInput,
+	UpdateUsuarioInput,
+} from "@/schemas/usuarios/usuario.input.schema";
+import { mapUsuarioToOutput } from "@/schemas/usuarios/usuario.output.schema";
 import type { Usuario } from "@/types";
-import { RolUsuario } from "@/types";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 
 export const UsuariosService = {
 	async findAll() {
 		const usuarios: Usuario[] = await UsuariosRepository.findAll();
-		return usuarios;
+		return usuarios.map(mapUsuarioToOutput);
 	},
 
 	async findById(id: string) {
 		const usuario: Usuario | null = await UsuariosRepository.findById(id);
 		if (!usuario) {
-			throw new Error("Usuario no encontrado");
+			throw new NotFoundError("Usuario no encontrado");
 		}
-		return usuario;
+		return mapUsuarioToOutput(usuario);
 	},
 
-	async create(data: CreateUsuarioDto) {
-		// Validacion de datos
-		// Deberia pasarse a una funcion de validacion
-		if (!data.nombre || !data.email || !data.rol) {
-			throw new Error("Datos enviados incompletos");
+	async create(data: CreateUsuarioInput) {
+		// Validacion de email repetido
+		const emailExistente = await UsuariosRepository.findByEmail(data.email);
+		if (emailExistente) {
+			throw new ConflictError("El email ya está registrado");
 		}
-		// Validación de rol
-		if (!Object.values(RolUsuario).includes(data.rol)) {
-			throw new Error("Rol de usuario inválido");
-		}
-
-		const usuarioParaRepo = {
-			...data,
-		};
-		return await UsuariosRepository.create(usuarioParaRepo);
+		const usuario = await UsuariosRepository.create(data);
+		return mapUsuarioToOutput(usuario);
 	},
 
-	async update(id: string, data: ReplaceUsuarioDto) {
-		// Validacion de datos
-		if (!data.nombre || !data.email || !data.rol) {
-			throw new Error("Datos enviados incompletos");
-		}
-		// Validación de rol
-		if (!Object.values(RolUsuario).includes(data.rol)) {
-			throw new Error("Rol de usuario inválido");
-		}
-
+	async replace(id: string, data: ReplaceUsuarioInput) {
 		const usuarioActualizado = await UsuariosRepository.update(id, data);
 		if (!usuarioActualizado) {
-			throw new Error("Usuario no encontrado");
+			throw new NotFoundError("Usuario no encontrado");
 		}
-		return usuarioActualizado;
+		return mapUsuarioToOutput(usuarioActualizado);
 	},
 
-	async partialUpdate(id: string, data: UpdateUsuarioDto) {
+	async update(id: string, data: UpdateUsuarioInput) {
 		// Validacion de datos
 		if (Object.keys(data).length === 0) {
-			throw new Error("No se proporcionaron datos para actualizar");
-		}
-		// Validación de rol si corresponde
-		if (data.rol && !Object.values(RolUsuario).includes(data.rol)) {
-			throw new Error("Rol de usuario inválido");
+			throw new ValidationError(
+				"Debes enviar al menos un campo para actualizar",
+			);
 		}
 
 		const usuarioActualizado = await UsuariosRepository.update(id, data);
 		if (!usuarioActualizado) {
-			throw new Error("Usuario no encontrado");
+			throw new NotFoundError("Usuario no encontrado");
 		}
-		return usuarioActualizado;
+		return mapUsuarioToOutput(usuarioActualizado);
 	},
 
 	async delete(id: string) {
-		const usuarioEliminado = await UsuariosRepository.delete(id);
-		if (!usuarioEliminado) {
-			throw new Error("Usuario not found");
+		const eliminado = await UsuariosRepository.delete(id);
+		if (!eliminado) {
+			throw new NotFoundError("Usuario no encontrado");
 		}
-		return usuarioEliminado;
 	},
 };

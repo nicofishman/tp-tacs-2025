@@ -5,7 +5,7 @@ export const HealthController = {
 		try {
 			// Consulto a base de datos para validar que está levantada y funcional
 			await prisma.$runCommandRaw({ ping: 1 });
-			return { status: "ok", database: "ok" };
+			return { status: "ok", database: "connected" };
 		} catch (error) {
 			return {
 				status: "error",

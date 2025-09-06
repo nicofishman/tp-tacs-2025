@@ -1,4 +1,4 @@
-import type { RolUsuario } from "@/types";
+import type { RolUsuario } from "@prisma/client";
 
 export interface UpdateUsuarioDto {
 	nombre?: string;
