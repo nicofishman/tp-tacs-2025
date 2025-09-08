@@ -8,12 +8,54 @@ import { handleRoute } from "./handleRoute";
 const RUTA_EVENTOS = "/eventos";
 
 export const EventosRouter = (app: Elysia) => {
-	app.get(RUTA_EVENTOS, async ({ set }: { set: { status: number } }) =>
-		handleRoute(async () => {
-			const eventos = await EventosController.findAll();
-			set.status = 200;
-			return eventos;
-		}),
+	app.get(
+		RUTA_EVENTOS,
+		async ({
+			query,
+			set,
+		}: {
+			query: Record<string, string | undefined>;
+			set: { status: number };
+		}) =>
+			handleRoute(async () => {
+				const filtros = {
+					dateFrom: query.dateFrom,
+					dateTo: query.dateTo,
+					categoriaId: query.categoriaId,
+					priceMin: query.priceMin,
+					priceMax: query.priceMax,
+					q: query.q,
+					limit: query.limit,
+					page: query.page,
+					orderBy: query.orderBy,
+					order: query.order,
+				};
+
+				const result = await EventosController.findMany(filtros);
+				set.status = 200;
+				return result;
+			})
+	);
+
+	app.post(
+		`${RUTA_EVENTOS}/:id/register`,
+		async ({
+			params,
+			query,
+			set,
+		}: {
+			params: { id: string };
+			query: { user_id: string };
+			set: { status: number };
+		}) =>
+			handleRoute(async () => {
+				const { id } = params;
+				const { user_id } = query;
+
+				const evento = await EventosController.registerToEvent(id, user_id);
+				set.status = 200;
+				return evento;
+			})
 	);
 
 	app.get(
@@ -29,7 +71,7 @@ export const EventosRouter = (app: Elysia) => {
 				const evento = await EventosController.findById(params.id);
 				set.status = 200;
 				return evento;
-			}),
+			})
 	);
 
 	app.post(
@@ -39,7 +81,7 @@ export const EventosRouter = (app: Elysia) => {
 				const evento = await EventosController.create(body);
 				set.status = 201;
 				return evento;
-			}),
+			})
 	);
 
 	app.put(
@@ -57,7 +99,7 @@ export const EventosRouter = (app: Elysia) => {
 				const evento = await EventosController.replace(params.id, body);
 				set.status = 200;
 				return evento;
-			}),
+			})
 	);
 
 	app.patch(
@@ -75,7 +117,7 @@ export const EventosRouter = (app: Elysia) => {
 				const evento = await EventosController.update(params.id, body);
 				set.status = 200;
 				return evento;
-			}),
+			})
 	);
 
 	app.delete(
@@ -91,6 +133,6 @@ export const EventosRouter = (app: Elysia) => {
 				await EventosController.delete(params.id);
 				set.status = 204;
 				return null;
-			}),
+			})
 	);
 };

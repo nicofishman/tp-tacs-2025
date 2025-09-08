@@ -5,7 +5,7 @@ import type { Prisma } from "@prisma/client";
 function mapPrismaEventoToEvento(
 	prismaEvento: Prisma.EventoGetPayload<{
 		include: { categoria: true; organizador: true };
-	}>,
+	}>
 ): Evento {
 	return {
 		id: prismaEvento.id,
@@ -32,6 +32,19 @@ function mapPrismaEventoToEvento(
 	};
 }
 
+type FindManyDBFilters = {
+	dateFrom?: string;
+	dateTo?: string;
+	categoriaId?: string;
+	priceMin?: number;
+	priceMax?: number;
+	q?: string;
+	limit?: number;
+	page?: number;
+	orderBy?: "fechaInicio" | "precio";
+	order?: "asc" | "desc";
+};
+
 export const EventosRepository = {
 	async findAll(): Promise<Evento[]> {
 		try {
@@ -44,6 +57,50 @@ export const EventosRepository = {
 			return eventos.map(mapPrismaEventoToEvento);
 		} catch (error) {
 			console.error("Error al buscar eventos:", error);
+			return [];
+		}
+	},
+
+	async findMany(f: FindManyDBFilters): Promise<Evento[]> {
+		try {
+			const AND: Prisma.EventoWhereInput[] = [];
+
+			if (f.dateFrom) AND.push({ fechaInicio: { gte: new Date(f.dateFrom) } });
+			if (f.dateTo) AND.push({ fechaInicio: { lte: new Date(f.dateTo) } });
+			if (f.categoriaId) AND.push({ categoriaId: f.categoriaId });
+			if (typeof f.priceMin === "number")
+				AND.push({ precio: { gte: f.priceMin } });
+			if (typeof f.priceMax === "number")
+				AND.push({ precio: { lte: f.priceMax } });
+
+			if (f.q && f.q.trim().length > 0) {
+				AND.push({
+					OR: [
+						{ titulo: { contains: f.q, mode: "insensitive" } },
+						{ descripcion: { contains: f.q, mode: "insensitive" } },
+					],
+				});
+			}
+
+			const take = f.limit ?? 20;
+			const page = f.page ?? 1;
+			const skip = (page - 1) * take;
+
+			const orderBy = f.orderBy
+				? { [f.orderBy]: f.order ?? "asc" }
+				: { fechaInicio: "asc" as const };
+
+			const rows = await prisma.evento.findMany({
+				where: AND.length ? { AND } : undefined,
+				include: { categoria: true, organizador: true },
+				orderBy,
+				take,
+				skip,
+			});
+
+			return rows.map(mapPrismaEventoToEvento);
+		} catch (error) {
+			console.error("Error al buscar eventos con filtros:", error);
 			return [];
 		}
 	},
