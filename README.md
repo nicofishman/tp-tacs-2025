@@ -108,7 +108,7 @@ rs.status()
 En maquina local:
 ```bash
 bunx prisma generate --schema="apps/server/prisma\schema.prisma"
-bunx prisma db push
+bunx prisma db push --schema="apps/server/prisma\schema.prisma"
 ```
 En Docker:
 ```bash

@@ -1,3 +1,4 @@
+import type { RegisterUsuarioDto } from "@/dtos/usuarios/input/register-usuario.dto";
 import type { Elysia } from "elysia";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import type { CreateUsuarioDto } from "../dtos/usuarios/input/create-usuario.dto";
@@ -48,6 +49,22 @@ export const UsuariosRouter = (app: Elysia) => {
 		}) =>
 			handleRoute(async () => {
 				const usuario = await UsuariosController.create(body);
+				set.status = 201;
+				return usuario;
+			}),
+	);
+
+	app.post(
+		`${RUTA_USUARIOS}/register`,
+		async ({
+			body,
+			set,
+		}: {
+			body: RegisterUsuarioDto;
+			set: { status: number };
+		}) =>
+			handleRoute(async () => {
+				const usuario = await UsuariosController.register(body);
 				set.status = 201;
 				return usuario;
 			}),
