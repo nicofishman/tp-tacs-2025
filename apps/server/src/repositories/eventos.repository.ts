@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import type { Evento } from "@/types";
 import type { Prisma } from "@prisma/client";
 
-function mapPrismaEventoToEvento(
+export function mapPrismaEventoToEvento(
 	prismaEvento: Prisma.EventoGetPayload<{
 		include: { categoria: true; organizador: true };
 	}>,
