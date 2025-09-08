@@ -24,10 +24,13 @@
 		"db:down": "turbo -F server db:down",
 		"prepare": "husky"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"@prisma/client": "^6.15.0"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.2.0",
 		"husky": "^9.1.7",
+		"prisma": "^6.15.0",
 		"turbo": "^2.5.4"
 	},
 	"packageManager": "bun@1.2.21",
@@ -37,7 +40,6 @@
 			"biome format --write --no-errors-on-unmatched",
 			"biome lint --write --no-errors-on-unmatched"
 		],
-
 		"*": [
 			"biome check --no-errors-on-unmatched --files-ignore-unknown=true"
 		]
