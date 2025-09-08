@@ -4,17 +4,19 @@ import { ValidationError } from "@/exceptions/ValidationError";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
 import type {
 	CreateUsuarioInput,
+	RegisterUsuarioInput,
 	ReplaceUsuarioInput,
 	UpdateUsuarioInput,
 } from "@/schemas/usuarios/usuario.input.schema";
-import { mapUsuarioToOutput } from "@/schemas/usuarios/usuario.output.schema";
+import { mapUsuarioToOutput, mapUsuarioToOutputRegister } from "@/schemas/usuarios/usuario.output.schema";
 import type { Usuario } from "@/types";
+import bcrypt from "bcryptjs";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 
 export const UsuariosService = {
-	async findAll() {
-		const usuarios: Usuario[] = await UsuariosRepository.findAll();
+	async findAll(){
+		const usuarios = await UsuariosRepository.findAll();
 		return usuarios.map(mapUsuarioToOutput);
 	},
 
@@ -26,15 +28,44 @@ export const UsuariosService = {
 		return mapUsuarioToOutput(usuario);
 	},
 
-	async create(data: CreateUsuarioInput) {
+	async create(data: CreateUsuarioInput) { 
 		// Validacion de email repetido
 		const emailExistente = await UsuariosRepository.findByEmail(data.email);
 		if (emailExistente) {
 			throw new ConflictError("El email ya está registrado");
 		}
-		const usuarioParaCrear: Omit<Usuario, "id"> = { ...data }; // Actualmente no hay campos adicionales que transformar
+
+		// Si no se provee password, asignar una temporal
+		let passwordHash: string;
+		// Genera un hash de una contraseña temporal (por ejemplo, el email + fecha)
+		const temp = data.email + Date.now();
+		passwordHash = await bcrypt.hash(temp, 10);
+
+		const usuarioParaCrear: Omit<Usuario, "id"> = {
+			...data,
+			password: passwordHash,
+		};
 		const usuario = await UsuariosRepository.create(usuarioParaCrear);
 		return mapUsuarioToOutput(usuario);
+	},
+
+	async register(data: RegisterUsuarioInput) {
+		// Validacion de email repetido
+		const emailExistente = await UsuariosRepository.findByEmail(data.email);
+		if (emailExistente) {
+			throw new ConflictError("El email ya está registrado");
+		}
+
+		// Hasheo la password
+		const passwordHash = await bcrypt.hash(data.password, 10);
+
+		const usuarioParaCrear: Omit<Usuario, "id"> = {
+			...data,
+			password: passwordHash,
+		};
+		
+		const usuario = await UsuariosRepository.create(usuarioParaCrear);
+		return mapUsuarioToOutputRegister(usuario);
 	},
 
 	async replace(id: string, data: ReplaceUsuarioInput) {
@@ -46,7 +77,8 @@ export const UsuariosService = {
 				throw new ConflictError("El email ya está registrado");
 			}
 		}
-		const usuarioParaActualizar: Usuario = { id, ...data }; // Actualmente no hay campos adicionales que transformar
+		// No sobrescribas la contraseña, solo actualiza los campos permitidos
+		const usuarioParaActualizar: Partial<Usuario> = { ...data };
 		const usuarioActualizado = await UsuariosRepository.update(
 			id,
 			usuarioParaActualizar,

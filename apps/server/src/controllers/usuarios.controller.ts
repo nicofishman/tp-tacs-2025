@@ -1,7 +1,9 @@
+import type { RegisterUsuarioDto } from "@/dtos/usuarios/input/register-usuario.dto";
 import { ValidationError } from "@/exceptions/ValidationError";
 import {
 	CreateUsuarioSchema,
 	IdSchema,
+	RegisterUsuarioSchema,
 	ReplaceUsuarioSchema,
 	UpdateUsuarioSchema,
 } from "@/schemas/usuarios/usuario.input.schema";
@@ -35,6 +37,17 @@ export const UsuariosController = {
 			throw new ValidationError(`Error de validación: ${message}`);
 		}
 		return await UsuariosService.create(resultData.data);
+	},
+
+	async register(data: RegisterUsuarioDto) {
+		const resultData = RegisterUsuarioSchema.safeParse(data);
+		if (!resultData.success) {
+			const message = resultData.error.issues
+				.map((err: { message: string }) => err.message)
+				.join(", ");
+			throw new ValidationError(`Error de validación: ${message}`);
+		}
+		return await UsuariosService.register(resultData.data);
 	},
 
 	async replace(id: string, data: ReplaceUsuarioDto) {

@@ -27,6 +27,7 @@ export interface Categoria {
 export interface Usuario {
 	id: string;
 	nombre: string;
+	password: string;
 	email: string;
 	rol: RolUsuario;
 }

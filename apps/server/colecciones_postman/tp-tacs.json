@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a1c3725e-5fd1-491e-9f7b-06e1f670a777",
+		"_postman_id": "a9984014-7720-4c1f-8336-b7152c432e93",
 		"name": "TP-TACS-API",
 		"description": "Colección completa para probar el CRUD de usuarios, con casos de éxito y error.",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
@@ -176,9 +176,21 @@
 					"item": [
 						{
 							"name": "Listar usuarios",
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
 							"request": {
 								"method": "GET",
 								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
 								"url": {
 									"raw": "{{baseURL}}/usuarios",
 									"host": [
@@ -1165,6 +1177,383 @@
 			]
 		},
 		{
+			"name": "Inscripcion",
+			"item": [
+				{
+					"name": "Crear Inscripcion",
+					"item": [
+						{
+							"name": "Crear inscripción - éxito",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"WAITLIST\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear inscripción - usuario inexistente",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"usuarioId\": \"{{usuarioIdInvalido}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear inscripción - evento inexistente",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoIdInvalido}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear inscripción - estado inválido",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"NOEXISTE\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear inscripción - falta usuarioId",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear inscripción - falta eventoId",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Crear inscripción - falta estado",
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Obtener Inscripcion",
+					"item": [
+						{
+							"name": "Listar inscripciones",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inscripciones",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener inscripción por ID - éxito",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones",
+										"{{inscripcionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Obtener inscripción por ID - ID inválido",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inscripciones/{{inscripcionIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones",
+										"{{inscripcionIdInvalido}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Actualizar Inscripcion",
+					"item": [
+						{
+							"name": "Actualizar inscripción - éxito",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"estado\": \"WAITLIST\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones",
+										"{{inscripcionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar inscripción - estado inválido",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n  \"estado\": \"NOEXISTE\"\n}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones",
+										"{{inscripcionId}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Actualizar inscripción - body vacío",
+							"request": {
+								"method": "PATCH",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{}"
+								},
+								"url": {
+									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones",
+										"{{inscripcionId}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Eliminar Inscripcion",
+					"item": [
+						{
+							"name": "Eliminar inscripción - éxito",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inscripciones/{{inscripcionId1}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones",
+										"{{inscripcionId1}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Eliminar inscripción - ID inválido",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseURL}}/inscripciones/{{inscripcionIdInvalido}}",
+									"host": [
+										"{{baseURL}}"
+									],
+									"path": [
+										"inscripciones",
+										"{{inscripcionIdInvalido}}"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
 			"name": "HealthCheck",
 			"protocolProfileBehavior": {
 				"disableBodyPruning": true
@@ -1235,31 +1624,40 @@
 		},
 		{
 			"key": "categoriaId",
-			"value": "",
-			"type": "default"
-		},
-		{
-			"key": "categoriaIdInvalido",
-			"value": "",
-			"type": "default"
+			"value": ""
 		},
 		{
 			"key": "categoriaId1",
-			"value": "",
-			"type": "default"
+			"value": ""
 		},
 		{
-			"key": "eventoIdInvalido",
-			"value": "",
-			"type": "default"
+			"key": "categoriaIdInvalido",
+			"value": ""
 		},
 		{
 			"key": "eventoId",
+			"value": ""
+		},
+		{
+			"key": "EventoId1",
+			"value": ""
+		},
+		{
+			"key": "eventoIdInvalido",
+			"value": ""
+		},
+		{
+			"key": "inscripcionId",
 			"value": "",
 			"type": "default"
 		},
 		{
-			"key": "EventoId1",
+			"key": "inscripcionIdInvalido",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "inscripcionId1",
 			"value": "",
 			"type": "default"
 		}

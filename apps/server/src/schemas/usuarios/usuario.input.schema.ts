@@ -22,6 +22,15 @@ export const CreateUsuarioSchema = z.object({
 
 export type CreateUsuarioInput = z.infer<typeof CreateUsuarioSchema>;
 
+export const RegisterUsuarioSchema = CreateUsuarioSchema.extend({
+	password: z.string({
+		required_error: "La contraseña es requerida",
+		invalid_type_error: "La contraseña debe ser un string",
+	}),
+});
+
+export type RegisterUsuarioInput = z.infer<typeof RegisterUsuarioSchema>;
+
 export const ReplaceUsuarioSchema = z.object({
 	nombre: z
 		.string({

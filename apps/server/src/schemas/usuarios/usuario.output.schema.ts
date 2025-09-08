@@ -15,3 +15,15 @@ export const UsuarioOutputSchema = z.object({
 export function mapUsuarioToOutput(usuario: Usuario): UsuarioOutputDto {
 	return UsuarioOutputSchema.parse(usuario);
 }
+
+export const UsuarioOutputRegisterSchema = UsuarioOutputSchema.extend({
+	password: z.string(),
+});
+
+export function mapUsuarioToOutputRegister(
+	usuario: Usuario,
+): UsuarioOutputDto & { password: string } {
+	return UsuarioOutputRegisterSchema.parse(usuario);
+}
+
+export type UsuarioOutput = z.infer<typeof UsuarioOutputSchema>;

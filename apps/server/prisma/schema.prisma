@@ -45,6 +45,7 @@ model Usuario {
   id                  String    @id @default(auto()) @map("_id") @db.ObjectId
   nombre              String
   email               String    @unique
+  password            String    
   rol                 RolUsuario
   eventos             Evento[]  @relation("EventosOrganizados")
   inscripciones       Inscripcion[]

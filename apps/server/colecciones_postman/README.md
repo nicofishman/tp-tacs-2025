@@ -12,12 +12,16 @@ Esta colección te permite validar todos los endpoints principales de la API TP-
 	 - Completa los IDs (`usuarioId`, `eventoId`, `categoriaId`, etc.) con valores válidos de tu base de datos.
 3. **Ejecuta las pruebas**: Selecciona la carpeta o el request que quieras probar y haz click en `Send`.
 
-## ¿Qué valida cada carpeta?
 
-- **HealthCheck**: Verifica que la API y la base de datos estén funcionando.
-- **Usuario**: Prueba todos los casos de creación, consulta, actualización, reemplazo y eliminación, incluyendo errores de validación y duplicados.
-- **Evento**: Prueba la creación, consulta, actualización, reemplazo y eliminación de eventos, validando relaciones y errores típicos (categoría/organizador inexistente, datos inválidos, etc.).
-- **Categoría**: Prueba la creación, consulta y eliminación de categorías, incluyendo errores de nombre vacío o repetido.
+-- **HealthCheck**: Verifica que la API y la base de datos estén funcionando.
+-- **Usuario**: Prueba todos los casos de creación, consulta, actualización, reemplazo y eliminación, incluyendo errores de validación y duplicados.
+-- **Evento**: Prueba la creación, consulta, actualización, reemplazo y eliminación de eventos, validando relaciones y errores típicos (categoría/organizador inexistente, datos inválidos, etc.).
+-- **Categoría**: Prueba la creación, consulta y eliminación de categorías, incluyendo errores de nombre vacío o repetido.
+-- **Inscripción**: Prueba el flujo completo de inscripciones, incluyendo:
+	- Creación exitosa y con errores (usuario/evento inexistente, estado inválido, campos faltantes)
+	- Consulta de inscripciones (listar y buscar por ID, incluyendo ID inválido)
+	- Actualización de estado (solo se permite modificar el estado, prueba éxito, estado inválido y body vacío)
+	- Eliminación de inscripción (éxito e ID inválido)
 
 ## Ejemplos de pruebas y resultados esperados
 
@@ -64,7 +68,78 @@ Esta colección te permite validar todos los endpoints principales de la API TP-
 	```
 	- Esperado: 400 Bad Request, error de validación "El nombre es requerido".
 
-... (más ejemplos para GET, PUT, PATCH, DELETE, ver colección)
+### Inscripciones
+- **Crear inscripción - éxito**
+	```json
+	{ "usuarioId": "{{usuarioId}}", "eventoId": "{{eventoId}}", "estado": "CONFIRMADO" }
+	```
+	- Esperado: 201 Created, inscripción creada correctamente.
+- **Crear inscripción - usuario inexistente**
+	```json
+	{ "usuarioId": "{{usuarioIdInvalido}}", "eventoId": "{{eventoId}}", "estado": "CONFIRMADO" }
+	```
+	- Esperado: 404 Not Found, "Usuario no encontrado".
+- **Crear inscripción - evento inexistente**
+	```json
+	{ "usuarioId": "{{usuarioId}}", "eventoId": "{{eventoIdInvalido}}", "estado": "CONFIRMADO" }
+	```
+	- Esperado: 404 Not Found, "Evento no encontrado".
+- **Crear inscripción - estado inválido**
+	```json
+	{ "usuarioId": "{{usuarioId}}", "eventoId": "{{eventoId}}", "estado": "NOEXISTE" }
+	```
+	- Esperado: 400 Bad Request, error de validación "Estado inválido".
+- **Crear inscripción - falta usuarioId**
+	```json
+	{ "eventoId": "{{eventoId}}", "estado": "CONFIRMADO" }
+	```
+	- Esperado: 400 Bad Request, error de validación "El ID de usuario es requerido".
+- **Crear inscripción - falta eventoId**
+	```json
+	{ "usuarioId": "{{usuarioId}}", "estado": "CONFIRMADO" }
+	```
+	- Esperado: 400 Bad Request, error de validación "El ID de evento es requerido".
+- **Crear inscripción - falta estado**
+	```json
+	{ "usuarioId": "{{usuarioId}}", "eventoId": "{{eventoId}}" }
+	```
+	- Esperado: 400 Bad Request, error de validación "Estado inválido".
+
+- **Listar inscripciones**
+	- GET `/inscripciones`
+	- Esperado: 200 OK, array de inscripciones.
+- **Obtener inscripción por ID - éxito**
+	- GET `/inscripciones/{{inscripcionId}}`
+	- Esperado: 200 OK, inscripción encontrada.
+- **Obtener inscripción por ID - ID inválido**
+	- GET `/inscripciones/{{inscripcionIdInvalido}}`
+	- Esperado: 400 Bad Request, error de validación.
+
+- **Actualizar inscripción - éxito**
+	```json
+	{ "estado": "WAITLIST" }
+	```
+	- PATCH `/inscripciones/{{inscripcionId}}`
+	- Esperado: 200 OK, inscripción actualizada.
+- **Actualizar inscripción - estado inválido**
+	```json
+	{ "estado": "NOEXISTE" }
+	```
+	- PATCH `/inscripciones/{{inscripcionId}}`
+	- Esperado: 400 Bad Request, error de validación "Estado inválido".
+- **Actualizar inscripción - body vacío**
+	```json
+	{}
+	```
+	- PATCH `/inscripciones/{{inscripcionId}}`
+	- Esperado: 400 Bad Request, "Solo se puede modificar el estado de la inscripción".
+
+- **Eliminar inscripción - éxito**
+	- DELETE `/inscripciones/{{inscripcionId}}`
+	- Esperado: 204 No Content, inscripción eliminada.
+- **Eliminar inscripción - ID inválido**
+	- DELETE `/inscripciones/{{inscripcionIdInvalido}}`
+	- Esperado: 400 Bad Request, error de validación.
 
 ### Categorías
 - **Crear categoría - éxito**
