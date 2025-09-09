@@ -1,5 +1,5 @@
-import type { CreateCategoriaDto } from "@/dtos/categorias/input/create-categoria.dto";
 import type { Elysia } from "elysia";
+import type { CreateCategoriaDto } from "@/dtos/categorias/input/create-categoria.dto";
 import { CategoriasController } from "../controllers/categorias.controller";
 import { handleRoute } from "./handleRoute";
 

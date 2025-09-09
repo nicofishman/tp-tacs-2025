@@ -28,7 +28,7 @@
     "db:stop": "docker compose stop",
     "db:studio": "prisma studio",
     "db:watch": "docker compose up",
-    "dev": "bun run --hot src/index.ts",
+    "dev": "bun run prisma generate && bun run --hot src/index.ts",
     "start": "bun run dist/index.js"
   },
   "type": "module"
