@@ -14,7 +14,7 @@ import {
   mapUsuarioToOutput,
   mapUsuarioToOutputRegister,
 } from "@/schemas/usuarios/usuario.output.schema";
-import type { Inscripcion, Usuario } from "@/types";
+import type { Usuario } from "@/types";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 
@@ -51,7 +51,7 @@ export const UsuariosService = {
   },
 
   async findById(id: string) {
-    const usuario: Usuario | null = await UsuariosRepository.findById(id);
+    const usuario = await UsuariosRepository.findById(id);
     if (!usuario) {
       throw new NotFoundError("Usuario no encontrado");
     }
@@ -59,13 +59,12 @@ export const UsuariosService = {
   },
 
   async findEventsByUserId(id: string) {
-    const usuario: Usuario | null = await UsuariosRepository.findById(id);
+    const usuario = await UsuariosRepository.findById(id);
     if (!usuario) {
       throw new NotFoundError("Usuario no encontrado");
     }
 
-    const inscripciones: Inscripcion[] =
-      await InscripcionesRepository.findByUserId(id);
+    const inscripciones = await InscripcionesRepository.findByUserId(id);
 
     return inscripciones;
   },
@@ -99,11 +98,7 @@ export const UsuariosService = {
       }
     }
     // No sobrescribas la contraseña, solo actualiza los campos permitidos
-    const usuarioParaActualizar: Partial<Usuario> = { ...data };
-    const usuarioActualizado = await UsuariosRepository.update(
-      id,
-      usuarioParaActualizar,
-    );
+    const usuarioActualizado = await UsuariosRepository.update(id, data);
     if (!usuarioActualizado) {
       throw new NotFoundError("Usuario no encontrado");
     }
@@ -126,11 +121,7 @@ export const UsuariosService = {
       }
     }
 
-    const usuarioParaActualizar: Partial<Usuario> = { ...data }; // Actualmente no hay campos adicionales que transformar
-    const usuarioActualizado = await UsuariosRepository.update(
-      id,
-      usuarioParaActualizar,
-    );
+    const usuarioActualizado = await UsuariosRepository.update(id, data);
     if (!usuarioActualizado) {
       throw new NotFoundError("Usuario no encontrado");
     }

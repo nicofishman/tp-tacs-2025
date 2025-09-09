@@ -3,7 +3,6 @@ import { NotFoundError } from "@/exceptions/NotFoundError";
 import { CategoriasRepository } from "@/repositories/categorias.repository";
 import type { CreateCategoriaDto } from "@/schemas/categorias/categoria.input.schema";
 import { mapCategoriaToOutput } from "@/schemas/categorias/categoria.output.schema";
-import type { Categoria } from "@/types";
 
 export const CategoriasService = {
   async create(data: CreateCategoriaDto) {
@@ -24,12 +23,12 @@ export const CategoriasService = {
     }
   },
   async findAll() {
-    const categorias: Categoria[] = await CategoriasRepository.findAll();
+    const categorias = await CategoriasRepository.findAll();
     return categorias.map(mapCategoriaToOutput);
   },
 
   async findById(id: string) {
-    const categoria: Categoria | null = await CategoriasRepository.findById(id);
+    const categoria = await CategoriasRepository.findById(id);
     if (!categoria) {
       throw new NotFoundError("Categoría no encontrada");
     }
