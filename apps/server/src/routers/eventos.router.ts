@@ -1,7 +1,11 @@
-import { type Elysia, t } from "elysia";
-import type { CreateEventoDto } from "@/dtos/eventos/input/create-evento.dto";
-import type { ReplaceEventoDto } from "@/dtos/eventos/input/replace-evento.dto";
-import type { UpdateEventoDto } from "@/dtos/eventos/input/update-evento.dto";
+import { TypeBoxFromZod } from "@sinclair/typemap";
+import type { Elysia } from "elysia";
+import z from "zod";
+import {
+  CreateEventoSchema,
+  ReplaceEventoSchema,
+  UpdateEventoSchema,
+} from "@/schemas/eventos/evento.input.schema";
 import { EventosController } from "../controllers/eventos.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -30,34 +34,28 @@ export const EventosRouter = (app: Elysia) => {
         return result;
       }),
     {
-      query: t.Object({
-        categoriaId: t.Optional(t.String()),
-        dateFrom: t.Optional(t.String()),
-        dateTo: t.Optional(t.String()),
-        limit: t.Optional(t.Number()),
-        order: t.Optional(t.Union([t.Literal("asc"), t.Literal("desc")])),
-        orderBy: t.Optional(
-          t.Union([t.Literal("fechaInicio"), t.Literal("precio")]),
-        ),
-        page: t.Optional(t.Number()),
-        priceMax: t.Optional(t.Number()),
-        priceMin: t.Optional(t.Number()),
-        q: t.Optional(t.String()),
-      }),
+      query: TypeBoxFromZod(
+        z.object({
+          categoriaId: z.optional(z.string()),
+          dateFrom: z.optional(z.string()),
+          dateTo: z.optional(z.string()),
+          limit: z.optional(z.number()),
+          order: z.optional(z.union([z.literal("asc"), z.literal("desc")])),
+          orderBy: z.optional(
+            z.union([z.literal("fechaInicio"), z.literal("precio")]),
+          ),
+          page: z.optional(z.number()),
+          priceMax: z.optional(z.number()),
+          priceMin: z.optional(z.number()),
+          q: z.optional(z.string()),
+        }),
+      ),
     },
   );
 
   app.post(
     `${RUTA_EVENTOS}/:id/register`,
-    async ({
-      params,
-      query,
-      set,
-    }: {
-      params: { id: string };
-      query: { user_id: string };
-      set: { status: number };
-    }) =>
+    async ({ params, query, set }) =>
       handleRoute(async () => {
         const { id } = params;
         const { user_id } = query;
@@ -66,83 +64,100 @@ export const EventosRouter = (app: Elysia) => {
         set.status = 200;
         return evento;
       }),
+    {
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+      query: TypeBoxFromZod(
+        z.object({
+          user_id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.get(
     `${RUTA_EVENTOS}/:id`,
-    async ({
-      params,
-      set,
-    }: {
-      params: { id: string };
-      set: { status: number };
-    }) =>
+    async ({ params, set }) =>
       handleRoute(async () => {
         const evento = await EventosController.findById(params.id);
         set.status = 200;
         return evento;
       }),
+    {
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.post(
     RUTA_EVENTOS,
-    async ({ body, set }: { body: CreateEventoDto; set: { status: number } }) =>
+    async ({ body, set }) =>
       handleRoute(async () => {
         const evento = await EventosController.create(body);
         set.status = 201;
         return evento;
       }),
+    {
+      body: TypeBoxFromZod(CreateEventoSchema),
+    },
   );
 
   app.put(
     `${RUTA_EVENTOS}/:id`,
-    async ({
-      params,
-      body,
-      set,
-    }: {
-      params: { id: string };
-      body: ReplaceEventoDto;
-      set: { status: number };
-    }) =>
+    async ({ params, body, set }) =>
       handleRoute(async () => {
         const evento = await EventosController.replace(params.id, body);
         set.status = 200;
         return evento;
       }),
+    {
+      body: TypeBoxFromZod(ReplaceEventoSchema),
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.patch(
     `${RUTA_EVENTOS}/:id`,
-    async ({
-      params,
-      body,
-      set,
-    }: {
-      params: { id: string };
-      body: UpdateEventoDto;
-      set: { status: number };
-    }) =>
+    async ({ params, body, set }) =>
       handleRoute(async () => {
         const evento = await EventosController.update(params.id, body);
         set.status = 200;
         return evento;
       }),
+    {
+      body: TypeBoxFromZod(UpdateEventoSchema),
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.delete(
     `${RUTA_EVENTOS}/:id`,
-    async ({
-      params,
-      set,
-    }: {
-      params: { id: string };
-      set: { status: number };
-    }) =>
+    async ({ params, set }) =>
       handleRoute(async () => {
         await EventosController.delete(params.id);
         set.status = 204;
         return null;
       }),
+    {
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 };

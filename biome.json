@@ -48,7 +48,11 @@
     "enabled": true,
     "rules": {
       "correctness": {
-        "useExhaustiveDependencies": "info"
+        "noUnusedImports": "error",
+        "useExhaustiveDependencies": {
+          "fix": "unsafe",
+          "level": "warn"
+        }
       },
       "nursery": {
         "useSortedClasses": {

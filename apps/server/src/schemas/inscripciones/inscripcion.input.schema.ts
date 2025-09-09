@@ -1,7 +1,7 @@
 import { EstadoInscripcion } from "@prisma/client";
 import { z } from "zod";
 
-export const createInscripcionSchema = z.object({
+export const CreateInscripcionSchema = z.object({
   estado: z.enum(
     Object.values(EstadoInscripcion) as [
       EstadoInscripcion,
@@ -32,7 +32,7 @@ export const createInscripcionSchema = z.object({
   }),
 });
 
-export type CreateInscripcionInput = z.infer<typeof createInscripcionSchema>;
+export type CreateInscripcionInput = z.infer<typeof CreateInscripcionSchema>;
 
 export const updateInscripcionSchema = z.object({
   estado: z

@@ -1,9 +1,13 @@
+import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
-import type { RegisterUsuarioDto } from "@/dtos/usuarios/input/register-usuario.dto";
+import z from "zod";
+import {
+  CreateUsuarioSchema,
+  RegisterUsuarioSchema,
+  ReplaceUsuarioSchema,
+  UpdateUsuarioSchema,
+} from "@/schemas/usuarios/usuario.input.schema";
 import { UsuariosController } from "../controllers/usuarios.controller";
-import type { CreateUsuarioDto } from "../dtos/usuarios/input/create-usuario.dto";
-import type { ReplaceUsuarioDto } from "../dtos/usuarios/input/replace-usuario.dto";
-import type { UpdateUsuarioDto } from "../dtos/usuarios/input/update-usuario.dto";
 import { handleRoute } from "./handleRoute";
 
 // Define las rutas para la entidad Usuario
@@ -14,7 +18,7 @@ import { handleRoute } from "./handleRoute";
 const RUTA_USUARIOS = "/usuarios";
 
 export const UsuariosRouter = (app: Elysia) => {
-  app.get(RUTA_USUARIOS, async ({ set }: { set: { status: number } }) =>
+  app.get(RUTA_USUARIOS, async ({ set }) =>
     handleRoute(async () => {
       const usuarios = await UsuariosController.findAll();
       set.status = 200;
@@ -24,101 +28,97 @@ export const UsuariosRouter = (app: Elysia) => {
 
   app.get(
     `${RUTA_USUARIOS}/:id`,
-    async ({
-      params,
-      set,
-    }: {
-      params: { id: string };
-      set: { status: number };
-    }) =>
+    async ({ params, set }) =>
       handleRoute(async () => {
         const usuario = await UsuariosController.findById(params.id);
         set.status = 200;
         return usuario;
       }),
+    {
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.post(
     RUTA_USUARIOS,
-    async ({
-      body,
-      set,
-    }: {
-      body: CreateUsuarioDto;
-      set: { status: number };
-    }) =>
+    async ({ body, set }) =>
       handleRoute(async () => {
         const usuario = await UsuariosController.create(body);
         set.status = 201;
         return usuario;
       }),
+    {
+      body: TypeBoxFromZod(CreateUsuarioSchema),
+    },
   );
 
   app.post(
     `${RUTA_USUARIOS}/register`,
-    async ({
-      body,
-      set,
-    }: {
-      body: RegisterUsuarioDto;
-      set: { status: number };
-    }) =>
+    async ({ body, set }) =>
       handleRoute(async () => {
         const usuario = await UsuariosController.register(body);
         set.status = 201;
         return usuario;
       }),
+    {
+      body: TypeBoxFromZod(RegisterUsuarioSchema),
+    },
   );
 
   app.put(
     `${RUTA_USUARIOS}/:id`,
-    async ({
-      params,
-      body,
-      set,
-    }: {
-      params: { id: string };
-      body: ReplaceUsuarioDto;
-      set: { status: number };
-    }) =>
+    async ({ params, body, set }) =>
       handleRoute(async () => {
         const usuario = await UsuariosController.replace(params.id, body);
         set.status = 200;
         return usuario;
       }),
+    {
+      body: TypeBoxFromZod(ReplaceUsuarioSchema),
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.patch(
     `${RUTA_USUARIOS}/:id`,
-    async ({
-      params,
-      body,
-      set,
-    }: {
-      params: { id: string };
-      body: UpdateUsuarioDto;
-      set: { status: number };
-    }) =>
+    async ({ params, body, set }) =>
       handleRoute(async () => {
         const usuario = await UsuariosController.update(params.id, body);
         set.status = 200;
         return usuario;
       }),
+    {
+      body: TypeBoxFromZod(UpdateUsuarioSchema),
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.delete(
     `${RUTA_USUARIOS}/:id`,
-    async ({
-      params,
-      set,
-    }: {
-      params: { id: string };
-      set: { status: number };
-    }) =>
+    async ({ params, set }) =>
       handleRoute(async () => {
         await UsuariosController.delete(params.id);
         set.status = 204;
         return null;
       }),
+    {
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 };

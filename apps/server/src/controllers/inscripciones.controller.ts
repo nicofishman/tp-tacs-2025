@@ -3,14 +3,14 @@ import type { UpdateInscripcionDto } from "@/dtos/inscripciones/input/update-ins
 import { ValidationError } from "@/exceptions/ValidationError";
 import { IdSchema } from "@/schemas/eventos/evento.input.schema";
 import {
-  createInscripcionSchema,
+  CreateInscripcionSchema,
   updateInscripcionSchema,
 } from "@/schemas/inscripciones/inscripcion.input.schema";
 import { InscripcionesService } from "@/services/inscripciones.service";
 
 export const InscripcionesController = {
   async create(data: CreateInscripcionDto) {
-    const resultData = createInscripcionSchema.safeParse(data);
+    const resultData = CreateInscripcionSchema.safeParse(data);
     if (!resultData.success) {
       const message = resultData.error.issues
         .map((err) => err.message)
