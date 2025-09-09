@@ -115,3 +115,20 @@ En Docker:
 docker compose exec backend bunx prisma generate --schema=prisma/schema.prisma
 docker compose exec backend bunx prisma db push --schema=prisma/schema.prisma
 ```
+
+# API Testing with Postman
+
+## Setup
+
+To test the API with Postman, you can import the collection provided in:
+```bash
+colecciones_postman/tp-tacs.json
+```
+This collection contains predefined requests to quickly interact with the backend.
+
+## Usage
+
+1. Open Postman
+2. Click "Import" in the top left
+3. Select the `colecciones_postman/tp-tacs.json` file
+4. The collection will be imported with all predefined requests ready to use
