@@ -15,7 +15,7 @@ export const CreateUsuarioSchema = z.object({
       required_error: "El nombre es requerido",
     })
     .min(1, { message: "El nombre no puede estar vacío" }),
-  rol: z.enum(Object.values(RolUsuario) as [RolUsuario, ...RolUsuario[]], {
+  rol: z.nativeEnum(RolUsuario, {
     message: "Rol inválido",
   }),
 });
@@ -43,7 +43,7 @@ export const ReplaceUsuarioSchema = z.object({
       required_error: "El nombre es requerido",
     })
     .min(1, { message: "El nombre no puede estar vacío" }),
-  rol: z.enum(Object.values(RolUsuario) as [RolUsuario, ...RolUsuario[]], {
+  rol: z.nativeEnum(RolUsuario, {
     message: "Rol inválido",
   }),
 });
@@ -59,7 +59,7 @@ export const UpdateUsuarioSchema = z.object({
     .min(1, "El nombre no puede estar vacío")
     .optional(),
   rol: z
-    .enum(Object.values(RolUsuario) as [RolUsuario, ...RolUsuario[]], {
+    .nativeEnum(RolUsuario, {
       message: "Rol inválido",
     })
     .optional(),
