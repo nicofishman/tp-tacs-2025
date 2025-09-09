@@ -69,6 +69,24 @@ export const EventosRouter = (app: Elysia) => {
   );
 
   app.get(
+    `${RUTA_EVENTOS}/:id/participants`,
+    async ({
+      params,
+      set,
+    }: {
+      params: { id: string };
+      set: { status: number };
+    }) =>
+      handleRoute(async () => {
+        const evento = await EventosController.findParticipantsByEvent(
+          params.id,
+        );
+        set.status = 200;
+        return evento;
+      }),
+  );
+
+  app.get(
     `${RUTA_EVENTOS}/:id`,
     async ({
       params,
@@ -141,6 +159,22 @@ export const EventosRouter = (app: Elysia) => {
     }) =>
       handleRoute(async () => {
         await EventosController.delete(params.id);
+        set.status = 204;
+        return null;
+      }),
+  );
+
+  app.patch(
+    `${RUTA_EVENTOS}/:id/register/:userid`,
+    async ({
+      params,
+      set,
+    }: {
+      params: { id: string; userid: string };
+      set: { status: number };
+    }) =>
+      handleRoute(async () => {
+        await EventosController.unregisterFromEvent(params.id, params.userid);
         set.status = 204;
         return null;
       }),

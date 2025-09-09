@@ -1,5 +1,5 @@
-import type { Elysia } from "elysia";
 import type { RegisterUsuarioDto } from "@/dtos/usuarios/input/register-usuario.dto";
+import type { Elysia } from "elysia";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import type { CreateUsuarioDto } from "../dtos/usuarios/input/create-usuario.dto";
 import type { ReplaceUsuarioDto } from "../dtos/usuarios/input/replace-usuario.dto";
@@ -35,6 +35,22 @@ export const UsuariosRouter = (app: Elysia) => {
         const usuario = await UsuariosController.findById(params.id);
         set.status = 200;
         return usuario;
+      }),
+  );
+
+  app.get(
+    `${RUTA_USUARIOS}/:id/events`,
+    async ({
+      params,
+      set,
+    }: {
+      params: { id: string };
+      set: { status: number };
+    }) =>
+      handleRoute(async () => {
+        const eventos = await UsuariosController.findEventsByUserId(params.id);
+        set.status = 200;
+        return eventos;
       }),
   );
 

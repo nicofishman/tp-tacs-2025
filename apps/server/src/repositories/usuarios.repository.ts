@@ -36,6 +36,17 @@ export const UsuariosRepository = {
     }
   },
 
+  async findByIds(ids: string[]): Promise<Usuario[]> {
+    try {
+      return await prisma.usuario.findMany({
+        where: { id: { in: ids } },
+      });
+    } catch (error) {
+      console.error("Error al buscar usuarios por IDs:", error);
+      return [];
+    }
+  },
+
   async update(id: string, data: Partial<Usuario>): Promise<Usuario | null> {
     try {
       return await prisma.usuario.update({ data, where: { id } });
