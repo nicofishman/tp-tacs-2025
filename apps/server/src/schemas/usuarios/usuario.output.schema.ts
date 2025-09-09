@@ -7,7 +7,7 @@ export const UsuarioOutputSchema = z.object({
   email: z.string().email(),
   id: z.string(),
   nombre: z.string(),
-  rol: z.nativeEnum(RolUsuario, {
+  rol: z.enum(Object.values(RolUsuario) as [RolUsuario, ...RolUsuario[]], {
     message: "Rol inválido",
   }),
 });
