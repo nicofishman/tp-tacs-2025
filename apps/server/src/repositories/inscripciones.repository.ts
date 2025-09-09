@@ -1,6 +1,6 @@
+import { EstadoInscripcion, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { Inscripcion } from "@/types";
-import { EstadoInscripcion, type Prisma } from "@prisma/client";
 import { mapPrismaEventoToEvento } from "./eventos.repository";
 
 function mapPrismaInscripcionToInscripcion(

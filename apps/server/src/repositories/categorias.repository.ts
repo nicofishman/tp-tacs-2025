@@ -1,5 +1,5 @@
-import { prisma } from "@/lib/prisma";
 import type { Categoria } from "@prisma/client";
+import { prisma } from "@/lib/prisma";
 
 export const CategoriasRepository = {
   async create(data: Omit<Categoria, "id">): Promise<Categoria> {

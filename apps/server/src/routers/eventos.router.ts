@@ -1,7 +1,7 @@
+import { type Elysia, t } from "elysia";
 import type { CreateEventoDto } from "@/dtos/eventos/input/create-evento.dto";
 import type { ReplaceEventoDto } from "@/dtos/eventos/input/replace-evento.dto";
 import type { UpdateEventoDto } from "@/dtos/eventos/input/update-evento.dto";
-import { type Elysia, t } from "elysia";
 import { EventosController } from "../controllers/eventos.controller";
 import { handleRoute } from "./handleRoute";
 

@@ -26,10 +26,9 @@ export const UsuariosService = {
     }
 
     // Si no se provee password, asignar una temporal
-    let passwordHash: string;
     // Genera un hash de una contraseña temporal (por ejemplo, el email + fecha)
     const temp = data.email + Date.now();
-    passwordHash = await bcrypt.hash(temp, 10);
+    const passwordHash = await bcrypt.hash(temp, 10);
 
     const usuarioParaCrear: Omit<Usuario, "id"> = {
       ...data,

@@ -1,6 +1,6 @@
+import type { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import type { Evento } from "@/types";
-import type { Prisma } from "@prisma/client";
 
 export function mapPrismaEventoToEvento(
   prismaEvento: Prisma.EventoGetPayload<{
