@@ -1,15 +1,15 @@
-import type { RegisterUsuarioDto } from "@/dtos/usuarios/input/register-usuario.dto";
 import { ValidationError } from "@/exceptions/ValidationError";
 import {
+  type CreateUsuarioDto,
   CreateUsuarioSchema,
   IdSchema,
+  type RegisterUsuarioDto,
   RegisterUsuarioSchema,
+  type ReplaceUsuarioDto,
   ReplaceUsuarioSchema,
+  type UpdateUsuarioDto,
   UpdateUsuarioSchema,
 } from "@/schemas/usuarios/usuario.input.schema";
-import type { CreateUsuarioDto } from "../dtos/usuarios/input/create-usuario.dto";
-import type { ReplaceUsuarioDto } from "../dtos/usuarios/input/replace-usuario.dto";
-import type { UpdateUsuarioDto } from "../dtos/usuarios/input/update-usuario.dto";
 import { UsuariosService } from "../services/usuarios.service";
 
 export const UsuariosController = {

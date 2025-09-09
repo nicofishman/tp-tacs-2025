@@ -3,7 +3,7 @@ import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { CategoriasRepository } from "@/repositories/categorias.repository.js";
 import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
-import type { CreateEventoInput } from "@/schemas/eventos/evento.input.schema.js";
+import type { CreateEventoDto } from "@/schemas/eventos/evento.input.schema.js";
 import type { Evento } from "@/types.js";
 import { EventosRepository } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
@@ -22,7 +22,7 @@ type FindManyFilters = {
 };
 
 export const EventosService = {
-  async create(data: CreateEventoInput) {
+  async create(data: CreateEventoDto) {
     const categoria = await CategoriasRepository.findById(data.categoriaId);
     if (!categoria) {
       throw new NotFoundError("Categoría no encontrada");
@@ -139,7 +139,7 @@ export const EventosService = {
     );
   },
 
-  async replace(id: string, data: CreateEventoInput) {
+  async replace(id: string, data: CreateEventoDto) {
     const eventoExistente = await EventosRepository.findById(id);
     if (!eventoExistente) {
       throw new NotFoundError("Evento no encontrado");
@@ -202,7 +202,7 @@ export const EventosService = {
     return { message: "Inscripción cancelada exitosamente" };
   },
 
-  async update(id: string, data: Partial<CreateEventoInput>) {
+  async update(id: string, data: Partial<CreateEventoDto>) {
     if (Object.keys(data).length === 0) {
       throw new ValidationError(
         "Debes enviar al menos un campo para actualizar",

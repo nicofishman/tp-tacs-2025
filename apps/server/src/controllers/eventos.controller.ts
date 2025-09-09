@@ -1,13 +1,13 @@
-import type { CreateEventoDto } from "@/dtos/eventos/input/create-evento.dto";
-import type { FindEventosQueryDto } from "@/dtos/eventos/input/register-evento.dto";
-import type { ReplaceEventoDto } from "@/dtos/eventos/input/replace-evento.dto";
-import type { UpdateEventoDto } from "@/dtos/eventos/input/update-evento.dto";
+import type { FindEventosQueryDto } from "@/dtos/eventos/input/query-evento.dto";
 import { ValidationError } from "@/exceptions/ValidationError";
 import {
+  type CreateEventoDto,
   CreateEventoSchema,
   FindEventosQuerySchema,
   IdSchema,
+  type ReplaceEventoDto,
   ReplaceEventoSchema,
+  type UpdateEventoDto,
   UpdateEventoSchema,
 } from "@/schemas/eventos/evento.input.schema";
 import { EventosService } from "../services/eventos.service";

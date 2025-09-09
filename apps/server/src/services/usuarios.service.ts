@@ -5,10 +5,10 @@ import { ValidationError } from "@/exceptions/ValidationError";
 import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
 import type {
-  CreateUsuarioInput,
-  RegisterUsuarioInput,
-  ReplaceUsuarioInput,
-  UpdateUsuarioInput,
+  CreateUsuarioDto,
+  RegisterUsuarioDto,
+  ReplaceUsuarioDto,
+  UpdateUsuarioDto,
 } from "@/schemas/usuarios/usuario.input.schema";
 import {
   mapUsuarioToOutput,
@@ -19,7 +19,7 @@ import type { Inscripcion, Usuario } from "@/types";
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 
 export const UsuariosService = {
-  async create(data: CreateUsuarioInput) {
+  async create(data: CreateUsuarioDto) {
     // Validacion de email repetido
     const emailExistente = await UsuariosRepository.findByEmail(data.email);
     if (emailExistente) {
@@ -70,7 +70,7 @@ export const UsuariosService = {
     return inscripciones;
   },
 
-  async register(data: RegisterUsuarioInput) {
+  async register(data: RegisterUsuarioDto) {
     // Validacion de email repetido
     const emailExistente = await UsuariosRepository.findByEmail(data.email);
     if (emailExistente) {
@@ -89,7 +89,7 @@ export const UsuariosService = {
     return mapUsuarioToOutputRegister(usuario);
   },
 
-  async replace(id: string, data: ReplaceUsuarioInput) {
+  async replace(id: string, data: ReplaceUsuarioDto) {
     // Validacion de email repetido SOLO si se quiere cambiar el email
     if (data.email) {
       const emailExistente = await UsuariosRepository.findByEmail(data.email);
@@ -110,7 +110,7 @@ export const UsuariosService = {
     return mapUsuarioToOutput(usuarioActualizado);
   },
 
-  async update(id: string, data: UpdateUsuarioInput) {
+  async update(id: string, data: UpdateUsuarioDto) {
     // Validacion de datos
     if (Object.keys(data).length === 0) {
       throw new ValidationError(

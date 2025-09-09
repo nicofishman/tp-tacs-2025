@@ -9,7 +9,7 @@ export const CreateCategoriaSchema = z.object({
     .min(1, "El nombre no puede estar vacío"),
 });
 
-export type CreateCategoriaInput = z.infer<typeof CreateCategoriaSchema>;
+export type CreateCategoriaDto = z.infer<typeof CreateCategoriaSchema>;
 
 export const IdSchema = z.string({
   invalid_type_error: "El ID de categoría debe ser un texto",

@@ -1,6 +1,6 @@
-import type { CreateCategoriaDto } from "@/dtos/categorias/input/create-categoria.dto";
 import { ValidationError } from "@/exceptions/ValidationError";
 import {
+  type CreateCategoriaDto,
   CreateCategoriaSchema,
   IdSchema,
 } from "@/schemas/categorias/categoria.input.schema";

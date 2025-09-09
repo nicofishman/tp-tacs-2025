@@ -1,10 +1,12 @@
-import type { CreateInscripcionDto } from "@/dtos/inscripciones/input/create-inscripcion.dto";
-import type { UpdateInscripcionDto } from "@/dtos/inscripciones/input/update-inscripcion.dto";
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { EventosRepository } from "@/repositories/eventos.repository";
 import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
+import type {
+  CreateInscripcionDto,
+  UpdateInscripcionDto,
+} from "@/schemas/inscripciones/inscripcion.input.schema";
 import type { Inscripcion } from "@/types";
 
 export const InscripcionesService = {

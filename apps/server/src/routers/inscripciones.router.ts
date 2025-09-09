@@ -3,7 +3,7 @@ import type { Elysia } from "elysia";
 import z from "zod";
 import {
   CreateInscripcionSchema,
-  updateInscripcionSchema as UpdateInscripcionSchema,
+  UpdateInscripcionSchema,
 } from "@/schemas/inscripciones/inscripcion.input.schema";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
 import { handleRoute } from "./handleRoute";

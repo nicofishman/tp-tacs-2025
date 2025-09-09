@@ -2,15 +2,9 @@ import { EstadoInscripcion } from "@prisma/client";
 import { z } from "zod";
 
 export const CreateInscripcionSchema = z.object({
-  estado: z.enum(
-    Object.values(EstadoInscripcion) as [
-      EstadoInscripcion,
-      ...EstadoInscripcion[],
-    ],
-    {
-      message: "Estado inválido",
-    },
-  ),
+  estado: z.nativeEnum(EstadoInscripcion, {
+    message: "Estado inválido",
+  }),
   eventoId: z.string({
     invalid_type_error: "El ID de evento debe ser un string",
     required_error: "El ID de evento es requerido",
@@ -32,19 +26,13 @@ export const CreateInscripcionSchema = z.object({
   }),
 });
 
-export type CreateInscripcionInput = z.infer<typeof CreateInscripcionSchema>;
+export type CreateInscripcionDto = z.infer<typeof CreateInscripcionSchema>;
 
-export const updateInscripcionSchema = z.object({
+export const UpdateInscripcionSchema = z.object({
   estado: z
-    .enum(
-      Object.values(EstadoInscripcion) as [
-        EstadoInscripcion,
-        ...EstadoInscripcion[],
-      ],
-      {
-        message: "Estado inválido",
-      },
-    )
+    .nativeEnum(EstadoInscripcion, {
+      message: "Estado inválido",
+    })
     .optional(),
   fechaRegistro: z
     .string({
@@ -54,7 +42,7 @@ export const updateInscripcionSchema = z.object({
     .optional(),
 });
 
-export type UpdateInscripcionInput = z.infer<typeof updateInscripcionSchema>;
+export type UpdateInscripcionDto = z.infer<typeof UpdateInscripcionSchema>;
 
 export const IdSchema = z.string({
   invalid_type_error: "El ID de inscripción debe ser un texto",

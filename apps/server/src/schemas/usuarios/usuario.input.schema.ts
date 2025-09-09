@@ -20,7 +20,7 @@ export const CreateUsuarioSchema = z.object({
   }),
 });
 
-export type CreateUsuarioInput = z.infer<typeof CreateUsuarioSchema>;
+export type CreateUsuarioDto = z.infer<typeof CreateUsuarioSchema>;
 
 export const RegisterUsuarioSchema = CreateUsuarioSchema.extend({
   password: z.string({
@@ -29,7 +29,7 @@ export const RegisterUsuarioSchema = CreateUsuarioSchema.extend({
   }),
 });
 
-export type RegisterUsuarioInput = z.infer<typeof RegisterUsuarioSchema>;
+export type RegisterUsuarioDto = z.infer<typeof RegisterUsuarioSchema>;
 
 export const ReplaceUsuarioSchema = z.object({
   email: z
@@ -48,7 +48,7 @@ export const ReplaceUsuarioSchema = z.object({
   }),
 });
 
-export type ReplaceUsuarioInput = z.infer<typeof ReplaceUsuarioSchema>;
+export type ReplaceUsuarioDto = z.infer<typeof ReplaceUsuarioSchema>;
 
 export const UpdateUsuarioSchema = z.object({
   email: z.string().email("Email inválido").optional(),
@@ -65,7 +65,7 @@ export const UpdateUsuarioSchema = z.object({
     .optional(),
 });
 
-export type UpdateUsuarioInput = z.infer<typeof UpdateUsuarioSchema>;
+export type UpdateUsuarioDto = z.infer<typeof UpdateUsuarioSchema>;
 
 export const IdSchema = z.string({
   invalid_type_error: "El ID de usuario debe ser un texto",

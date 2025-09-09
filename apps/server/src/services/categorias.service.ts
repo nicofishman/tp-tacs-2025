@@ -1,12 +1,12 @@
 import { ConflictError } from "@/exceptions/ConflictError";
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { CategoriasRepository } from "@/repositories/categorias.repository";
-import type { CreateCategoriaInput } from "@/schemas/categorias/categoria.input.schema";
+import type { CreateCategoriaDto } from "@/schemas/categorias/categoria.input.schema";
 import { mapCategoriaToOutput } from "@/schemas/categorias/categoria.output.schema";
 import type { Categoria } from "@/types";
 
 export const CategoriasService = {
-  async create(data: CreateCategoriaInput) {
+  async create(data: CreateCategoriaDto) {
     const existingCategoria = await CategoriasRepository.findByNombre(
       data.nombre,
     );

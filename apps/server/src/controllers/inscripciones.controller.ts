@@ -1,10 +1,10 @@
-import type { CreateInscripcionDto } from "@/dtos/inscripciones/input/create-inscripcion.dto";
-import type { UpdateInscripcionDto } from "@/dtos/inscripciones/input/update-inscripcion.dto";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { IdSchema } from "@/schemas/eventos/evento.input.schema";
 import {
+  type CreateInscripcionDto,
   CreateInscripcionSchema,
-  updateInscripcionSchema,
+  type UpdateInscripcionDto,
+  UpdateInscripcionSchema,
 } from "@/schemas/inscripciones/inscripcion.input.schema";
 import { InscripcionesService } from "@/services/inscripciones.service";
 
@@ -53,7 +53,7 @@ export const InscripcionesController = {
         .join(", ");
       throw new ValidationError(`Error de validación: ${message}`);
     }
-    const resultData = updateInscripcionSchema.safeParse(data);
+    const resultData = UpdateInscripcionSchema.safeParse(data);
     if (!resultData.success) {
       const message = resultData.error.issues
         .map((err) => err.message)

@@ -65,7 +65,7 @@ export const CreateEventoSchema = z.object({
     .min(1, "La descripción no puede estar vacía"),
   duracion: DuracionSchema,
   estado: z
-    .enum(Object.values(EstadoEvento) as [EstadoEvento, ...EstadoEvento[]], {
+    .nativeEnum(EstadoEvento, {
       invalid_type_error: "El estado debe ser uno de los valores válidos",
     })
     .default(EstadoEvento.PENDIENTE),
@@ -98,11 +98,11 @@ export const CreateEventoSchema = z.object({
   ubicacion: UbicacionSchema,
 });
 
-export type CreateEventoInput = z.infer<typeof CreateEventoSchema>;
+export type CreateEventoDto = z.infer<typeof CreateEventoSchema>;
 
 // Por el momento es igual, pero lo dejamos separado por si en el futuro cambia
 export const ReplaceEventoSchema = CreateEventoSchema;
-export type ReplaceEventoInput = z.infer<typeof ReplaceEventoSchema>;
+export type ReplaceEventoDto = z.infer<typeof ReplaceEventoSchema>;
 
 export const UpdateEventoSchema = z.object({
   categoriaId: z
@@ -117,7 +117,7 @@ export const UpdateEventoSchema = z.object({
     .optional(),
   duracion: DuracionSchema.optional(),
   estado: z
-    .enum(Object.values(EstadoEvento) as [EstadoEvento, ...EstadoEvento[]], {
+    .nativeEnum(EstadoEvento, {
       invalid_type_error: "El estado debe ser uno de los valores válidos",
     })
     .optional(),
@@ -136,7 +136,7 @@ export const UpdateEventoSchema = z.object({
   ubicacion: UbicacionSchema.optional(),
 });
 
-export type UpdateEventoInput = z.infer<typeof UpdateEventoSchema>;
+export type UpdateEventoDto = z.infer<typeof UpdateEventoSchema>;
 
 export const FindEventosQuerySchema = z.object({
   categoriaId: z.string().uuid().optional(),
