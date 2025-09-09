@@ -5,6 +5,7 @@ import { ModeToggle } from "./mode-toggle";
 import UserMenu from "./user-menu";
 
 export default function Header() {
+
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
 	const links = [
@@ -124,3 +125,4 @@ export default function Header() {
 		</header>
 	);
 }
+

@@ -1,0 +1,22 @@
+services:
+  backend:
+    build: ./apps/server   # apunta a apps/server (donde está tu backend real)
+    container_name: tacs-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=mongodb://mongo:27017/tacsdb
+    depends_on:
+      - mongo
+
+  mongo:
+    image: mongo:6
+    container_name: tacs-mongo
+    ports:
+      - "27017:27017"
+    command: ["mongod", "--replSet", "rs0", "--bind_ip_all"]
+    volumes:
+      - mongo_data:/data/db
+
+volumes:
+  mongo_data:

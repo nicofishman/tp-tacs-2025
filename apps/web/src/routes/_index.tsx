@@ -3,6 +3,7 @@ import type { Route } from "react-router";
 import { Link } from "react-router";
 import { cn } from "../lib/utils";
 
+
 export function meta(): any[] {
   return [
     { title: "Inicio - Mi Aplicación" },
@@ -12,6 +13,7 @@ export function meta(): any[] {
 
 export default function Home() {
   return (
+
     <div className="min-h-screen">
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-blue-600 via-purple-600 to-indigo-700 text-white">
@@ -110,3 +112,4 @@ export default function Home() {
     </div>
   );
 }
+

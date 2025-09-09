@@ -1,19 +1,22 @@
-export enum EstadoEvento {
-  FINALIZADO = "FINALIZADO",
-  EN_PROCESO = "EN_PROCESO",
-  CANCELADO = "CANCELADO",
-  PENDIENTE = "PENDIENTE",
-}
+import type {
+  EstadoEvento,
+  EstadoInscripcion,
+  RolUsuario,
+} from "@prisma/client";
 
-export enum EstadoInscripcion {
-  CONFIRMADO = "CONFIRMADO",
-  WAITLIST = "WAITLIST",
-}
-
-export interface Usuario {
+export interface Evento {
   id: string;
-  nombre: string;
-  email: string;
+  titulo: string;
+  descripcion: string;
+  fechaInicio: string; // formato ISO (ej: "2025-09-20T15:30:00Z")
+  duracion: Duracion;
+  ubicacion: Ubicacion;
+  cupoMaximo: number;
+  cupoMinimo?: number;
+  precio: number;
+  categoria: Categoria;
+  estado: EstadoEvento;
+  organizador: Usuario;
 }
 
 export interface Categoria {
@@ -21,20 +24,12 @@ export interface Categoria {
   nombre: string;
 }
 
-export interface Evento {
+export interface Usuario {
   id: string;
-  titulo: string;
-  descripcion: string;
-  fecha: string;       // formato ISO
-  horaInicio: string;  // "HH:mm"
-  duracion: Duracion;
-  ubicacion: string;
-  cupoMaximo: number;
-  cupoMinimo?: number;
-  precio: number;
-  categoria: Categoria;
-  estado: EstadoEvento;
-  organizador: Usuario;
+  nombre: string;
+  password: string;
+  email: string;
+  rol: RolUsuario;
 }
 
 export interface Inscripcion {
@@ -48,4 +43,10 @@ export interface Inscripcion {
 export interface Duracion {
   horas: number;
   minutos: number;
+}
+
+export interface Ubicacion {
+  direccion: string;
+  lat: number;
+  lng: number;
 }

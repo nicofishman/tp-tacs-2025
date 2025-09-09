@@ -23,6 +23,7 @@ First, install the dependencies:
 ```bash
 bun install
 ```
+
 ## Database Setup
 
 This project uses MongoDB with Prisma ORM.
@@ -31,10 +32,10 @@ This project uses MongoDB with Prisma ORM.
 2. Update your `apps/server/.env` file with your MongoDB connection URI.
 
 3. Generate the Prisma client and push the schema:
+
 ```bash
 bun db:push
 ```
-
 
 Then, run the development server:
 
@@ -44,10 +45,6 @@ bun dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser to see the web application.
 The API is running at [http://localhost:3000](http://localhost:3000).
-
-
-
-
 
 ## Project Structure
 
@@ -68,3 +65,70 @@ tp-tacs/
 - `bun db:push`: Push schema changes to database
 - `bun db:studio`: Open database studio UI
 - `bun check`: Run Biome formatting and linting
+
+# Guia de arranque con Docker
+
+## Requisitos
+
+- Abrir Docker Desktop
+- Postman
+
+## Comandos
+
+1. Dentro de apps\server
+
+```bash
+docker compose up -d --build
+```
+
+2.
+
+```bash
+docker exec -it tacs-mongo mongosh
+```
+
+3. Este comando deberia devoler ```json {ok:1}```
+
+```bash
+rs.initiate({
+_id: "rs0",
+members: [{ _id: 0, host: "tacs-mongo:27017" }]
+})
+```
+
+4. Este comando, dentro de members, deberia decir ```json stateSte:'PRIMARY'```
+
+```bash
+rs.status()
+```
+
+5. Ahora quedaria correr requests en Postman.
+
+6. Para actualizar el prisma:
+En maquina local:
+```bash
+bunx prisma generate --schema="apps/server/prisma/schema.prisma"
+bunx prisma db push --schema="apps/server/prisma/schema.prisma"
+```
+En Docker:
+```bash
+docker compose exec backend bunx prisma generate --schema=prisma/schema.prisma
+docker compose exec backend bunx prisma db push --schema=prisma/schema.prisma
+```
+
+# API Testing with Postman
+
+## Setup
+
+To test the API with Postman, you can import the collection provided in:
+```bash
+colecciones_postman/tp-tacs.json
+```
+This collection contains predefined requests to quickly interact with the backend.
+
+## Usage
+
+1. Open Postman
+2. Click "Import" in the top left
+3. Select the `colecciones_postman/tp-tacs.json` file
+4. The collection will be imported with all predefined requests ready to use

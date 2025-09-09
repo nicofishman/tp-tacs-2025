@@ -1,27 +1,19 @@
-import "dotenv/config";
-import { cors } from "@elysiajs/cors";
+import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
-import { auth } from "./lib/auth";
+import { CategoriasRouter } from "./routers/categorias.router";
+import { EventosRouter } from "./routers/eventos.router";
+import { HealthRouter } from "./routers/health.router";
+import { InscripcionesRouter } from "./routers/inscripciones.router";
+import { UsuariosRouter } from "./routers/usuarios.router";
 
-const app = new Elysia()
-	.use(
-		cors({
-			origin: process.env.CORS_ORIGIN || "",
-			methods: ["GET", "POST", "OPTIONS"],
-			allowedHeaders: ["Content-Type", "Authorization"],
-			credentials: true,
-		}),
-	)
-	.all("/api/auth/*", async (context) => {
-		const { request } = context;
-		if (["POST", "GET"].includes(request.method)) {
-			return auth.handler(request);
-		}
-		context.error(405);
-	})
-	.get("/", () => "OK")
-	.listen(3000, () => {
-		console.log("Server is running on http://localhost:3000");
-	});
+export const app = new Elysia()
+  .use(swagger())
+  .use(HealthRouter)
+  .use(UsuariosRouter)
+  .use(EventosRouter)
+  .use(CategoriasRouter)
+  .use(InscripcionesRouter);
 
-export type App = typeof app;
+app.listen(3000);
+
+console.log("🚀 Servidor corriendo en http://localhost:3000");
