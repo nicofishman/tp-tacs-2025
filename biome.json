@@ -29,7 +29,8 @@
       "!**/.wrangler",
       "!**/.alchemy",
       "!**/wrangler.jsonc",
-      "!**/.source"
+      "!**/.source",
+      "!**/generated"
     ]
   },
   "formatter": {
