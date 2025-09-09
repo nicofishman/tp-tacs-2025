@@ -14,6 +14,15 @@ export const UsuariosRepository = {
       return null;
     }
   },
+
+  async deleteByEmail(email: string): Promise<Usuario | null> {
+    try {
+      return await prisma.usuario.delete({ where: { email } });
+    } catch {
+      return null;
+    }
+  },
+
   async findAll(): Promise<Usuario[]> {
     return prisma.usuario.findMany();
   },

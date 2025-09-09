@@ -45,6 +45,12 @@ export const UsuariosService = {
       throw new NotFoundError("Usuario no encontrado");
     }
   },
+  async deleteByEmail(email: string) {
+    const eliminado = await UsuariosRepository.deleteByEmail(email);
+    if (!eliminado) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
+  },
   async findAll() {
     const usuarios = await UsuariosRepository.findAll();
     return usuarios.map(mapUsuarioToOutput);

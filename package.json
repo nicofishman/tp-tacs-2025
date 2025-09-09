@@ -37,7 +37,7 @@
     "dev:native": "turbo -F native dev",
     "dev:server": "turbo -F server dev",
     "dev:web": "turbo -F web dev",
-    "prepare": "husky",
+    "prepare": "bunx husky",
     "start": "bun run /apps/server/src/index.ts"
   },
   "workspaces": [

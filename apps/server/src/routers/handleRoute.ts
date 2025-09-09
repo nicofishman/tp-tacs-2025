@@ -4,9 +4,10 @@ import { ValidationError } from "@/exceptions/ValidationError";
 
 // Handler genérico para rutas que captura errores y responde con el formato adecuado.
 // Usa las excepciones personalizadas para determinar el código de estado y el mensaje.
-export async function handleRoute(fn: () => Promise<unknown>) {
+export async function handleRoute<T>(fn: () => Promise<T>): Promise<T> {
   try {
-    return await fn();
+    const result = await fn();
+    return result;
   } catch (error) {
     let status = 500;
     let errorMessage = "Error interno del servidor";
@@ -21,7 +22,7 @@ export async function handleRoute(fn: () => Promise<unknown>) {
     if (status === 500) {
       console.error("InternalServerError:", error);
     }
-    return new Response(JSON.stringify({ error: errorMessage }), {
+    throw new Response(JSON.stringify({ error: errorMessage }), {
       headers: { "Content-Type": "application/json" },
       status,
     });

@@ -22,6 +22,12 @@ export const CategoriasService = {
       throw new NotFoundError("Categoría no encontrada");
     }
   },
+  async deleteByName(nombre: string) {
+    const deleted = await CategoriasRepository.deleteByName(nombre);
+    if (!deleted) {
+      throw new NotFoundError("Categoría no encontrada");
+    }
+  },
   async findAll() {
     const categorias = await CategoriasRepository.findAll();
     return categorias.map(mapCategoriaToOutput);

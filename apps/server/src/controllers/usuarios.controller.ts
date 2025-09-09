@@ -34,6 +34,11 @@ export const UsuariosController = {
     }
     await UsuariosService.delete(id);
   },
+
+  async deleteByEmail(email: string) {
+    await UsuariosService.deleteByEmail(email);
+  },
+
   async findAll() {
     return await UsuariosService.findAll();
   },

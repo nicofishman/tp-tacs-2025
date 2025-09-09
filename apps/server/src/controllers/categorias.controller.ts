@@ -17,7 +17,6 @@ export const CategoriasController = {
     }
     return await CategoriasService.create(resultData.data);
   },
-
   async delete(id: string) {
     const resultId = IdSchema.safeParse(id);
     if (!resultId.success) {
@@ -27,6 +26,9 @@ export const CategoriasController = {
       throw new ValidationError(`Error de validación: ${message}`);
     }
     await CategoriasService.delete(resultId.data);
+  },
+  async deleteByName(nombre: string) {
+    await CategoriasService.deleteByName(nombre);
   },
   async findAll() {
     return await CategoriasService.findAll();

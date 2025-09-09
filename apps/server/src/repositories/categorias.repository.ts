@@ -14,6 +14,16 @@ export const CategoriasRepository = {
       return null;
     }
   },
+
+  async deleteByName(nombre: string): Promise<Categoria | null> {
+    try {
+      return await prisma.categoria.delete({ where: { nombre } });
+    } catch (error) {
+      console.error("Error al eliminar la categoría por nombre:", error);
+      return null;
+    }
+  },
+
   async findAll(): Promise<Categoria[]> {
     return prisma.categoria.findMany();
   },

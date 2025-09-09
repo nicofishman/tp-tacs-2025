@@ -6,13 +6,13 @@ import { HealthRouter } from "./routers/health.router";
 import { InscripcionesRouter } from "./routers/inscripciones.router";
 import { UsuariosRouter } from "./routers/usuarios.router";
 
-const app = new Elysia().use(swagger());
-
-HealthRouter(app);
-UsuariosRouter(app);
-CategoriasRouter(app);
-EventosRouter(app);
-InscripcionesRouter(app);
+export const app = new Elysia()
+  .use(swagger())
+  .use(HealthRouter)
+  .use(UsuariosRouter)
+  .use(EventosRouter)
+  .use(CategoriasRouter)
+  .use(InscripcionesRouter);
 
 app.listen(3000);
 
