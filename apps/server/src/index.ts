@@ -1,3 +1,4 @@
+import { swagger } from "@elysiajs/swagger";
 import { Elysia } from "elysia";
 import { CategoriasRouter } from "./routers/categorias.router";
 import { EventosRouter } from "./routers/eventos.router";
@@ -5,7 +6,7 @@ import { HealthRouter } from "./routers/health.router";
 import { InscripcionesRouter } from "./routers/inscripciones.router";
 import { UsuariosRouter } from "./routers/usuarios.router";
 
-const app = new Elysia();
+const app = new Elysia().use(swagger());
 
 HealthRouter(app);
 UsuariosRouter(app);
