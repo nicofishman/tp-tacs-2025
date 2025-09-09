@@ -25,6 +25,22 @@ function mapPrismaInscripcionToInscripcion(
 }
 
 export const InscripcionesRepository = {
+  async cancelUserRegistration(eventId: string, userId: string) {
+    try {
+      return await prisma.inscripcion.updateMany({
+        data: {
+          estado: EstadoInscripcion.CANCELADO,
+        },
+        where: {
+          eventoId: eventId,
+          usuarioId: userId,
+        },
+      });
+    } catch (error) {
+      console.error("Error al cancelar inscripción:", error);
+      return null;
+    }
+  },
   async create(data: Omit<Inscripcion, "id">): Promise<Inscripcion | null> {
     try {
       const prismaInscripcion = await prisma.inscripcion.create({
@@ -87,6 +103,7 @@ export const InscripcionesRepository = {
       throw new Error("Error al eliminar inscripción");
     }
   },
+
   async findAll(): Promise<Inscripcion[]> {
     try {
       const inscripciones = await prisma.inscripcion.findMany({
@@ -103,6 +120,27 @@ export const InscripcionesRepository = {
       return inscripciones.map(mapPrismaInscripcionToInscripcion);
     } catch (error) {
       console.error("Error al buscar inscripciones:", error);
+      return [];
+    }
+  },
+
+  async findByEventId(eventId: string): Promise<Inscripcion[]> {
+    try {
+      const inscripciones = await prisma.inscripcion.findMany({
+        include: {
+          evento: {
+            include: {
+              categoria: true,
+              organizador: true,
+            },
+          },
+          usuario: true,
+        },
+        where: { eventoId: eventId },
+      });
+      return inscripciones.map(mapPrismaInscripcionToInscripcion);
+    } catch (error) {
+      console.error("Error al buscar inscripciones del evento:", error);
       return [];
     }
   },
@@ -130,6 +168,27 @@ export const InscripcionesRepository = {
     }
   },
 
+  async findByUserId(userId: string): Promise<Inscripcion[]> {
+    try {
+      const inscripciones = await prisma.inscripcion.findMany({
+        include: {
+          evento: {
+            include: {
+              categoria: true,
+              organizador: true,
+            },
+          },
+          usuario: true,
+        },
+        where: { usuarioId: userId },
+      });
+      return inscripciones.map(mapPrismaInscripcionToInscripcion);
+    } catch (error) {
+      console.error("Error al buscar inscripciones del usuario:", error);
+      return [];
+    }
+  },
+
   async findConfirmedRegistrationsByEvent(eventId: string) {
     try {
       return await prisma.inscripcion.findMany({
@@ -144,6 +203,23 @@ export const InscripcionesRepository = {
     }
   },
 
+  async findFirstInWaitlist(eventId: string) {
+    try {
+      return await prisma.inscripcion.findFirst({
+        orderBy: {
+          fechaRegistro: "asc",
+        },
+        where: {
+          estado: EstadoInscripcion.WAITLIST,
+          eventoId: eventId,
+        },
+      });
+    } catch (error) {
+      console.error("Error al buscar primer usuario en waitlist:", error);
+      return null;
+    }
+  },
+
   async findUserRegistration(eventId: string, userId: string) {
     try {
       return await prisma.inscripcion.findFirst({
@@ -155,6 +231,22 @@ export const InscripcionesRepository = {
     } catch (error) {
       console.error("Error al verificar inscripción:", error);
       throw new Error("Error al verificar inscripción");
+    }
+  },
+
+  async promoteFromWaitlist(inscripcionId: string) {
+    try {
+      return await prisma.inscripcion.update({
+        data: {
+          estado: EstadoInscripcion.CONFIRMADO,
+        },
+        where: {
+          id: inscripcionId,
+        },
+      });
+    } catch (error) {
+      console.error("Error al promover usuario desde waitlist:", error);
+      return null;
     }
   },
 

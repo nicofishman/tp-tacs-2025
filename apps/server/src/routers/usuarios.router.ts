@@ -43,6 +43,22 @@ export const UsuariosRouter = (app: Elysia) => {
     },
   );
 
+  app.get(
+    `${RUTA_USUARIOS}/:id/events`,
+    async ({
+      params,
+      set,
+    }: {
+      params: { id: string };
+      set: { status: number };
+    }) =>
+      handleRoute(async () => {
+        const eventos = await UsuariosController.findEventsByUserId(params.id);
+        set.status = 200;
+        return eventos;
+      }),
+  );
+
   app.post(
     RUTA_USUARIOS,
     async ({ body, set }) =>

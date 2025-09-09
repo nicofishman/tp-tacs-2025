@@ -71,6 +71,7 @@ model Inscripcion {
 enum EstadoInscripcion {
   CONFIRMADO
   WAITLIST
+  CANCELADO
 }
 
 

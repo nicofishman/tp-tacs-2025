@@ -85,6 +85,25 @@ export const EventosService = {
     };
   },
 
+  async findParticipantsByEvent(eventId: string) {
+    const evento = await EventosRepository.findById(eventId);
+    if (!evento) {
+      throw new NotFoundError("Evento no encontrado");
+    }
+    const inscripcionesDelEvento =
+      await InscripcionesRepository.findByEventId(eventId);
+
+    const inscripcionesConfirmadas = inscripcionesDelEvento.filter(
+      (inscripcion) => inscripcion.estado === EstadoInscripcion.CONFIRMADO,
+    );
+
+    const participantes = inscripcionesConfirmadas.map(
+      (inscripcion) => inscripcion.usuario,
+    );
+
+    return participantes;
+  },
+
   async registerToEvent(eventId: string, userId: string) {
     const evento = await EventosRepository.findById(eventId);
     if (!evento) {
@@ -143,6 +162,44 @@ export const EventosService = {
     };
     const evento = await EventosRepository.update(id, eventoParaActualizar);
     return evento;
+  },
+
+  async unregisterFromEvent(eventId: string, userId: string) {
+    const evento = await EventosRepository.findById(eventId);
+    if (!evento) {
+      throw new NotFoundError(`El evento con ID ${eventId} no existe.`);
+    }
+
+    const usuario = await UsuariosRepository.findById(userId);
+    if (!usuario) {
+      throw new NotFoundError(`El usuario con ID ${userId} no existe.`);
+    }
+
+    // Verificar si el usuario está registrado en el evento
+    const existingRegistration =
+      await InscripcionesRepository.findUserRegistration(eventId, userId);
+    if (!existingRegistration) {
+      throw new ValidationError(
+        "El usuario no está registrado en este evento.",
+      );
+    }
+
+    // Cancelar la inscripción del usuario
+    await InscripcionesRepository.cancelUserRegistration(eventId, userId);
+
+    // Si el usuario tenía una inscripción confirmada, promover al siguiente en waitlist
+    if (existingRegistration.estado === EstadoInscripcion.CONFIRMADO) {
+      const nextInWaitlist =
+        await InscripcionesRepository.findFirstInWaitlist(eventId);
+      if (nextInWaitlist) {
+        await InscripcionesRepository.promoteFromWaitlist(nextInWaitlist.id);
+        console.log(
+          `[v0] Usuario ${nextInWaitlist.usuarioId} promovido desde waitlist para evento ${eventId}`,
+        );
+      }
+    }
+
+    return { message: "Inscripción cancelada exitosamente" };
   },
 
   async update(id: string, data: Partial<CreateEventoInput>) {

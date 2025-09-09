@@ -49,6 +49,17 @@ export const UsuariosController = {
     return await UsuariosService.findById(id);
   },
 
+  async findEventsByUserId(id: string) {
+    const resultId = IdSchema.safeParse(id);
+    if (!resultId.success) {
+      const message = resultId.error.issues
+        .map((err: { message: string }) => err.message)
+        .join(", ");
+      throw new ValidationError(`Error de validación: ${message}`);
+    }
+    return await UsuariosService.findEventsByUserId(id);
+  },
+
   async register(data: RegisterUsuarioDto) {
     const resultData = RegisterUsuarioSchema.safeParse(data);
     if (!resultData.success) {

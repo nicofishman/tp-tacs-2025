@@ -2,6 +2,7 @@ import bcrypt from "bcryptjs";
 import { ConflictError } from "@/exceptions/ConflictError";
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
+import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
 import type {
   CreateUsuarioInput,
@@ -13,7 +14,7 @@ import {
   mapUsuarioToOutput,
   mapUsuarioToOutputRegister,
 } from "@/schemas/usuarios/usuario.output.schema";
-import type { Usuario } from "@/types";
+import type { Inscripcion, Usuario } from "@/types";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 
@@ -55,6 +56,18 @@ export const UsuariosService = {
       throw new NotFoundError("Usuario no encontrado");
     }
     return mapUsuarioToOutput(usuario);
+  },
+
+  async findEventsByUserId(id: string) {
+    const usuario: Usuario | null = await UsuariosRepository.findById(id);
+    if (!usuario) {
+      throw new NotFoundError("Usuario no encontrado");
+    }
+
+    const inscripciones: Inscripcion[] =
+      await InscripcionesRepository.findByUserId(id);
+
+    return inscripciones;
   },
 
   async register(data: RegisterUsuarioInput) {

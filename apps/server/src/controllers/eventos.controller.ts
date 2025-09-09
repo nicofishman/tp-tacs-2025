@@ -60,6 +60,17 @@ export const EventosController = {
     return await EventosService.findMany(resultData.data);
   },
 
+  async findParticipantsByEvent(eventId: string) {
+    const resultEventId = IdSchema.safeParse(eventId);
+    if (!resultEventId.success) {
+      const message = resultEventId.error.issues
+        .map((err) => err.message)
+        .join(", ");
+      throw new ValidationError(`Error de validación en eventId: ${message}`);
+    }
+    return await EventosService.findParticipantsByEvent(resultEventId.data);
+  },
+
   async registerToEvent(eventId: string, userId: string) {
     const resultEventId = IdSchema.safeParse(eventId);
     if (!resultEventId.success) {
@@ -99,6 +110,29 @@ export const EventosController = {
       throw new ValidationError(`Error de validación: ${message}`);
     }
     return await EventosService.replace(id, resultData.data);
+  },
+
+  async unregisterFromEvent(eventId: string, userId: string) {
+    const resultEventId = IdSchema.safeParse(eventId);
+    if (!resultEventId.success) {
+      const message = resultEventId.error.issues
+        .map((err) => err.message)
+        .join(", ");
+      throw new ValidationError(`Error de validación en eventId: ${message}`);
+    }
+
+    const resultUserId = IdSchema.safeParse(userId);
+    if (!resultUserId.success) {
+      const message = resultUserId.error.issues
+        .map((err) => err.message)
+        .join(", ");
+      throw new ValidationError(`Error de validación en userId: ${message}`);
+    }
+
+    return await EventosService.unregisterFromEvent(
+      resultEventId.data,
+      resultUserId.data,
+    );
   },
 
   async update(id: string, data: UpdateEventoDto) {
