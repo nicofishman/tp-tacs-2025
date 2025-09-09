@@ -6,6 +6,6 @@
 		"source.organizeImports": "explicit"
 	},
 	"[typescript]": {
-		"editor.defaultFormatter": "vscode.typescript-language-features"
+		"editor.defaultFormatter": "biomejs.biome"
 	}
 }

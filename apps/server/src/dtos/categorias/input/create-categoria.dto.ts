@@ -1,3 +1,3 @@
 export interface CreateCategoriaDto {
-	nombre: string;
+  nombre: string;
 }

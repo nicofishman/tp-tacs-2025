@@ -1,47 +1,47 @@
 {
-	"name": "tp-tacs",
-	"private": true,
-	"workspaces": [
-		"apps/*",
-		"packages/*"
-	],
-	"scripts": {
-		"check": "biome check --write .",
-		"dev": "bun run /apps/server/src/index.ts",
-		"start": "bun run /apps/server/src/index.ts",
-		"build": "turbo build",
-		"check-types": "turbo check-types",
-		"dev:native": "turbo -F native dev",
-		"dev:web": "turbo -F web dev",
-		"dev:server": "turbo -F server dev",
-		"db:push": "turbo -F server db:push",
-		"db:studio": "turbo -F server db:studio",
-		"db:generate": "turbo -F server db:generate",
-		"db:migrate": "turbo -F server db:migrate",
-		"db:start": "turbo -F server db:start",
-		"db:watch": "turbo -F server db:watch",
-		"db:stop": "turbo -F server db:stop",
-		"db:down": "turbo -F server db:down",
-		"prepare": "husky"
-	},
-	"dependencies": {
-		"@prisma/client": "^6.15.0"
-	},
-	"devDependencies": {
-		"@biomejs/biome": "^2.2.0",
-		"husky": "^9.1.7",
-		"prisma": "^6.15.0",
-		"turbo": "^2.5.4"
-	},
-	"packageManager": "bun@1.2.21",
-	"lint-staged": {
-		"*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
-			"biome check --write --unsafe --no-errors-on-unmatched",
-			"biome format --write --no-errors-on-unmatched",
-			"biome lint --write --no-errors-on-unmatched"
-		],
-		"*": [
-			"biome check --no-errors-on-unmatched --files-ignore-unknown=true"
-		]
-	}
+  "dependencies": {
+    "@prisma/client": "^6.15.0"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.2.0",
+    "husky": "^9.1.7",
+    "prisma": "^6.15.0",
+    "turbo": "^2.5.4"
+  },
+  "lint-staged": {
+    "*": [
+      "biome check --no-errors-on-unmatched --files-ignore-unknown=true"
+    ],
+    "*.{js,ts,cjs,mjs,d.cts,d.mts,jsx,tsx,json,jsonc}": [
+      "biome check --write --unsafe --no-errors-on-unmatched",
+      "biome format --write --no-errors-on-unmatched",
+      "biome lint --write --no-errors-on-unmatched"
+    ]
+  },
+  "name": "tp-tacs",
+  "packageManager": "bun@1.2.21",
+  "private": true,
+  "scripts": {
+    "build": "turbo build",
+    "check": "biome check --write .",
+    "check-types": "turbo check-types",
+    "db:down": "turbo -F server db:down",
+    "db:generate": "turbo -F server db:generate",
+    "db:migrate": "turbo -F server db:migrate",
+    "db:push": "turbo -F server db:push",
+    "db:start": "turbo -F server db:start",
+    "db:stop": "turbo -F server db:stop",
+    "db:studio": "turbo -F server db:studio",
+    "db:watch": "turbo -F server db:watch",
+    "dev": "bun run /apps/server/src/index.ts",
+    "dev:native": "turbo -F native dev",
+    "dev:server": "turbo -F server dev",
+    "dev:web": "turbo -F web dev",
+    "prepare": "husky",
+    "start": "bun run /apps/server/src/index.ts"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
 }

@@ -1,4 +1,4 @@
 export interface CategoriaOutputDto {
-	id: string;
-	nombre: string;
+  id: string;
+  nombre: string;
 }

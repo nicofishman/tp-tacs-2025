@@ -1,35 +1,35 @@
 {
-	"name": "server",
-	"main": "src/index.ts",
-	"type": "module",
-	"scripts": {
-		"build": "tsdown",
-		"check-types": "tsc -b",
-		"compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
-		"dev": "bun run --hot src/index.ts",
-		"start": "bun run dist/index.js",
-		"db:push": "prisma db push",
-		"db:studio": "prisma studio",
-		"db:generate": "prisma generate",
-		"db:migrate": "prisma migrate dev",
-		"db:start": "docker compose up -d",
-		"db:watch": "docker compose up",
-		"db:stop": "docker compose stop",
-		"db:down": "docker compose down"
-	},
-	"dependencies": {
-		"@elysiajs/cors": "^1.3.3",
-		"@prisma/client": "^6.15.0",
-		"bcryptjs": "^3.0.2",
-		"better-auth": "^1.3.7",
-		"dotenv": "^17.2.1",
-		"elysia": "^1.3.20",
-		"zod": "^3.23.8"
-	},
-	"devDependencies": {
-		"tsdown": "^0.14.1",
-		"typescript": "^5.8.2",
-		"@types/bun": "^1.2.6",
-		"prisma": "^6.15.0"
-	}
+  "dependencies": {
+    "@elysiajs/cors": "^1.3.3",
+    "@prisma/client": "^6.15.0",
+    "bcryptjs": "^3.0.2",
+    "better-auth": "^1.3.7",
+    "dotenv": "^17.2.1",
+    "elysia": "^1.3.20",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/bun": "^1.2.6",
+    "prisma": "^6.15.0",
+    "tsdown": "^0.14.1",
+    "typescript": "^5.8.2"
+  },
+  "main": "src/index.ts",
+  "name": "server",
+  "scripts": {
+    "build": "tsdown",
+    "check-types": "tsc -b",
+    "compile": "bun build --compile --minify --sourcemap --bytecode ./src/index.ts --outfile server",
+    "db:down": "docker compose down",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev",
+    "db:push": "prisma db push",
+    "db:start": "docker compose up -d",
+    "db:stop": "docker compose stop",
+    "db:studio": "prisma studio",
+    "db:watch": "docker compose up",
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run dist/index.js"
+  },
+  "type": "module"
 }

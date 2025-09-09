@@ -1,1665 +1,1387 @@
 {
-	"info": {
-		"_postman_id": "a9984014-7720-4c1f-8336-b7152c432e93",
-		"name": "TP-TACS-API",
-		"description": "Colección completa para probar el CRUD de usuarios, con casos de éxito y error.",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "43690168"
-	},
-	"item": [
-		{
-			"name": "Usuario",
-			"item": [
-				{
-					"name": "Crear Usuario",
-					"item": [
-						{
-							"name": "Crear usuario - éxito",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear usuario - email inválido",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Ana\",\n  \"email\": \"no-es-un-email\",\n  \"rol\": \"ADMIN\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear usuario - rol inválido",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Pedro\",\n  \"email\": \"pedro@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear usuario - email repetido",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear usuario - nombre vacío",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"\",\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear usuario - sin nombre",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Obtener Usuario",
-					"item": [
-						{
-							"name": "Listar usuarios",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener usuario por ID - éxito",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener usuario por ID - ID invalido",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Reemplazar Usuario",
-					"item": [
-						{
-							"name": "Reemplazar usuario - éxito",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reemplazar usuario - rol inválido",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reemplazar usuario - email inválido",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reemplazar usuario - ID invalido",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Actualizar Usuario",
-					"item": [
-						{
-							"name": "Actualizar usuario - éxito",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"email\": \"nuevo.eemail@example.com\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar usuario - body vacío",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar usuario - email inválido",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"email\": \"no-es-email\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar usuario - ID invalido",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"email\": \"nuevo.emaill@example.com\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Eliminar Usuario",
-					"item": [
-						{
-							"name": "Eliminar usuario - éxito",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioId1}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioId1}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Eliminar usuario - ID invalido",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"usuarios",
-										"{{usuarioIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "Evento",
-			"item": [
-				{
-					"name": "Crear Evento",
-					"item": [
-						{
-							"name": "Crear evento - éxito",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"Seminario de Cloud Computing\",\n  \"descripcion\": \"Todo sobre servicios en la nube\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 4, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 200,\n  \"precio\": 1500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"PENDIENTE\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear evento - datos inválidos",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"\",\n  \"descripcion\": \"\",\n  \"fechaInicio\": \"fecha-invalida\",\n  \"duracion\": { \"horas\": -1, \"minutos\": 70 },\n  \"ubicacion\": { \"direccion\": \"\", \"lat\": \"no-numero\", \"lng\": null },\n  \"cupoMaximo\": 0,\n  \"precio\": -100,\n  \"categoriaId\": \"\",\n  \"estado\": \"NO_EXISTE\",\n  \"organizadorId\": \"\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear evento - categoria invalida",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"Evento con categoría inválida\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaIdInvalido}}\",\n  \"estado\": \"PENDIENTE\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear evento - organizador invalido",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Obtener Evento",
-					"item": [
-						{
-							"name": "Listar eventos",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": ""
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener evento por ID - éxito",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener evento por ID - ID invalido",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Reemplazar Evento",
-					"item": [
-						{
-							"name": "Reemplazar evento - éxito",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"Workshop de React\",\n  \"descripcion\": \"Desarrollo de interfaces modernas\",\n  \"fechaInicio\": \"2025-10-10T14:00:00Z\",\n  \"duracion\": { \"horas\": 3, \"minutos\": 30 },\n  \"ubicacion\": { \"direccion\": \"Córdoba 1234\", \"lat\": -34.6037, \"lng\": -58.3816 },\n  \"cupoMaximo\": 80,\n  \"cupoMinimo\": 10,\n  \"precio\": 800,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reemplazar evento - estado inválido",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"Workshop de React\",\n  \"descripcion\": \"Desarrollo de interfaces modernas\",\n  \"fechaInicio\": \"2025-10-10T14:00:00Z\",\n  \"duracion\": { \"horas\": 3, \"minutos\": 30 },\n  \"ubicacion\": { \"direccion\": \"Córdoba 1234\", \"lat\": -34.6037, \"lng\": -58.3816 },\n  \"cupoMaximo\": 80,\n  \"cupoMinimo\": 10,\n  \"precio\": 800,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"INVALIDO\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reemplazar evento - organizador invalido",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Reemplazar evento - ID invalido",
-							"request": {
-								"method": "PUT",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Actualizar Evento",
-					"item": [
-						{
-							"name": "Actualizar evento - éxito",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"ubicacion\": { \"direccion\": \"Nueva sede, Piso 2\", \"lat\": -34.6000, \"lng\": -58.3800 },\n  \"estado\": \"CANCELADO\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar evento - body vacío",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar evento - categoria inválida",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"categoriaId\": \"{{categoriaIdInvalido}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoId}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Eliminar Evento",
-					"item": [
-						{
-							"name": "Eliminar evento - éxito",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{EventoId1}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{EventoId1}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Eliminar evento - ID invalido",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"eventos",
-										"{{eventoIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "Categoría",
-			"item": [
-				{
-					"name": "Crear categoría",
-					"item": [
-						{
-							"name": "Crear categoría - éxito",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Conferencias\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear categoría - nombre repetido",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear categoría - nombre vacío",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"\"\r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear categoría - sin nombre",
-							"request": {
-								"method": "POST",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n    \r\n}",
-									"options": {
-										"raw": {
-											"language": "json"
-										}
-									}
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Obtener Categoría",
-					"item": [
-						{
-							"name": "Listar categorías",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener categoría por ID - éxito",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias/{{categoriaId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias",
-										"{{categoriaId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener categoría por ID -  ID invalido",
-							"protocolProfileBehavior": {
-								"disableBodyPruning": true
-							},
-							"request": {
-								"method": "GET",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias/{{categoriaIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias",
-										"{{categoriaIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Eliminar Categoría",
-					"item": [
-						{
-							"name": "Obtener categoría por ID - éxito",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias/{{categoriaId1}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias",
-										"{{categoriaId1}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener categoría por ID - ID invalido",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"body": {
-									"mode": "raw",
-									"raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/categorias/{{categoriaIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"categorias",
-										"{{categoriaIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "Inscripcion",
-			"item": [
-				{
-					"name": "Crear Inscripcion",
-					"item": [
-						{
-							"name": "Crear inscripción - éxito",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"WAITLIST\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear inscripción - usuario inexistente",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"usuarioId\": \"{{usuarioIdInvalido}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear inscripción - evento inexistente",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoIdInvalido}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear inscripción - estado inválido",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"NOEXISTE\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear inscripción - falta usuarioId",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear inscripción - falta eventoId",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Crear inscripción - falta estado",
-							"request": {
-								"method": "POST",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Obtener Inscripcion",
-					"item": [
-						{
-							"name": "Listar inscripciones",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/inscripciones",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener inscripción por ID - éxito",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones",
-										"{{inscripcionId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Obtener inscripción por ID - ID inválido",
-							"request": {
-								"method": "GET",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/inscripciones/{{inscripcionIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones",
-										"{{inscripcionIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Actualizar Inscripcion",
-					"item": [
-						{
-							"name": "Actualizar inscripción - éxito",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"estado\": \"WAITLIST\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones",
-										"{{inscripcionId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar inscripción - estado inválido",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{\n  \"estado\": \"NOEXISTE\"\n}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones",
-										"{{inscripcionId}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Actualizar inscripción - body vacío",
-							"request": {
-								"method": "PATCH",
-								"header": [
-									{
-										"key": "Content-Type",
-										"value": "application/json"
-									}
-								],
-								"body": {
-									"mode": "raw",
-									"raw": "{}"
-								},
-								"url": {
-									"raw": "{{baseURL}}/inscripciones/{{inscripcionId}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones",
-										"{{inscripcionId}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				},
-				{
-					"name": "Eliminar Inscripcion",
-					"item": [
-						{
-							"name": "Eliminar inscripción - éxito",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/inscripciones/{{inscripcionId1}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones",
-										"{{inscripcionId1}}"
-									]
-								}
-							},
-							"response": []
-						},
-						{
-							"name": "Eliminar inscripción - ID inválido",
-							"request": {
-								"method": "DELETE",
-								"header": [],
-								"url": {
-									"raw": "{{baseURL}}/inscripciones/{{inscripcionIdInvalido}}",
-									"host": [
-										"{{baseURL}}"
-									],
-									"path": [
-										"inscripciones",
-										"{{inscripcionIdInvalido}}"
-									]
-								}
-							},
-							"response": []
-						}
-					]
-				}
-			]
-		},
-		{
-			"name": "HealthCheck",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
-			"request": {
-				"method": "GET",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
-				},
-				"url": {
-					"raw": "{{baseURL}}/health",
-					"host": [
-						"{{baseURL}}"
-					],
-					"path": [
-						"health"
-					]
-				}
-			},
-			"response": []
-		}
-	],
-	"event": [
-		{
-			"listen": "prerequest",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		},
-		{
-			"listen": "test",
-			"script": {
-				"type": "text/javascript",
-				"packages": {},
-				"exec": [
-					""
-				]
-			}
-		}
-	],
-	"variable": [
-		{
-			"key": "baseURL",
-			"value": ""
-		},
-		{
-			"key": "usuarioId",
-			"value": ""
-		},
-		{
-			"key": "usuarioId1",
-			"value": ""
-		},
-		{
-			"key": "usuarioIdInvalido",
-			"value": ""
-		},
-		{
-			"key": "categoriaId",
-			"value": ""
-		},
-		{
-			"key": "categoriaId1",
-			"value": ""
-		},
-		{
-			"key": "categoriaIdInvalido",
-			"value": ""
-		},
-		{
-			"key": "eventoId",
-			"value": ""
-		},
-		{
-			"key": "EventoId1",
-			"value": ""
-		},
-		{
-			"key": "eventoIdInvalido",
-			"value": ""
-		},
-		{
-			"key": "inscripcionId",
-			"value": "",
-			"type": "default"
-		},
-		{
-			"key": "inscripcionIdInvalido",
-			"value": "",
-			"type": "default"
-		},
-		{
-			"key": "inscripcionId1",
-			"value": "",
-			"type": "default"
-		}
-	]
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [""],
+        "packages": {},
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [""],
+        "packages": {},
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "info": {
+    "_exporter_id": "43690168",
+    "_postman_id": "a9984014-7720-4c1f-8336-b7152c432e93",
+    "description": "Colección completa para probar el CRUD de usuarios, con casos de éxito y error.",
+    "name": "TP-TACS-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "item": [
+        {
+          "item": [
+            {
+              "name": "Crear usuario - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios"],
+                  "raw": "{{baseURL}}/usuarios"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear usuario - email inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Ana\",\n  \"email\": \"no-es-un-email\",\n  \"rol\": \"ADMIN\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios"],
+                  "raw": "{{baseURL}}/usuarios"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear usuario - rol inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Pedro\",\n  \"email\": \"pedro@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios"],
+                  "raw": "{{baseURL}}/usuarios"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear usuario - email repetido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Juan Pérez\",\n  \"email\": \"juan.perez@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios"],
+                  "raw": "{{baseURL}}/usuarios"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear usuario - nombre vacío",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"\",\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios"],
+                  "raw": "{{baseURL}}/usuarios"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear usuario - sin nombre",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"vacio@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios"],
+                  "raw": "{{baseURL}}/usuarios"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Crear Usuario"
+        },
+        {
+          "item": [
+            {
+              "name": "Listar usuarios",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  },
+                  "raw": ""
+                },
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios"],
+                  "raw": "{{baseURL}}/usuarios"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener usuario por ID - éxito",
+              "request": {
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener usuario por ID - ID invalido",
+              "request": {
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioIdInvalido}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Obtener Usuario"
+        },
+        {
+          "item": [
+            {
+              "name": "Reemplazar usuario - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reemplazar usuario - rol inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"NOEXISTE\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reemplazar usuario - email inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reemplazar usuario - ID invalido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"carlos@example.com\",\n  \"rol\": \"ADMIN\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioIdInvalido}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Reemplazar Usuario"
+        },
+        {
+          "item": [
+            {
+              "name": "Actualizar usuario - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"nuevo.eemail@example.com\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Actualizar usuario - body vacío",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Actualizar usuario - email inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"no-es-email\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Actualizar usuario - ID invalido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"nuevo.emaill@example.com\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioIdInvalido}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Actualizar Usuario"
+        },
+        {
+          "item": [
+            {
+              "name": "Eliminar usuario - éxito",
+              "request": {
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioId1}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioId1}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Eliminar usuario - ID invalido",
+              "request": {
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["usuarios", "{{usuarioIdInvalido}}"],
+                  "raw": "{{baseURL}}/usuarios/{{usuarioIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Eliminar Usuario"
+        }
+      ],
+      "name": "Usuario"
+    },
+    {
+      "item": [
+        {
+          "item": [
+            {
+              "name": "Crear evento - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"Seminario de Cloud Computing\",\n  \"descripcion\": \"Todo sobre servicios en la nube\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 4, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 200,\n  \"precio\": 1500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"PENDIENTE\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos"],
+                  "raw": "{{baseURL}}/eventos"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear evento - datos inválidos",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"\",\n  \"descripcion\": \"\",\n  \"fechaInicio\": \"fecha-invalida\",\n  \"duracion\": { \"horas\": -1, \"minutos\": 70 },\n  \"ubicacion\": { \"direccion\": \"\", \"lat\": \"no-numero\", \"lng\": null },\n  \"cupoMaximo\": 0,\n  \"precio\": -100,\n  \"categoriaId\": \"\",\n  \"estado\": \"NO_EXISTE\",\n  \"organizadorId\": \"\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos"],
+                  "raw": "{{baseURL}}/eventos"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear evento - categoria invalida",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"Evento con categoría inválida\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaIdInvalido}}\",\n  \"estado\": \"PENDIENTE\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos"],
+                  "raw": "{{baseURL}}/eventos"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear evento - organizador invalido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos"],
+                  "raw": "{{baseURL}}/eventos"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Crear Evento"
+        },
+        {
+          "item": [
+            {
+              "name": "Listar eventos",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": ""
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos"],
+                  "raw": "{{baseURL}}/eventos"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener evento por ID - éxito",
+              "request": {
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoId}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener evento por ID - ID invalido",
+              "request": {
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoIdInvalido}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Obtener Evento"
+        },
+        {
+          "item": [
+            {
+              "name": "Reemplazar evento - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"Workshop de React\",\n  \"descripcion\": \"Desarrollo de interfaces modernas\",\n  \"fechaInicio\": \"2025-10-10T14:00:00Z\",\n  \"duracion\": { \"horas\": 3, \"minutos\": 30 },\n  \"ubicacion\": { \"direccion\": \"Córdoba 1234\", \"lat\": -34.6037, \"lng\": -58.3816 },\n  \"cupoMaximo\": 80,\n  \"cupoMinimo\": 10,\n  \"precio\": 800,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoId}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reemplazar evento - estado inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"Workshop de React\",\n  \"descripcion\": \"Desarrollo de interfaces modernas\",\n  \"fechaInicio\": \"2025-10-10T14:00:00Z\",\n  \"duracion\": { \"horas\": 3, \"minutos\": 30 },\n  \"ubicacion\": { \"direccion\": \"Córdoba 1234\", \"lat\": -34.6037, \"lng\": -58.3816 },\n  \"cupoMaximo\": 80,\n  \"cupoMinimo\": 10,\n  \"precio\": 800,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"INVALIDO\",\n  \"organizadorId\": \"{{usuarioId}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoId}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reemplazar evento - organizador invalido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoId}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Reemplazar evento - ID invalido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"titulo\": \"Evento con organizador inválido\",\n  \"descripcion\": \"Prueba de error\",\n  \"fechaInicio\": \"2025-09-25T09:00:00Z\",\n  \"duracion\": { \"horas\": 2, \"minutos\": 0 },\n  \"ubicacion\": { \"direccion\": \"Av. Las Heras 2500\", \"lat\": -34.5895, \"lng\": -58.3973 },\n  \"cupoMaximo\": 50,\n  \"precio\": 500,\n  \"categoriaId\": \"{{categoriaId}}\",\n  \"estado\": \"EN_PROCESO\",\n  \"organizadorId\": \"{{usuarioIdInvalido}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PUT",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoIdInvalido}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Reemplazar Evento"
+        },
+        {
+          "item": [
+            {
+              "name": "Actualizar evento - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"ubicacion\": { \"direccion\": \"Nueva sede, Piso 2\", \"lat\": -34.6000, \"lng\": -58.3800 },\n  \"estado\": \"CANCELADO\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoId}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Actualizar evento - body vacío",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoId}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Actualizar evento - categoria inválida",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"categoriaId\": \"{{categoriaIdInvalido}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoId}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoId}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Actualizar Evento"
+        },
+        {
+          "item": [
+            {
+              "name": "Eliminar evento - éxito",
+              "request": {
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{EventoId1}}"],
+                  "raw": "{{baseURL}}/eventos/{{EventoId1}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Eliminar evento - ID invalido",
+              "request": {
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["eventos", "{{eventoIdInvalido}}"],
+                  "raw": "{{baseURL}}/eventos/{{eventoIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Eliminar Evento"
+        }
+      ],
+      "name": "Evento"
+    },
+    {
+      "item": [
+        {
+          "item": [
+            {
+              "name": "Crear categoría - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  },
+                  "raw": "{\r\n  \"nombre\": \"Conferencias\"\r\n}"
+                },
+                "header": [],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias"],
+                  "raw": "{{baseURL}}/categorias"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear categoría - nombre repetido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  },
+                  "raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+                },
+                "header": [],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias"],
+                  "raw": "{{baseURL}}/categorias"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear categoría - nombre vacío",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  },
+                  "raw": "{\r\n  \"nombre\": \"\"\r\n}"
+                },
+                "header": [],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias"],
+                  "raw": "{{baseURL}}/categorias"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear categoría - sin nombre",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  },
+                  "raw": "{\r\n    \r\n}"
+                },
+                "header": [],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias"],
+                  "raw": "{{baseURL}}/categorias"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Crear categoría"
+        },
+        {
+          "item": [
+            {
+              "name": "Listar categorías",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+                },
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias"],
+                  "raw": "{{baseURL}}/categorias"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener categoría por ID - éxito",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+                },
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias", "{{categoriaId}}"],
+                  "raw": "{{baseURL}}/categorias/{{categoriaId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener categoría por ID -  ID invalido",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+                },
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias", "{{categoriaIdInvalido}}"],
+                  "raw": "{{baseURL}}/categorias/{{categoriaIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Obtener Categoría"
+        },
+        {
+          "item": [
+            {
+              "name": "Obtener categoría por ID - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+                },
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias", "{{categoriaId1}}"],
+                  "raw": "{{baseURL}}/categorias/{{categoriaId1}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener categoría por ID - ID invalido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\r\n  \"nombre\": \"Conferencia\"\r\n}"
+                },
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["categorias", "{{categoriaIdInvalido}}"],
+                  "raw": "{{baseURL}}/categorias/{{categoriaIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Eliminar Categoría"
+        }
+      ],
+      "name": "Categoría"
+    },
+    {
+      "item": [
+        {
+          "item": [
+            {
+              "name": "Crear inscripción - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"WAITLIST\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear inscripción - usuario inexistente",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioId\": \"{{usuarioIdInvalido}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear inscripción - evento inexistente",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoIdInvalido}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear inscripción - estado inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"NOEXISTE\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear inscripción - falta usuarioId",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"eventoId\": \"{{eventoId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear inscripción - falta eventoId",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"estado\": \"CONFIRMADO\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Crear inscripción - falta estado",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"usuarioId\": \"{{usuarioId}}\",\n  \"eventoId\": \"{{eventoId}}\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Crear Inscripcion"
+        },
+        {
+          "item": [
+            {
+              "name": "Listar inscripciones",
+              "request": {
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones"],
+                  "raw": "{{baseURL}}/inscripciones"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener inscripción por ID - éxito",
+              "request": {
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones", "{{inscripcionId}}"],
+                  "raw": "{{baseURL}}/inscripciones/{{inscripcionId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Obtener inscripción por ID - ID inválido",
+              "request": {
+                "header": [],
+                "method": "GET",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones", "{{inscripcionIdInvalido}}"],
+                  "raw": "{{baseURL}}/inscripciones/{{inscripcionIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Obtener Inscripcion"
+        },
+        {
+          "item": [
+            {
+              "name": "Actualizar inscripción - éxito",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado\": \"WAITLIST\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones", "{{inscripcionId}}"],
+                  "raw": "{{baseURL}}/inscripciones/{{inscripcionId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Actualizar inscripción - estado inválido",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"estado\": \"NOEXISTE\"\n}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones", "{{inscripcionId}}"],
+                  "raw": "{{baseURL}}/inscripciones/{{inscripcionId}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Actualizar inscripción - body vacío",
+              "request": {
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}"
+                },
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "PATCH",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones", "{{inscripcionId}}"],
+                  "raw": "{{baseURL}}/inscripciones/{{inscripcionId}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Actualizar Inscripcion"
+        },
+        {
+          "item": [
+            {
+              "name": "Eliminar inscripción - éxito",
+              "request": {
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones", "{{inscripcionId1}}"],
+                  "raw": "{{baseURL}}/inscripciones/{{inscripcionId1}}"
+                }
+              },
+              "response": []
+            },
+            {
+              "name": "Eliminar inscripción - ID inválido",
+              "request": {
+                "header": [],
+                "method": "DELETE",
+                "url": {
+                  "host": ["{{baseURL}}"],
+                  "path": ["inscripciones", "{{inscripcionIdInvalido}}"],
+                  "raw": "{{baseURL}}/inscripciones/{{inscripcionIdInvalido}}"
+                }
+              },
+              "response": []
+            }
+          ],
+          "name": "Eliminar Inscripcion"
+        }
+      ],
+      "name": "Inscripcion"
+    },
+    {
+      "name": "HealthCheck",
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"nombre\": \"Carlos\",\n  \"email\": \"no-es-email\",\n  \"rol\": \"INVITADO\"\n}"
+        },
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "method": "GET",
+        "url": {
+          "host": ["{{baseURL}}"],
+          "path": ["health"],
+          "raw": "{{baseURL}}/health"
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseURL",
+      "value": ""
+    },
+    {
+      "key": "usuarioId",
+      "value": ""
+    },
+    {
+      "key": "usuarioId1",
+      "value": ""
+    },
+    {
+      "key": "usuarioIdInvalido",
+      "value": ""
+    },
+    {
+      "key": "categoriaId",
+      "value": ""
+    },
+    {
+      "key": "categoriaId1",
+      "value": ""
+    },
+    {
+      "key": "categoriaIdInvalido",
+      "value": ""
+    },
+    {
+      "key": "eventoId",
+      "value": ""
+    },
+    {
+      "key": "EventoId1",
+      "value": ""
+    },
+    {
+      "key": "eventoIdInvalido",
+      "value": ""
+    },
+    {
+      "key": "inscripcionId",
+      "type": "default",
+      "value": ""
+    },
+    {
+      "key": "inscripcionIdInvalido",
+      "type": "default",
+      "value": ""
+    },
+    {
+      "key": "inscripcionId1",
+      "type": "default",
+      "value": ""
+    }
+  ]
 }
