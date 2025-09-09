@@ -45,18 +45,19 @@ export const UsuariosRouter = (app: Elysia) => {
 
   app.get(
     `${RUTA_USUARIOS}/:id/events`,
-    async ({
-      params,
-      set,
-    }: {
-      params: { id: string };
-      set: { status: number };
-    }) =>
+    async ({ params, set }) =>
       handleRoute(async () => {
         const eventos = await UsuariosController.findEventsByUserId(params.id);
         set.status = 200;
         return eventos;
       }),
+    {
+      params: TypeBoxFromZod(
+        z.object({
+          id: z.string(),
+        }),
+      ),
+    },
   );
 
   app.post(

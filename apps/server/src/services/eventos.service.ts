@@ -48,12 +48,12 @@ export const EventosService = {
     }
   },
   async findAll() {
-    const eventos: Evento[] = await EventosRepository.findAll();
+    const eventos = await EventosRepository.findAll();
     return eventos;
   },
 
   async findById(id: string) {
-    const evento: Evento | null = await EventosRepository.findById(id);
+    const evento = await EventosRepository.findById(id);
     if (!evento) {
       throw new NotFoundError("Evento no encontrado");
     }
@@ -193,9 +193,6 @@ export const EventosService = {
         await InscripcionesRepository.findFirstInWaitlist(eventId);
       if (nextInWaitlist) {
         await InscripcionesRepository.promoteFromWaitlist(nextInWaitlist.id);
-        console.log(
-          `[v0] Usuario ${nextInWaitlist.usuarioId} promovido desde waitlist para evento ${eventId}`,
-        );
       }
     }
 

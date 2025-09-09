@@ -39,14 +39,12 @@ export const InscripcionesService = {
     }
   },
   async findAll() {
-    const inscripciones: Inscripcion[] =
-      await InscripcionesRepository.findAll();
+    const inscripciones = await InscripcionesRepository.findAll();
     return inscripciones;
   },
 
   async findById(id: string) {
-    const inscripcion: Inscripcion | null =
-      await InscripcionesRepository.findById(id);
+    const inscripcion = await InscripcionesRepository.findById(id);
     if (!inscripcion) {
       throw new NotFoundError("Inscripción no encontrada");
     }
