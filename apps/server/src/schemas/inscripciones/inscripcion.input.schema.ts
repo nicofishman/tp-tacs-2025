@@ -8,27 +8,23 @@ export const CreateInscripcionSchema = z.object({
       ...EstadoInscripcion[],
     ],
     {
-      message: "Estado inválido",
+      error: "Estado inválido",
     },
   ),
   eventoId: z.string({
-    invalid_type_error: "El ID de evento debe ser un string",
-    required_error: "El ID de evento es requerido",
+    error: "El ID de evento debe ser un string",
   }),
-  fechaRegistro: z
-    .string({
-      invalid_type_error: "La fecha de registro debe ser un string",
-      required_error: "La fecha de registro es requerida",
+  fechaRegistro: z.iso
+    .date({
+      error: "La fecha de registro debe ser un string",
     })
-    .datetime({ message: "Fecha de registro inválida" })
     .default(() => {
       const now = new Date();
       now.setHours(now.getHours() - 3);
       return now.toISOString();
     }),
   usuarioId: z.string({
-    invalid_type_error: "El ID de usuario debe ser un string",
-    required_error: "El ID de usuario es requerido",
+    error: "El ID de usuario debe ser un string",
   }),
 });
 
@@ -42,21 +38,19 @@ export const UpdateInscripcionSchema = z.object({
         ...EstadoInscripcion[],
       ],
       {
-        message: "Estado inválido",
+        error: "Estado inválido",
       },
     )
     .optional(),
-  fechaRegistro: z
-    .string({
-      invalid_type_error: "La fecha de registro debe ser un string",
+  fechaRegistro: z.iso
+    .date({
+      error: "La fecha de registro debe ser un date",
     })
-    .datetime({ message: "Fecha de registro inválida" })
     .optional(),
 });
 
 export type UpdateInscripcionDto = z.infer<typeof UpdateInscripcionSchema>;
 
 export const IdSchema = z.string({
-  invalid_type_error: "El ID de inscripción debe ser un texto",
-  required_error: "El ID de inscripción es requerido",
+  error: "El ID de inscripción debe ser un string",
 });

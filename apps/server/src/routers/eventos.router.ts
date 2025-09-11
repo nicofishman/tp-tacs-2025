@@ -1,4 +1,3 @@
-import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
@@ -36,22 +35,20 @@ export const EventosRouter = (app: Elysia) =>
             return result;
           }),
         {
-          query: TypeBoxFromZod(
-            z.object({
-              categoriaId: z.optional(z.string()),
-              dateFrom: z.optional(z.string()),
-              dateTo: z.optional(z.string()),
-              limit: z.optional(z.number()),
-              order: z.optional(z.union([z.literal("asc"), z.literal("desc")])),
-              orderBy: z.optional(
-                z.union([z.literal("fechaInicio"), z.literal("precio")]),
-              ),
-              page: z.optional(z.number()),
-              priceMax: z.optional(z.number()),
-              priceMin: z.optional(z.number()),
-              q: z.optional(z.string()),
-            }),
-          ),
+          query: z.object({
+            categoriaId: z.optional(z.string()),
+            dateFrom: z.optional(z.string()),
+            dateTo: z.optional(z.string()),
+            limit: z.optional(z.number()),
+            order: z.optional(z.union([z.literal("asc"), z.literal("desc")])),
+            orderBy: z.optional(
+              z.union([z.literal("fechaInicio"), z.literal("precio")]),
+            ),
+            page: z.optional(z.number()),
+            priceMax: z.optional(z.number()),
+            priceMin: z.optional(z.number()),
+            q: z.optional(z.string()),
+          }),
         },
       )
       .post(
@@ -66,33 +63,28 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
-          query: TypeBoxFromZod(
-            z.object({
-              user_id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string(),
+          }),
+          query: z.object({
+            user_id: z.string(),
+          }),
         },
       )
       .get(
         "/:id/participants",
-        async ({
-          params,
-          set,
-        }: {
-          params: { id: string };
-          set: { status: number };
-        }) =>
+        async ({ params, set }) =>
           handleRoute(async () => {
             const participantes =
               await EventosController.findParticipantsByEvent(params.id);
             set.status = 200;
             return participantes;
           }),
+        {
+          params: z.object({
+            id: z.string(),
+          }),
+        },
       )
       .get(
         "/:id",
@@ -103,11 +95,9 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .post(
@@ -119,7 +109,7 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          body: TypeBoxFromZod(CreateEventoSchema),
+          body: CreateEventoSchema,
         },
       )
       .put(
@@ -131,12 +121,10 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          body: TypeBoxFromZod(ReplaceEventoSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: ReplaceEventoSchema,
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .patch(
@@ -148,12 +136,10 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          body: TypeBoxFromZod(UpdateEventoSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: UpdateEventoSchema,
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .delete(
@@ -165,22 +151,14 @@ export const EventosRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .patch(
         "/:id/register/:userid",
-        async ({
-          params,
-          set,
-        }: {
-          params: { id: string; userid: string };
-          set: { status: number };
-        }) =>
+        async ({ params, set }) =>
           handleRoute(async () => {
             await EventosController.unregisterFromEvent(
               params.id,
@@ -189,5 +167,11 @@ export const EventosRouter = (app: Elysia) =>
             set.status = 204;
             return null;
           }),
+        {
+          params: z.object({
+            id: z.string(),
+            userid: z.string(),
+          }),
+        },
       ),
   );

@@ -4,15 +4,13 @@ import { z } from "zod";
 export const DuracionSchema = z.object({
   horas: z
     .number({
-      invalid_type_error: "Las horas deben ser un número",
-      required_error: "Las horas son requeridas",
+      error: "Las horas son requeridas",
     })
     .int()
     .min(0, "Las horas deben ser >= 0"),
   minutos: z
     .number({
-      invalid_type_error: "Los minutos deben ser un número",
-      required_error: "Los minutos son requeridos",
+      error: "Los minutos son requeridos",
     })
     .int()
     .min(0, "Los minutos deben ser >= 0")
@@ -22,77 +20,67 @@ export const DuracionSchema = z.object({
 export const UbicacionSchema = z.object({
   direccion: z
     .string({
-      invalid_type_error: "La dirección debe ser un texto",
-      required_error: "La dirección es requerida",
+      error: "La dirección es requerida",
     })
     .min(1, "La dirección no puede estar vacía"),
   lat: z.number({
-    invalid_type_error: "La latitud debe ser un número",
-    required_error: "La latitud es requerida",
+    error: "La latitud es requerida",
   }),
   lng: z.number({
-    invalid_type_error: "La longitud debe ser un número",
-    required_error: "La longitud es requerida",
+    error: "La longitud es requerida",
   }),
 });
 
 export const CreateEventoSchema = z.object({
   categoriaId: z
     .string({
-      invalid_type_error: "La categoría debe ser un texto",
-      required_error: "La categoría es requerida",
+      error: "La categoría es requerida",
     })
     .min(1, "La categoría no puede estar vacía"),
   cupoMaximo: z
     .number({
-      invalid_type_error: "El cupo máximo debe ser un número",
-      required_error: "El cupo máximo es requerido",
+      error: "El cupo máximo es requerido",
     })
     .int()
     .min(1, "Cupo máximo debe ser >= 1"),
   cupoMinimo: z
     .number({
-      invalid_type_error: "El cupo mínimo debe ser un número",
+      error: "El cupo mínimo es requerido",
     })
     .int()
     .min(0, "Cupo mínimo debe ser >= 0")
     .default(0),
   descripcion: z
     .string({
-      invalid_type_error: "La descripción debe ser un texto",
-      required_error: "La descripción es requerida",
+      error: "La descripción es requerida",
     })
     .min(1, "La descripción no puede estar vacía"),
   duracion: DuracionSchema,
   estado: z
     .enum(Object.values(EstadoEvento) as [EstadoEvento, ...EstadoEvento[]], {
-      invalid_type_error: "El estado debe ser uno de los valores válidos",
+      error: "El estado es requerido",
     })
     .default(EstadoEvento.PENDIENTE),
   fechaInicio: z
     .string({
-      invalid_type_error: "La fecha de inicio debe ser un texto",
-      required_error: "La fecha de inicio es requerida",
+      error: "La fecha de inicio es requerida",
     })
     .refine((val) => !Number.isNaN(Date.parse(val)), {
       message: "Fecha inválida, debe ser formato ISO",
     }),
   organizadorId: z
     .string({
-      invalid_type_error: "El organizador debe ser un texto",
-      required_error: "El organizador es requerido",
+      error: "El organizador es requerido",
     })
     .min(1, "El organizador no puede estar vacío"),
   precio: z
     .number({
-      invalid_type_error: "El precio debe ser un número",
-      required_error: "El precio es requerido",
+      error: "El precio es requerido",
     })
     .min(0, "El precio debe ser >= 0"),
   titulo: z
     .string({
-      invalid_type_error: "El título debe ser un texto",
-      required_error: "El título es requerido",
+      error: "El título es requerido",
     })
     .min(1, "El título no puede estar vacío"),
   ubicacion: UbicacionSchema,
@@ -118,7 +106,7 @@ export const UpdateEventoSchema = z.object({
   duracion: DuracionSchema.optional(),
   estado: z
     .enum(Object.values(EstadoEvento) as [EstadoEvento, ...EstadoEvento[]], {
-      invalid_type_error: "El estado debe ser uno de los valores válidos",
+      error: "El estado es requerido",
     })
     .optional(),
   fechaInicio: z
@@ -153,6 +141,5 @@ export const FindEventosQuerySchema = z.object({
 export type FindEventosQuery = z.infer<typeof FindEventosQuerySchema>;
 
 export const IdSchema = z.string({
-  invalid_type_error: "El ID de categoría debe ser un texto",
-  required_error: "El ID de categoría es requerido",
+  error: "El ID de categoría es requerido",
 });

@@ -1,4 +1,3 @@
-import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
@@ -7,6 +6,7 @@ import {
   ReplaceUsuarioSchema,
   UpdateUsuarioSchema,
 } from "@/schemas/usuarios/usuario.input.schema";
+import { UsuarioOutputSchema } from "@/schemas/usuarios/usuario.output.schema";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -20,12 +20,19 @@ const RUTA_USUARIOS = "/usuarios";
 export const UsuariosRouter = (app: Elysia) =>
   app.group(RUTA_USUARIOS, (app) =>
     app
-      .get("/", async ({ set }) =>
-        handleRoute(async () => {
-          const usuarios = await UsuariosController.findAll();
-          set.status = 200;
-          return usuarios;
-        }),
+      .get(
+        "/",
+        async ({ set }) =>
+          handleRoute(async () => {
+            const usuarios = await UsuariosController.findAll();
+            set.status = 200;
+            return usuarios;
+          }),
+        {
+          response: {
+            200: z.array(UsuarioOutputSchema),
+          },
+        },
       )
       .get(
         "/:id",
@@ -36,11 +43,12 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().describe("El ID del usuario"),
+          }),
+          response: {
+            200: UsuarioOutputSchema,
+          },
         },
       )
       .get(
@@ -54,11 +62,9 @@ export const UsuariosRouter = (app: Elysia) =>
             return eventos;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .post(
@@ -70,7 +76,7 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: TypeBoxFromZod(CreateUsuarioSchema),
+          body: CreateUsuarioSchema,
         },
       )
       .post(
@@ -82,7 +88,7 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: TypeBoxFromZod(RegisterUsuarioSchema),
+          body: RegisterUsuarioSchema,
         },
       )
       .put(
@@ -94,12 +100,10 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: TypeBoxFromZod(ReplaceUsuarioSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: ReplaceUsuarioSchema,
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .patch(
@@ -111,12 +115,10 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: TypeBoxFromZod(UpdateUsuarioSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: UpdateUsuarioSchema,
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .delete(
@@ -128,11 +130,9 @@ export const UsuariosRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .delete(
@@ -144,11 +144,9 @@ export const UsuariosRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              email: z.string().email(),
-            }),
-          ),
+          params: z.object({
+            email: z.email(),
+          }),
         },
       ),
   );

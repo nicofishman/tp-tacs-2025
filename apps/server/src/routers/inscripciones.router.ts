@@ -1,4 +1,3 @@
-import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
@@ -31,11 +30,9 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .post(
@@ -47,7 +44,7 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          body: TypeBoxFromZod(CreateInscripcionSchema),
+          body: CreateInscripcionSchema,
         },
       )
       .patch(
@@ -62,12 +59,10 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          body: TypeBoxFromZod(UpdateInscripcionSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: UpdateInscripcionSchema,
+          params: z.object({
+            id: z.string(),
+          }),
         },
       )
       .delete(
@@ -79,11 +74,9 @@ export const InscripcionesRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string(),
+          }),
         },
       ),
   );
