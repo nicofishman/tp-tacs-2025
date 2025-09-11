@@ -44,7 +44,14 @@ export const InscripcionesService = {
   },
   async findAll() {
     const inscripciones = await InscripcionesRepository.findAll();
-    return inscripciones;
+    return inscripciones.map((inscripcion) => ({
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    }));
   },
 
   async findById(id: string) {
@@ -52,7 +59,14 @@ export const InscripcionesService = {
     if (!inscripcion) {
       throw new NotFoundError("Inscripción no encontrada");
     }
-    return inscripcion;
+    return {
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    };
   },
 
   async update(id: string, data: UpdateInscripcionDto) {
@@ -75,6 +89,16 @@ export const InscripcionesService = {
       id,
       inscripcionParaActualizar,
     );
-    return inscripcion;
+    if (!inscripcion) {
+      throw new NotFoundError("Inscripción no encontrada");
+    }
+    return {
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    };
   },
 };

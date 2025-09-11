@@ -4,6 +4,7 @@ import {
   CreateInscripcionSchema,
   UpdateInscripcionSchema,
 } from "@/schemas/inscripciones/inscripcion.input.schema";
+import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -12,12 +13,19 @@ const RUTA_INSCRIPCIONES = "/inscripciones";
 export const InscripcionesRouter = (app: Elysia) =>
   app.group(RUTA_INSCRIPCIONES, { tags: ["Inscripciones"] }, (app) =>
     app
-      .get("/", async ({ set }) =>
-        handleRoute(async () => {
-          const inscripciones = await InscripcionesController.findAll();
-          set.status = 200;
-          return inscripciones;
-        }),
+      .get(
+        "/",
+        async ({ set }) =>
+          handleRoute(async () => {
+            const inscripciones = await InscripcionesController.findAll();
+            set.status = 200;
+            return inscripciones;
+          }),
+        {
+          response: {
+            200: z.array(InscripcionOutputSchema),
+          },
+        },
       )
       .get(
         "/:id",
@@ -31,8 +39,11 @@ export const InscripcionesRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID de la inscripción"),
           }),
+          response: {
+            200: InscripcionOutputSchema,
+          },
         },
       )
       .post(
@@ -45,6 +56,9 @@ export const InscripcionesRouter = (app: Elysia) =>
           }),
         {
           body: CreateInscripcionSchema,
+          response: {
+            201: InscripcionOutputSchema,
+          },
         },
       )
       .patch(
@@ -61,8 +75,11 @@ export const InscripcionesRouter = (app: Elysia) =>
         {
           body: UpdateInscripcionSchema,
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID de la inscripción"),
           }),
+          response: {
+            200: InscripcionOutputSchema,
+          },
         },
       )
       .delete(
@@ -75,8 +92,11 @@ export const InscripcionesRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID de la inscripción"),
           }),
+          response: {
+            204: z.null(),
+          },
         },
       ),
   );
