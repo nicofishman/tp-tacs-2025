@@ -1,12 +1,16 @@
 import type { Elysia } from "elysia";
 import z from "zod";
+import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
 import {
   CreateUsuarioSchema,
   RegisterUsuarioSchema,
   ReplaceUsuarioSchema,
   UpdateUsuarioSchema,
 } from "@/schemas/usuarios/usuario.input.schema";
-import { UsuarioOutputSchema } from "@/schemas/usuarios/usuario.output.schema";
+import {
+  UsuarioOutputRegisterSchema,
+  UsuarioOutputSchema,
+} from "@/schemas/usuarios/usuario.output.schema";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -18,7 +22,7 @@ import { handleRoute } from "./handleRoute";
 const RUTA_USUARIOS = "/usuarios";
 
 export const UsuariosRouter = (app: Elysia) =>
-  app.group(RUTA_USUARIOS, (app) =>
+  app.group(RUTA_USUARIOS, { tags: ["Usuarios"] }, (app) =>
     app
       .get(
         "/",
@@ -63,8 +67,11 @@ export const UsuariosRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del usuario"),
           }),
+          response: {
+            200: z.array(InscripcionOutputSchema),
+          },
         },
       )
       .post(
@@ -77,6 +84,9 @@ export const UsuariosRouter = (app: Elysia) =>
           }),
         {
           body: CreateUsuarioSchema,
+          response: {
+            201: UsuarioOutputSchema,
+          },
         },
       )
       .post(
@@ -89,6 +99,9 @@ export const UsuariosRouter = (app: Elysia) =>
           }),
         {
           body: RegisterUsuarioSchema,
+          response: {
+            201: UsuarioOutputRegisterSchema,
+          },
         },
       )
       .put(
@@ -102,8 +115,11 @@ export const UsuariosRouter = (app: Elysia) =>
         {
           body: ReplaceUsuarioSchema,
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del usuario"),
           }),
+          response: {
+            200: UsuarioOutputSchema,
+          },
         },
       )
       .patch(
@@ -117,8 +133,11 @@ export const UsuariosRouter = (app: Elysia) =>
         {
           body: UpdateUsuarioSchema,
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del usuario"),
           }),
+          response: {
+            200: UsuarioOutputSchema,
+          },
         },
       )
       .delete(
@@ -131,8 +150,11 @@ export const UsuariosRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del usuario"),
           }),
+          response: {
+            204: z.null(),
+          },
         },
       )
       .delete(
@@ -145,8 +167,11 @@ export const UsuariosRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            email: z.email(),
+            email: z.email().describe("El email del usuario"),
           }),
+          response: {
+            204: z.null(),
+          },
         },
       ),
   );
