@@ -1,6 +1,7 @@
 import type { Elysia } from "elysia";
 import z from "zod";
 import { CreateCategoriaSchema } from "@/schemas/categorias/categoria.input.schema";
+import { CategoriaOutputSchema } from "@/schemas/categorias/categoria.output.schema";
 import { CategoriasController } from "../controllers/categorias.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -9,12 +10,19 @@ const RUTA_CATEGORIAS = "/categorias";
 export const CategoriasRouter = (app: Elysia) =>
   app.group(RUTA_CATEGORIAS, { tags: ["Categorias"] }, (app) =>
     app
-      .get("/", async ({ set }) =>
-        handleRoute(async () => {
-          const categorias = await CategoriasController.findAll();
-          set.status = 200;
-          return categorias;
-        }),
+      .get(
+        "/",
+        async ({ set }) =>
+          handleRoute(async () => {
+            const categorias = await CategoriasController.findAll();
+            set.status = 200;
+            return categorias;
+          }),
+        {
+          response: {
+            200: z.array(CategoriaOutputSchema),
+          },
+        },
       )
       .get(
         "/:id",
@@ -26,8 +34,11 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID de la categoría"),
           }),
+          response: {
+            200: CategoriaOutputSchema,
+          },
         },
       )
       .post(
@@ -40,6 +51,9 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           body: CreateCategoriaSchema,
+          response: {
+            201: CategoriaOutputSchema,
+          },
         },
       )
       .delete(
@@ -52,8 +66,11 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID de la categoría"),
           }),
+          response: {
+            204: z.null(),
+          },
         },
       )
       .delete(
@@ -66,8 +83,11 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            nombre: z.string(),
+            nombre: z.string().describe("El nombre de la categoría"),
           }),
+          response: {
+            204: z.null(),
+          },
         },
       ),
   );
