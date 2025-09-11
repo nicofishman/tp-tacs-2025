@@ -1,13 +1,15 @@
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { EventosRepository } from "@/repositories/eventos.repository";
-import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
+import {
+  InscripcionesRepository,
+  type InscripcionWithEventoAndUsuario,
+} from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
 import type {
   CreateInscripcionDto,
   UpdateInscripcionDto,
 } from "@/schemas/inscripciones/inscripcion.input.schema";
-import type { Inscripcion } from "@/types";
 
 export const InscripcionesService = {
   async create(data: CreateInscripcionDto) {
@@ -20,11 +22,13 @@ export const InscripcionesService = {
       throw new NotFoundError("Evento no encontrado");
     }
 
-    const inscripcionParaCrear: Omit<Inscripcion, "id"> = {
+    const inscripcionParaCrear: Omit<InscripcionWithEventoAndUsuario, "id"> = {
       estado: data.estado,
       evento,
-      fechaRegistro: data.fechaRegistro,
+      eventoId: evento.id,
+      fechaRegistro: new Date(data.fechaRegistro),
       usuario,
+      usuarioId: usuario.id,
     };
 
     const inscripcion =
@@ -63,7 +67,7 @@ export const InscripcionesService = {
       throw new NotFoundError("Inscripción no encontrada");
     }
 
-    const inscripcionParaActualizar: Inscripcion = {
+    const inscripcionParaActualizar: InscripcionWithEventoAndUsuario = {
       ...inscripcionExistente,
       estado: data.estado,
     };

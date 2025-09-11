@@ -16,11 +16,11 @@ export const UbicacionOutputSchema = z.object({
 export const EventoOutputSchema = z.object({
   categoria: CategoriaOutputSchema,
   cupoMaximo: z.number().int().min(1),
-  cupoMinimo: z.number().int().min(0).optional(),
+  cupoMinimo: z.number().int().min(0).nullable(),
   descripcion: z.string(),
   duracion: DuracionOutputSchema,
   estado: z.string(),
-  fechaInicio: z.string(),
+  fechaInicio: z.iso.datetime(),
   id: z.string(),
   organizador: UsuarioOutputSchema,
   precio: z.number().min(0),

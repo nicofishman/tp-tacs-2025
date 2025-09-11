@@ -72,7 +72,14 @@ export const UsuariosService = {
 
     const inscripciones = await InscripcionesRepository.findByUserId(id);
 
-    return inscripciones;
+    return inscripciones.map((inscripcion) => ({
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    }));
   },
 
   async register(data: RegisterUsuarioDto) {

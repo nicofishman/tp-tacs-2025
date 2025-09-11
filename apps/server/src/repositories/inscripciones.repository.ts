@@ -1,7 +1,13 @@
 import { EstadoInscripcion, type Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { Inscripcion } from "@/types";
 import { mapPrismaEventoToEvento } from "./eventos.repository";
+
+export type InscripcionWithEventoAndUsuario = Prisma.InscripcionGetPayload<{
+  include: {
+    usuario: true;
+    evento: { include: { categoria: true; organizador: true } };
+  };
+}>;
 
 function mapPrismaInscripcionToInscripcion(
   prismaInscripcion: Prisma.InscripcionGetPayload<{
@@ -10,17 +16,16 @@ function mapPrismaInscripcionToInscripcion(
       evento: { include: { categoria: true; organizador: true } };
     };
   }>,
-): Inscripcion {
+): InscripcionWithEventoAndUsuario {
   const evento = prismaInscripcion.evento;
   return {
     estado: prismaInscripcion.estado,
     evento: mapPrismaEventoToEvento(evento),
-    fechaRegistro:
-      prismaInscripcion.fechaRegistro instanceof Date
-        ? prismaInscripcion.fechaRegistro.toISOString()
-        : prismaInscripcion.fechaRegistro,
+    eventoId: prismaInscripcion.eventoId,
+    fechaRegistro: prismaInscripcion.fechaRegistro,
     id: prismaInscripcion.id,
     usuario: prismaInscripcion.usuario,
+    usuarioId: prismaInscripcion.usuarioId,
   };
 }
 
@@ -41,7 +46,9 @@ export const InscripcionesRepository = {
       return null;
     }
   },
-  async create(data: Omit<Inscripcion, "id">): Promise<Inscripcion | null> {
+  async create(
+    data: Omit<InscripcionWithEventoAndUsuario, "id">,
+  ): Promise<InscripcionWithEventoAndUsuario | null> {
     try {
       const prismaInscripcion = await prisma.inscripcion.create({
         data: {
@@ -67,7 +74,7 @@ export const InscripcionesRepository = {
     }
   },
 
-  async delete(id: string): Promise<Inscripcion | null> {
+  async delete(id: string): Promise<InscripcionWithEventoAndUsuario | null> {
     try {
       const prismaInscripcion = await prisma.inscripcion.delete({
         include: {
@@ -104,7 +111,7 @@ export const InscripcionesRepository = {
     }
   },
 
-  async findAll(): Promise<Inscripcion[]> {
+  async findAll(): Promise<InscripcionWithEventoAndUsuario[]> {
     try {
       const inscripciones = await prisma.inscripcion.findMany({
         include: {
@@ -124,7 +131,9 @@ export const InscripcionesRepository = {
     }
   },
 
-  async findByEventId(eventId: string): Promise<Inscripcion[]> {
+  async findByEventId(
+    eventId: string,
+  ): Promise<InscripcionWithEventoAndUsuario[]> {
     try {
       const inscripciones = await prisma.inscripcion.findMany({
         include: {
@@ -145,7 +154,7 @@ export const InscripcionesRepository = {
     }
   },
 
-  async findById(id: string): Promise<Inscripcion | null> {
+  async findById(id: string): Promise<InscripcionWithEventoAndUsuario | null> {
     try {
       const prismaInscripcion = await prisma.inscripcion.findUnique({
         include: {
@@ -168,7 +177,9 @@ export const InscripcionesRepository = {
     }
   },
 
-  async findByUserId(userId: string): Promise<Inscripcion[]> {
+  async findByUserId(
+    userId: string,
+  ): Promise<InscripcionWithEventoAndUsuario[]> {
     try {
       const inscripciones = await prisma.inscripcion.findMany({
         include: {
@@ -262,6 +273,15 @@ export const InscripcionesRepository = {
           eventoId: eventId,
           usuarioId: userId,
         },
+        include: {
+          evento: {
+            include: {
+              categoria: true,
+              organizador: true,
+            },
+          },
+          usuario: true,
+        },
       });
     } catch (error) {
       console.error("Error al registrar usuario en el evento:", error);
@@ -271,8 +291,8 @@ export const InscripcionesRepository = {
 
   async update(
     id: string,
-    data: Partial<Inscripcion>,
-  ): Promise<Inscripcion | null> {
+    data: Partial<InscripcionWithEventoAndUsuario>,
+  ): Promise<InscripcionWithEventoAndUsuario | null> {
     try {
       const prismaInscripcion = await prisma.inscripcion.update({
         data: {

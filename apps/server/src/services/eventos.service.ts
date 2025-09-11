@@ -1,11 +1,13 @@
-import { EstadoInscripcion } from "@prisma/client";
+import { type Categoria, EstadoInscripcion, type Evento } from "@prisma/client";
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { CategoriasRepository } from "@/repositories/categorias.repository.js";
 import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
 import type { CreateEventoDto } from "@/schemas/eventos/evento.input.schema.js";
-import type { Evento } from "@/types.js";
-import { EventosRepository } from "../repositories/eventos.repository.js";
+import {
+  EventosRepository,
+  type EventoWithCategoriaAndOrganizador,
+} from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
 
 type FindManyFilters = {
@@ -32,9 +34,13 @@ export const EventosService = {
       throw new NotFoundError("Organizador no encontrado");
     }
 
-    const eventoParaCrear: Omit<Evento, "id"> = {
+    const eventoParaCrear: Omit<
+      EventoWithCategoriaAndOrganizador,
+      "id" | "createdAt" | "updatedAt"
+    > = {
       ...data,
       categoria: categoria,
+      fechaInicio: new Date(data.fechaInicio),
       organizador: organizador,
     };
     const evento = await EventosRepository.create(eventoParaCrear);
@@ -57,7 +63,10 @@ export const EventosService = {
     if (!evento) {
       throw new NotFoundError("Evento no encontrado");
     }
-    return evento;
+    return {
+      ...evento,
+      fechaInicio: evento.fechaInicio.toISOString(),
+    };
   },
 
   async findMany(f: FindManyFilters) {
@@ -79,7 +88,10 @@ export const EventosService = {
 
     return {
       count: filtrados.length,
-      items: filtrados,
+      items: filtrados.map((evento) => ({
+        ...evento,
+        fechaInicio: evento.fechaInicio.toISOString(),
+      })),
       limit,
       page,
     };
@@ -132,11 +144,19 @@ export const EventosService = {
       estado = EstadoInscripcion.WAITLIST;
     }
 
-    return await InscripcionesRepository.registerUserToEvent(
+    const response = await InscripcionesRepository.registerUserToEvent(
       eventId,
       userId,
       estado,
     );
+    return {
+      ...response,
+      evento: {
+        ...response.evento,
+        fechaInicio: response.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: response.fechaRegistro.toISOString(),
+    };
   },
 
   async replace(id: string, data: CreateEventoDto) {
@@ -154,14 +174,21 @@ export const EventosService = {
       throw new NotFoundError("Organizador no encontrado");
     }
 
-    const eventoParaActualizar: Evento = {
+    const eventoParaActualizar: EventoWithCategoriaAndOrganizador = {
       ...eventoExistente,
       ...data,
       categoria: categoria,
+      fechaInicio: new Date(data.fechaInicio),
       organizador: organizador,
     };
     const evento = await EventosRepository.update(id, eventoParaActualizar);
-    return evento;
+    if (!evento) {
+      throw new NotFoundError("Evento no encontrado");
+    }
+    return {
+      ...evento,
+      fechaInicio: evento.fechaInicio.toISOString(),
+    };
   },
 
   async unregisterFromEvent(eventId: string, userId: string) {
@@ -211,7 +238,7 @@ export const EventosService = {
       throw new NotFoundError("Evento no encontrado");
     }
 
-    let categoria = null;
+    let categoria: Categoria | null = null;
     if (data.categoriaId) {
       categoria = await CategoriasRepository.findById(data.categoriaId);
       if (!categoria) {
@@ -230,10 +257,17 @@ export const EventosService = {
     const eventoParaActualizar: Evento = {
       ...eventoExistente,
       ...data,
-      categoria: categoria ? categoria : eventoExistente.categoria,
-      organizador: organizador ? organizador : eventoExistente.organizador,
+      fechaInicio: data.fechaInicio
+        ? new Date(data.fechaInicio)
+        : eventoExistente.fechaInicio,
     };
     const evento = await EventosRepository.update(id, eventoParaActualizar);
-    return evento;
+    if (!evento) {
+      throw new NotFoundError("Evento no encontrado");
+    }
+    return {
+      ...evento,
+      fechaInicio: evento.fechaInicio.toISOString(),
+    };
   },
 };

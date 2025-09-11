@@ -5,6 +5,9 @@ import {
   ReplaceEventoSchema,
   UpdateEventoSchema,
 } from "@/schemas/eventos/evento.input.schema";
+import { EventoOutputSchema } from "@/schemas/eventos/evento.output.schema";
+import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
+import { UsuarioOutputSchema } from "@/schemas/usuarios/usuario.output.schema";
 import { EventosController } from "../controllers/eventos.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -36,19 +39,37 @@ export const EventosRouter = (app: Elysia) =>
           }),
         {
           query: z.object({
-            categoriaId: z.optional(z.string()),
-            dateFrom: z.optional(z.string()),
-            dateTo: z.optional(z.string()),
-            limit: z.optional(z.number()),
-            order: z.optional(z.union([z.literal("asc"), z.literal("desc")])),
-            orderBy: z.optional(
-              z.union([z.literal("fechaInicio"), z.literal("precio")]),
-            ),
-            page: z.optional(z.number()),
-            priceMax: z.optional(z.number()),
-            priceMin: z.optional(z.number()),
-            q: z.optional(z.string()),
+            categoriaId: z
+              .optional(z.string())
+              .describe("El ID de la categoría"),
+            dateFrom: z.optional(z.string()).describe("La fecha de inicio"),
+            dateTo: z.optional(z.string()).describe("La fecha de fin"),
+            limit: z.optional(z.number()).describe("El límite de eventos"),
+            order: z
+              .optional(z.union([z.literal("asc"), z.literal("desc")]))
+              .describe("El orden de los eventos"),
+            orderBy: z
+              .optional(
+                z.union([z.literal("fechaInicio"), z.literal("precio")]),
+              )
+              .describe("El campo por el que se ordenará los eventos"),
+            page: z.optional(z.number()).describe("La página de los eventos"),
+            priceMax: z
+              .optional(z.number())
+              .describe("El precio máximo de los eventos"),
+            priceMin: z
+              .optional(z.number())
+              .describe("El precio mínimo de los eventos"),
+            q: z.optional(z.string()).describe("La consulta de los eventos"),
           }),
+          response: {
+            200: z.object({
+              count: z.number(),
+              items: z.array(EventoOutputSchema),
+              limit: z.number(),
+              page: z.number(),
+            }),
+          },
         },
       )
       .post(
@@ -64,11 +85,14 @@ export const EventosRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del evento"),
           }),
           query: z.object({
-            user_id: z.string(),
+            user_id: z.string().describe("El ID del usuario"),
           }),
+          response: {
+            200: InscripcionOutputSchema,
+          },
         },
       )
       .get(
@@ -82,8 +106,11 @@ export const EventosRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del evento"),
           }),
+          response: {
+            200: z.array(UsuarioOutputSchema),
+          },
         },
       )
       .get(
@@ -96,8 +123,11 @@ export const EventosRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del evento"),
           }),
+          response: {
+            200: EventoOutputSchema,
+          },
         },
       )
       .post(
@@ -123,8 +153,11 @@ export const EventosRouter = (app: Elysia) =>
         {
           body: ReplaceEventoSchema,
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del evento"),
           }),
+          response: {
+            200: EventoOutputSchema,
+          },
         },
       )
       .patch(
@@ -138,8 +171,11 @@ export const EventosRouter = (app: Elysia) =>
         {
           body: UpdateEventoSchema,
           params: z.object({
-            id: z.string(),
+            id: z.string().describe("El ID del evento"),
           }),
+          response: {
+            200: EventoOutputSchema,
+          },
         },
       )
       .delete(

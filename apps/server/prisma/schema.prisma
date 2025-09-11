@@ -13,8 +13,8 @@ model Evento {
   titulo              String
   descripcion         String
   fechaInicio         DateTime
-  duracion            Json
-  ubicacion           Json
+  duracion            Duracion
+  ubicacion           Ubicacion
   cupoMaximo          Int
   cupoMinimo          Int?
   precio              Float
@@ -27,6 +27,18 @@ model Evento {
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
 }
+
+type Duracion {
+  horas Int
+  minutos Int
+}
+
+type Ubicacion {
+  direccion String
+  lat Float
+  lng Float
+}
+
 
 enum EstadoEvento {
   FINALIZADO

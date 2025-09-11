@@ -61,13 +61,7 @@ export const CreateEventoSchema = z.object({
       error: "El estado es requerido",
     })
     .default(EstadoEvento.PENDIENTE),
-  fechaInicio: z
-    .string({
-      error: "La fecha de inicio es requerida",
-    })
-    .refine((val) => !Number.isNaN(Date.parse(val)), {
-      message: "Fecha inválida, debe ser formato ISO",
-    }),
+  fechaInicio: z.iso.datetime(),
   organizadorId: z
     .string({
       error: "El organizador es requerido",
@@ -109,8 +103,8 @@ export const UpdateEventoSchema = z.object({
       error: "El estado es requerido",
     })
     .optional(),
-  fechaInicio: z
-    .string()
+  fechaInicio: z.iso
+    .datetime()
     .refine((val) => !Number.isNaN(Date.parse(val)), {
       message: "Fecha inválida, debe ser formato ISO",
     })

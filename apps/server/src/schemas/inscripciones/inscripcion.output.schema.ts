@@ -14,7 +14,7 @@ export const inscripcionOutputSchema = z.object({
     },
   ),
   evento: EventoOutputSchema,
-  fechaRegistro: z.string().datetime(),
-  id: z.string().uuid(),
+  fechaRegistro: z.iso.datetime(),
+  id: z.uuid(),
   usuario: UsuarioOutputSchema,
 });
