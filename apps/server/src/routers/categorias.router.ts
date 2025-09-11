@@ -7,7 +7,7 @@ import { handleRoute } from "./handleRoute";
 const RUTA_CATEGORIAS = "/categorias";
 
 export const CategoriasRouter = (app: Elysia) =>
-  app.group(RUTA_CATEGORIAS, (app) =>
+  app.group(RUTA_CATEGORIAS, { tags: ["Categorias"] }, (app) =>
     app
       .get("/", async ({ set }) =>
         handleRoute(async () => {

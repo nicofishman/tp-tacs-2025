@@ -11,7 +11,7 @@ import { handleRoute } from "./handleRoute";
 const RUTA_EVENTOS = "/eventos";
 
 export const EventosRouter = (app: Elysia) =>
-  app.group(RUTA_EVENTOS, (app) =>
+  app.group(RUTA_EVENTOS, { tags: ["Eventos"] }, (app) =>
     app
       .get(
         "/",

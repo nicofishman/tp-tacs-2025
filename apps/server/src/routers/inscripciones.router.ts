@@ -10,7 +10,7 @@ import { handleRoute } from "./handleRoute";
 const RUTA_INSCRIPCIONES = "/inscripciones";
 
 export const InscripcionesRouter = (app: Elysia) =>
-  app.group(RUTA_INSCRIPCIONES, (app) =>
+  app.group(RUTA_INSCRIPCIONES, { tags: ["Inscripciones"] }, (app) =>
     app
       .get("/", async ({ set }) =>
         handleRoute(async () => {
