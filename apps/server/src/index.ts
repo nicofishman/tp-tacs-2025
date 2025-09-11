@@ -13,6 +13,13 @@ z.config(z.locales.es());
 export const app = new Elysia()
   .use(
     openapi({
+      documentation: {
+        info: {
+          description: "API para el TP-TACS",
+          title: "TP-TACS API",
+          version: "1.0.1",
+        },
+      },
       path: "/swagger",
       provider: "scalar",
       references: fromTypes("src/index.ts", {
