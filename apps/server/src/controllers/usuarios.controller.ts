@@ -1,31 +1,22 @@
 import { ValidationError } from "@/exceptions/ValidationError";
 import {
-  type CreateUsuarioDto,
-  CreateUsuarioSchema,
-  IdSchema,
-  type RegisterUsuarioDto,
-  RegisterUsuarioSchema,
-  type ReplaceUsuarioDto,
-  ReplaceUsuarioSchema,
-  type UpdateUsuarioDto,
-  UpdateUsuarioSchema,
-} from "@/schemas/usuarios/usuario.input.schema";
+  type CreateUsuarioInput,
+  createUsuarioInputSchema,
+} from "@/schemas/usuarios/create-usuario.schema";
+import {
+  type ReplaceUsuarioInput,
+  replaceUsuarioInputSchema,
+} from "@/schemas/usuarios/replace-usuario.schema";
+import {
+  type UpdateUsuarioInput,
+  updateUsuarioInputSchema,
+} from "@/schemas/usuarios/update-usuario.schema";
+import { idSchema } from "@/schemas/usuarios/usuario.schema";
 import { UsuariosService } from "../services/usuarios.service";
 
 export const UsuariosController = {
-  async create(data: CreateUsuarioDto) {
-    const resultData = CreateUsuarioSchema.safeParse(data);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await UsuariosService.create(resultData.data);
-  },
-
   async delete(id: string) {
-    const resultId = IdSchema.safeParse(id);
+    const resultId = idSchema.safeParse(id);
     if (!resultId.success) {
       const message = resultId.error.issues
         .map((err: { message: string }) => err.message)
@@ -44,7 +35,7 @@ export const UsuariosController = {
   },
 
   async findById(id: string) {
-    const resultId = IdSchema.safeParse(id);
+    const resultId = idSchema.safeParse(id);
     if (!resultId.success) {
       const message = resultId.error.issues
         .map((err: { message: string }) => err.message)
@@ -55,7 +46,7 @@ export const UsuariosController = {
   },
 
   async findEventsByUserId(id: string) {
-    const resultId = IdSchema.safeParse(id);
+    const resultId = idSchema.safeParse(id);
     if (!resultId.success) {
       const message = resultId.error.issues
         .map((err: { message: string }) => err.message)
@@ -65,8 +56,8 @@ export const UsuariosController = {
     return await UsuariosService.findEventsByUserId(id);
   },
 
-  async register(data: RegisterUsuarioDto) {
-    const resultData = RegisterUsuarioSchema.safeParse(data);
+  async register(data: CreateUsuarioInput) {
+    const resultData = createUsuarioInputSchema.safeParse(data);
     if (!resultData.success) {
       const message = resultData.error.issues
         .map((err: { message: string }) => err.message)
@@ -76,15 +67,15 @@ export const UsuariosController = {
     return await UsuariosService.register(resultData.data);
   },
 
-  async replace(id: string, data: ReplaceUsuarioDto) {
-    const resultId = IdSchema.safeParse(id);
+  async replace(id: string, data: ReplaceUsuarioInput) {
+    const resultId = idSchema.safeParse(id);
     if (!resultId.success) {
       const message = resultId.error.issues
         .map((err: { message: string }) => err.message)
         .join(", ");
       throw new ValidationError(`Error de validación: ${message}`);
     }
-    const resultData = ReplaceUsuarioSchema.safeParse(data);
+    const resultData = replaceUsuarioInputSchema.safeParse(data);
     if (!resultData.success) {
       const message = resultData.error.issues
         .map((err: { message: string }) => err.message)
@@ -94,15 +85,15 @@ export const UsuariosController = {
     return await UsuariosService.replace(id, resultData.data);
   },
 
-  async update(id: string, data: UpdateUsuarioDto) {
-    const resultId = IdSchema.safeParse(id);
+  async update(id: string, data: UpdateUsuarioInput) {
+    const resultId = idSchema.safeParse(id);
     if (!resultId.success) {
       const message = resultId.error.issues
         .map((err: { message: string }) => err.message)
         .join(", ");
       throw new ValidationError(`Error de validación: ${message}`);
     }
-    const resultData = UpdateUsuarioSchema.safeParse(data);
+    const resultData = updateUsuarioInputSchema.safeParse(data);
     if (!resultData.success) {
       const message = resultData.error.issues
         .map((err: { message: string }) => err.message)

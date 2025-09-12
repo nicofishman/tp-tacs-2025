@@ -1,16 +1,20 @@
 import type { Elysia } from "elysia";
 import z from "zod";
-import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
 import {
-  CreateUsuarioSchema,
-  RegisterUsuarioSchema,
-  ReplaceUsuarioSchema,
-  UpdateUsuarioSchema,
-} from "@/schemas/usuarios/usuario.input.schema";
+  createUsuarioInputSchema,
+  createUsuarioOutputSchema,
+} from "@/schemas/usuarios/create-usuario.schema";
+import { findAllUsuariosOutputSchema } from "@/schemas/usuarios/findAll-usuarios.schema";
+import { findByIdUsuariosOutputSchema } from "@/schemas/usuarios/findById-usuarios.schema";
+import { findEventsByUserIdUsuariosOutputSchema } from "@/schemas/usuarios/findEventsByUserId-usuarios.schema";
 import {
-  UsuarioOutputRegisterSchema,
-  UsuarioOutputSchema,
-} from "@/schemas/usuarios/usuario.output.schema";
+  replaceUsuarioInputSchema,
+  replaceUsuarioOutputSchema,
+} from "@/schemas/usuarios/replace-usuario.schema";
+import {
+  updateUsuarioInputSchema,
+  updateUsuarioOutputSchema,
+} from "@/schemas/usuarios/update-usuario.schema";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -34,7 +38,7 @@ export const UsuariosRouter = (app: Elysia) =>
           }),
         {
           response: {
-            200: z.array(UsuarioOutputSchema),
+            200: findAllUsuariosOutputSchema,
           },
         },
       )
@@ -51,7 +55,7 @@ export const UsuariosRouter = (app: Elysia) =>
             id: z.string().describe("El ID del usuario"),
           }),
           response: {
-            200: UsuarioOutputSchema,
+            200: findByIdUsuariosOutputSchema,
           },
         },
       )
@@ -70,7 +74,7 @@ export const UsuariosRouter = (app: Elysia) =>
             id: z.string().describe("El ID del usuario"),
           }),
           response: {
-            200: z.array(InscripcionOutputSchema),
+            200: findEventsByUserIdUsuariosOutputSchema,
           },
         },
       )
@@ -78,29 +82,14 @@ export const UsuariosRouter = (app: Elysia) =>
         "/",
         async ({ body, set }) =>
           handleRoute(async () => {
-            const usuario = await UsuariosController.create(body);
-            set.status = 201;
-            return usuario;
-          }),
-        {
-          body: CreateUsuarioSchema,
-          response: {
-            201: UsuarioOutputSchema,
-          },
-        },
-      )
-      .post(
-        "/register",
-        async ({ body, set }) =>
-          handleRoute(async () => {
             const usuario = await UsuariosController.register(body);
             set.status = 201;
             return usuario;
           }),
         {
-          body: RegisterUsuarioSchema,
+          body: createUsuarioInputSchema,
           response: {
-            201: UsuarioOutputRegisterSchema,
+            201: createUsuarioOutputSchema,
           },
         },
       )
@@ -113,12 +102,12 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: ReplaceUsuarioSchema,
+          body: replaceUsuarioInputSchema,
           params: z.object({
             id: z.string().describe("El ID del usuario"),
           }),
           response: {
-            200: UsuarioOutputSchema,
+            200: replaceUsuarioOutputSchema,
           },
         },
       )
@@ -131,12 +120,12 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: UpdateUsuarioSchema,
+          body: updateUsuarioInputSchema,
           params: z.object({
             id: z.string().describe("El ID del usuario"),
           }),
           response: {
-            200: UsuarioOutputSchema,
+            200: updateUsuarioOutputSchema,
           },
         },
       )
