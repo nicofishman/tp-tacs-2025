@@ -1,5 +1,4 @@
 import { openapi } from "@elysiajs/openapi";
-import { fromTypes } from "@elysiajs/openapi/gen";
 import { Elysia } from "elysia";
 import z from "zod";
 import { CategoriasRouter } from "./routers/categorias.router";
@@ -21,11 +20,6 @@ export const app = new Elysia()
         },
       },
       path: "/swagger",
-      provider: "scalar",
-      references: fromTypes("src/index.ts", {
-        debug: true,
-      }),
-      specPath: "/swagger.json",
     }),
   )
   .use(HealthRouter)
