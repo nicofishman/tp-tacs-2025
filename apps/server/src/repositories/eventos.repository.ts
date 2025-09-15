@@ -81,7 +81,7 @@ export const EventosRepository = {
         },
         where: { id },
       });
-      return prismaEvento ? mapPrismaEventoToEvento(prismaEvento) : null;
+      return prismaEvento;
     } catch (error) {
       console.error("Error al eliminar evento:", error);
       return null;
@@ -177,7 +177,7 @@ export const EventosRepository = {
         },
         where: { id },
       });
-      return prismaEvento ? mapPrismaEventoToEvento(prismaEvento) : null;
+      return prismaEvento;
     } catch (error) {
       throw new Error("Error al actualizar evento", { cause: error });
     }

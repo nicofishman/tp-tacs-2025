@@ -135,7 +135,7 @@ export const InscripcionesRepository = {
     eventId: string,
   ): Promise<InscripcionWithEventoAndUsuario[]> {
     try {
-      const inscripciones = await prisma.inscripcion.findMany({
+      return await prisma.inscripcion.findMany({
         include: {
           evento: {
             include: {
@@ -147,7 +147,6 @@ export const InscripcionesRepository = {
         },
         where: { eventoId: eventId },
       });
-      return inscripciones.map(mapPrismaInscripcionToInscripcion);
     } catch (error) {
       console.error("Error al buscar inscripciones del evento:", error);
       return [];

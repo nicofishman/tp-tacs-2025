@@ -4,8 +4,8 @@ import { ValidationError } from "@/exceptions/ValidationError";
 import { CategoriasRepository } from "@/repositories/categorias.repository.js";
 import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
 import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema.js";
-import type { CreateEventoDto } from "@/schemas/eventos/evento.input.schema.js";
 import type { FindAllEventoQuery } from "@/schemas/eventos/findAll-evento.schema.js";
+import type { UpdateEventoInput } from "@/schemas/eventos/update-evento.schema.js";
 import { EventosRepository } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
 
@@ -78,6 +78,7 @@ export const EventosService = {
     if (!evento) {
       throw new NotFoundError("Evento no encontrado");
     }
+
     const inscripcionesDelEvento =
       await InscripcionesRepository.findByEventId(eventId);
 
@@ -89,7 +90,13 @@ export const EventosService = {
       (inscripcion) => inscripcion.usuario,
     );
 
-    return participantes;
+    const eventoConParticipantes = {
+      id: evento.id,
+      participantes,
+      titulo: evento.titulo,
+    };
+
+    return eventoConParticipantes;
   },
 
   async registerToEvent(eventId: string, userId: string) {
@@ -170,7 +177,7 @@ export const EventosService = {
     return { message: "Inscripción cancelada exitosamente" };
   },
 
-  async update(id: string, data: Partial<CreateEventoDto>) {
+  async update(id: string, data: UpdateEventoInput) {
     if (Object.keys(data).length === 0) {
       throw new ValidationError(
         "Debes enviar al menos un campo para actualizar",
