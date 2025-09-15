@@ -421,7 +421,7 @@ export default function Events() {
                 placeholder="Buscar eventos por título, descripción u organizador..."
                 value={filters.palabrasClave}
                 onChange={(e) => updateFilter("palabrasClave", e.target.value)}
-                className="w-full rounded-lg border border-gray-300 py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-blue-500"
+                className="w-full rounded-lg border border-gray-300 py-3 pr-4 pl-10 placeholder:text-gray-400 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -430,12 +430,12 @@ export default function Events() {
               <button
                 type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 transition-colors hover:bg-gray-50"
+                className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-black transition-colors hover:bg-gray-50"
               >
                 <Filter className="h-4 w-4" />
                 Filtros avanzados
                 {getActiveFiltersCount() > 0 && (
-                  <span className="rounded-full bg-blue-600 px-2 py-1 text-white text-xs">
+                  <span className="rounded-full bg-blue-600 px-2 py-1 text-black text-xs">
                     {getActiveFiltersCount()}
                   </span>
                 )}
