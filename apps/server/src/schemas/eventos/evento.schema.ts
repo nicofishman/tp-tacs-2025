@@ -1,9 +1,9 @@
 import { EstadoEvento } from "@prisma/client";
 import { z } from "zod";
-import { CategoriaSchema } from "../categorias/categoria.schema";
+import { categoriaSchema } from "../categorias/categoria.schema";
 import { usuarioSchema } from "../usuarios/usuario.schema";
 
-export const DuracionSchema = z.object({
+export const duracionSchema = z.object({
   horas: z
     .number({
       error: "Las horas son requeridas",
@@ -19,7 +19,7 @@ export const DuracionSchema = z.object({
     .max(59, "Máximo 59 minutos"),
 });
 
-export const UbicacionSchema = z.object({
+export const ubicacionSchema = z.object({
   direccion: z
     .string({
       error: "La dirección es requerida",
@@ -33,8 +33,8 @@ export const UbicacionSchema = z.object({
   }),
 });
 
-export const EventoSchema = z.strictObject({
-  categoriaId: CategoriaSchema.shape.id,
+export const eventoSchema = z.strictObject({
+  categoriaId: categoriaSchema.shape.id,
   cupoMaximo: z
     .number({
       error: "El cupo máximo es requerido",
@@ -53,7 +53,7 @@ export const EventoSchema = z.strictObject({
       error: "La descripción es requerida",
     })
     .min(1, "La descripción no puede estar vacía"),
-  duracion: DuracionSchema,
+  duracion: duracionSchema,
   estado: z.enum(EstadoEvento),
   fechaInicio: z.iso.datetime({
     error: "La fecha de inicio es requerida",
@@ -68,5 +68,5 @@ export const EventoSchema = z.strictObject({
       error: "El título es requerido",
     })
     .min(1, "El título no puede estar vacío"),
-  ubicacion: UbicacionSchema,
+  ubicacion: ubicacionSchema,
 });

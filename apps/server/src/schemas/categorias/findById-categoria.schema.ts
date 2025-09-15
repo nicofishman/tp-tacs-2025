@@ -1,3 +1,3 @@
-import { CategoriaSchema } from "./categoria.schema";
+import { categoriaSchema } from "./categoria.schema";
 
-export const findByIdCategoriaOutputSchema = CategoriaSchema;
+export const findByIdCategoriaOutputSchema = categoriaSchema;

@@ -1,11 +1,11 @@
 import z from "zod";
-import { EventoSchema } from "../eventos/evento.schema";
+import { eventoSchema } from "../eventos/evento.schema";
 import { usuarioSchema } from "../usuarios/usuario.schema";
-import { InscripcionSchema } from "./inscripcion.schema";
+import { inscripcionSchema } from "./inscripcion.schema";
 
 export const findAllInscripcionOutputSchema = z.array(
-  InscripcionSchema.extend({
-    evento: EventoSchema,
+  inscripcionSchema.extend({
+    evento: eventoSchema,
     usuario: usuarioSchema.omit({ password: true }),
   }),
 );

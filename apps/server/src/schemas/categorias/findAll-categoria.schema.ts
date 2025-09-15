@@ -1,4 +1,4 @@
 import z from "zod";
-import { CategoriaSchema } from "./categoria.schema";
+import { categoriaSchema } from "./categoria.schema";
 
-export const findAllCategoriaOutputSchema = z.array(CategoriaSchema);
+export const findAllCategoriaOutputSchema = z.array(categoriaSchema);

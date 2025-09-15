@@ -1,17 +1,19 @@
 import type z from "zod";
-import { CategoriaSchema } from "../categorias/categoria.schema";
+import { categoriaSchema } from "../categorias/categoria.schema";
 import { usuarioSchema } from "../usuarios/usuario.schema";
-import { EventoSchema } from "./evento.schema";
+import { eventoSchema } from "./evento.schema";
 
-export const createEventoInputSchema = EventoSchema.omit({ id: true });
+export const createEventoInputSchema = eventoSchema.omit({ id: true });
 
 export type CreateEventoInput = z.infer<typeof createEventoInputSchema>;
 
-export const createEventoOutputSchema = EventoSchema.omit({
-  categoriaId: true,
-  id: true,
-  organizadorId: true,
-}).extend({
-  categoria: CategoriaSchema,
-  organizador: usuarioSchema.omit({ password: true }),
-});
+export const createEventoOutputSchema = eventoSchema
+  .omit({
+    categoriaId: true,
+    id: true,
+    organizadorId: true,
+  })
+  .extend({
+    categoria: categoriaSchema,
+    organizador: usuarioSchema.omit({ password: true }),
+  });

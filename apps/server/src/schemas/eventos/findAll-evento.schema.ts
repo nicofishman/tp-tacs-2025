@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { CategoriaSchema } from "../categorias/categoria.schema";
+import { categoriaSchema } from "../categorias/categoria.schema";
 import { usuarioSchema } from "../usuarios/usuario.schema";
-import { EventoSchema } from "./evento.schema";
+import { eventoSchema } from "./evento.schema";
 
 export const findAllEventoQuerySchema = z.object({
   categoriaId: z.optional(z.string()).describe("El ID de la categoría"),
@@ -23,12 +23,14 @@ export const findAllEventoQuerySchema = z.object({
 export type FindAllEventoQuery = z.infer<typeof findAllEventoQuerySchema>;
 
 export const findAllEventoOutputSchema = z.array(
-  EventoSchema.omit({
-    categoriaId: true,
-    id: true,
-    organizadorId: true,
-  }).extend({
-    categoria: CategoriaSchema,
-    organizador: usuarioSchema.omit({ password: true }),
-  }),
+  eventoSchema
+    .omit({
+      categoriaId: true,
+      id: true,
+      organizadorId: true,
+    })
+    .extend({
+      categoria: categoriaSchema,
+      organizador: usuarioSchema.omit({ password: true }),
+    }),
 );

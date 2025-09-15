@@ -1,9 +1,8 @@
 import z from "zod";
-import { inscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
+import { inscripcionSchema } from "../inscripciones/inscripcion.schema";
 
-export const findEventsByUserIdUsuariosOutputSchema = z.array(
-  inscripcionOutputSchema,
-);
+export const findEventsByUserIdUsuariosOutputSchema =
+  z.array(inscripcionSchema);
 
 export type FindEventsByUserIdUsuariosOutput = z.infer<
   typeof findEventsByUserIdUsuariosOutputSchema

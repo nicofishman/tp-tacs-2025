@@ -8,13 +8,13 @@ import {
   findAllEventoOutputSchema,
   findAllEventoQuerySchema,
 } from "@/schemas/eventos/findAll-evento.schema";
-import { findByIdEventoSchema } from "@/schemas/eventos/findById-evento.schema";
+import { findByIdEventoOutputSchema } from "@/schemas/eventos/findById-evento.schema";
 import { findParticipantsEventosOutputSchema } from "@/schemas/eventos/findParticipants-eventos.schema";
+import { registerEventoOutputSchema } from "@/schemas/eventos/register-evento.schema";
 import {
   updateEventoInputSchema,
   updateEventoOutputSchema,
 } from "@/schemas/eventos/update-evento.schema";
-import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
 import { EventosController } from "../controllers/eventos.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -62,7 +62,7 @@ export const EventosRouter = (app: Elysia) =>
             user_id: z.string().min(1).describe("El ID del usuario"),
           }),
           response: {
-            200: InscripcionOutputSchema,
+            200: registerEventoOutputSchema,
             400: z.object({ error: z.string() }),
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
@@ -102,7 +102,7 @@ export const EventosRouter = (app: Elysia) =>
             id: z.string().min(1).describe("El ID del evento"),
           }),
           response: {
-            200: findByIdEventoSchema,
+            200: findByIdEventoOutputSchema,
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },

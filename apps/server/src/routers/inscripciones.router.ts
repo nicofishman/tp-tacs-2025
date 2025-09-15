@@ -5,7 +5,7 @@ import {
   createInscripcionOutputSchema,
 } from "@/schemas/inscripciones/create-inscripcion.schema";
 import { findAllInscripcionOutputSchema } from "@/schemas/inscripciones/findall-inscripcion.schema";
-import { findByIdInscripcionSchema } from "@/schemas/inscripciones/findById-inscripcion.schema";
+import { findByIdInscripcionOutputSchema } from "@/schemas/inscripciones/findById-inscripcion.schema";
 import {
   updateInscripcionInputSchema,
   updateInscripcionOutputSchema,
@@ -48,7 +48,7 @@ export const InscripcionesRouter = (app: Elysia) =>
             id: z.string().min(1).describe("El ID de la inscripción"),
           }),
           response: {
-            200: findByIdInscripcionSchema,
+            200: findByIdInscripcionOutputSchema,
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },

@@ -1,8 +1,8 @@
 import type z from "zod";
-import { CategoriaSchema } from "../categorias/categoria.schema";
+import { categoriaSchema } from "../categorias/categoria.schema";
 
-export const createCategoriaSchema = CategoriaSchema.omit({ id: true });
+export const createCategoriaSchema = categoriaSchema.omit({ id: true });
 
 export type CreateCategoriaInput = z.infer<typeof createCategoriaSchema>;
 
-export const createCategoriaOutputSchema = CategoriaSchema.omit({ id: true });
+export const createCategoriaOutputSchema = categoriaSchema.omit({ id: true });
