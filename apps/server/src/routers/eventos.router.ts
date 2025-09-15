@@ -9,6 +9,7 @@ import {
   UpdateEventoSchema,
 } from "@/schemas/eventos/evento.input.schema";
 import { EventoOutputSchema } from "@/schemas/eventos/evento.output.schema";
+import { findByIdEventoSchema } from "@/schemas/eventos/findById-evento.schema";
 import { findParticipantsEventosOutputSchema } from "@/schemas/eventos/findParticipants-eventos.schema";
 import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
 import { EventosController } from "../controllers/eventos.controller";
@@ -129,7 +130,8 @@ export const EventosRouter = (app: Elysia) =>
             id: z.string().describe("El ID del evento"),
           }),
           response: {
-            200: EventoOutputSchema,
+            200: findByIdEventoSchema,
+            404: z.object({ error: z.string() }),
           },
         },
       )

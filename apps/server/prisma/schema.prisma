@@ -16,7 +16,7 @@ model Evento {
   duracion            Duracion
   ubicacion           Ubicacion
   cupoMaximo          Int
-  cupoMinimo          Int?
+  cupoMinimo          Int
   precio              Float
   estado              EstadoEvento
   categoria           Categoria    @relation(fields: [categoriaId], references: [id])

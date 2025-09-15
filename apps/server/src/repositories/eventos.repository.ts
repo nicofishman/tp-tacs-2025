@@ -113,7 +113,7 @@ export const EventosRepository = {
         },
         where: { id },
       });
-      return prismaEvento ? mapPrismaEventoToEvento(prismaEvento) : null;
+      return prismaEvento;
     } catch (error) {
       console.error("Error al buscar evento por ID:", error);
       return null;
