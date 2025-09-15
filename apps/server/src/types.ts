@@ -3,6 +3,9 @@ import type {
   EstadoInscripcion,
   RolUsuario,
 } from "@prisma/client";
+import type { app } from ".";
+
+export type App = typeof app;
 
 export interface Evento {
   id: string;

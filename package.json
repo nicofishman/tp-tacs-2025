@@ -34,7 +34,7 @@
     "db:studio": "turbo -F server db:studio",
     "db:watch": "turbo -F server db:watch",
     "dev": "bun run /apps/server/src/index.ts",
-    "dev:native": "turbo -F native dev",
+    "dev:all": "turbo run server#dev web#dev",
     "dev:server": "turbo -F server dev",
     "dev:web": "turbo -F web dev",
     "prepare": "bunx husky",
