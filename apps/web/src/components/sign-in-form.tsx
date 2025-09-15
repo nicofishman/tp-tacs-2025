@@ -2,19 +2,15 @@ import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "./auth-provider";
 import Loader from "./loader";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignInForm({
-  onSwitchToSignUp,
-}: {
-  onSwitchToSignUp: () => void;
-}) {
+export default function SignInForm() {
   const navigate = useNavigate();
-  const { isPending } = authClient.useSession();
+  const { signIn, isLoading } = useAuth();
 
   const form = useForm({
     defaultValues: {
@@ -22,21 +18,13 @@ export default function SignInForm({
       password: "",
     },
     onSubmit: async ({ value }) => {
-      await authClient.signIn.email(
-        {
-          email: value.email,
-          password: value.password,
-        },
-        {
-          onError: (error) => {
-            toast.error(error.error.message || error.error.statusText);
-          },
-          onSuccess: () => {
-            navigate("/dashboard");
-            toast.success("Sign in successful");
-          },
-        },
-      );
+      try {
+        await signIn(value.email, value.password);
+        navigate("/dashboard");
+        toast.success("Sign in successful");
+      } catch (error: unknown) {
+        toast.error(error instanceof Error ? error.message : "Sign in failed");
+      }
     },
     validators: {
       onSubmit: z.object({
@@ -46,7 +34,7 @@ export default function SignInForm({
     },
   });
 
-  if (isPending) {
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -124,7 +112,7 @@ export default function SignInForm({
       <div className="mt-4 text-center">
         <Button
           variant="link"
-          onClick={onSwitchToSignUp}
+          onClick={() => navigate("/sign-up")}
           className="text-indigo-600 hover:text-indigo-800"
         >
           Need an account? Sign Up

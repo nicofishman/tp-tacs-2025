@@ -1,17 +1,35 @@
-import { Calendar, Home, Info, Mail, Menu, X } from "lucide-react";
+import {
+  Calendar,
+  Home,
+  Info,
+  LayoutDashboard,
+  Mail,
+  Menu,
+  X,
+} from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "react-router";
+import { useAuth } from "./auth-provider";
 import UserMenu from "./user-menu";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
 
-  const links = [
+  const publicLinks = [
     { icon: Home, label: "Home", to: "/" },
     { icon: Calendar, label: "Eventos", to: "/events" },
     { icon: Info, label: "Acerca de", to: "/about" },
     { icon: Mail, label: "Contacto", to: "/contact" },
   ] as const;
+
+  const protectedLinks = [
+    { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
+  ] as const;
+
+  const links = isAuthenticated
+    ? [...protectedLinks, ...publicLinks]
+    : publicLinks;
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);

@@ -2,19 +2,15 @@ import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 import z from "zod";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "./auth-provider";
 import Loader from "./loader";
 import { Button } from "./ui/button";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 
-export default function SignUpForm({
-  onSwitchToSignIn,
-}: {
-  onSwitchToSignIn: () => void;
-}) {
+export default function SignUpForm() {
   const navigate = useNavigate();
-  const { isPending } = authClient.useSession();
+  const { signUp, isLoading } = useAuth();
 
   const form = useForm({
     defaultValues: {
@@ -23,22 +19,13 @@ export default function SignUpForm({
       password: "",
     },
     onSubmit: async ({ value }) => {
-      await authClient.signUp.email(
-        {
-          email: value.email,
-          name: value.name,
-          password: value.password,
-        },
-        {
-          onError: (error) => {
-            toast.error(error.error.message || error.error.statusText);
-          },
-          onSuccess: () => {
-            navigate("/dashboard");
-            toast.success("Sign up successful");
-          },
-        },
-      );
+      try {
+        await signUp(value.email, value.password, value.name);
+        navigate("/dashboard");
+        toast.success("Sign up successful");
+      } catch (error: unknown) {
+        toast.error(error instanceof Error ? error.message : "Sign up failed");
+      }
     },
     validators: {
       onSubmit: z.object({
@@ -49,7 +36,7 @@ export default function SignUpForm({
     },
   });
 
-  if (isPending) {
+  if (isLoading) {
     return <Loader />;
   }
 
@@ -149,7 +136,7 @@ export default function SignUpForm({
       <div className="mt-4 text-center">
         <Button
           variant="link"
-          onClick={onSwitchToSignIn}
+          onClick={() => navigate("/sign-in")}
           className="text-indigo-600 hover:text-indigo-800"
         >
           Already have an account? Sign In
