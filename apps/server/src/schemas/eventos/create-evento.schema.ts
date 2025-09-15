@@ -11,5 +11,3 @@ export const createEventoOutputSchema = EventoSchema.omit({ id: true }).extend({
   categorias: z.array(CategoriaSchema),
   organizador: usuarioSchema.omit({ password: true }),
 });
-
-export type CreateEventoOutput = z.infer<typeof createEventoOutputSchema>;

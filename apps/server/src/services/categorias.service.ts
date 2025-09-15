@@ -1,19 +1,17 @@
 import { ConflictError } from "@/exceptions/ConflictError";
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { CategoriasRepository } from "@/repositories/categorias.repository";
-import type { CreateCategoriaDto } from "@/schemas/categorias/categoria.input.schema";
-import { mapCategoriaToOutput } from "@/schemas/categorias/categoria.output.schema";
+import type { CreateCategoriaInput } from "@/schemas/categorias/create-categoria.schema";
 
 export const CategoriasService = {
-  async create(data: CreateCategoriaDto) {
+  async create(data: CreateCategoriaInput) {
     const existingCategoria = await CategoriasRepository.findByNombre(
       data.nombre,
     );
     if (existingCategoria) {
       throw new ConflictError("La categoría ya existe");
     }
-    const categoria = await CategoriasRepository.create(data);
-    return mapCategoriaToOutput(categoria);
+    return await CategoriasRepository.create(data);
   },
 
   async delete(id: string) {
@@ -30,7 +28,7 @@ export const CategoriasService = {
   },
   async findAll() {
     const categorias = await CategoriasRepository.findAll();
-    return categorias.map(mapCategoriaToOutput);
+    return categorias;
   },
 
   async findById(id: string) {
@@ -38,6 +36,6 @@ export const CategoriasService = {
     if (!categoria) {
       throw new NotFoundError("Categoría no encontrada");
     }
-    return mapCategoriaToOutput(categoria);
+    return categoria;
   },
 };

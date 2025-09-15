@@ -8,7 +8,3 @@ export const findParticipantsEventosOutputSchema = EventoSchema.pick({
 }).extend({
   participants: z.array(usuarioSchema.omit({ password: true })).optional(),
 });
-
-export type FindParticipantsEventosOutput = z.infer<
-  typeof findParticipantsEventosOutputSchema
->;

@@ -1,7 +1,11 @@
 import type { Elysia } from "elysia";
 import z from "zod";
-import { CreateCategoriaSchema } from "@/schemas/categorias/categoria.input.schema";
-import { CategoriaOutputSchema } from "@/schemas/categorias/categoria.output.schema";
+import {
+  createCategoriaOutputSchema,
+  createCategoriaSchema,
+} from "@/schemas/categorias/create-categoria.schema";
+import { findAllCategoriaOutputSchema } from "@/schemas/categorias/findAll-categoria.schema";
+import { findByIdCategoriaOutputSchema } from "@/schemas/categorias/findById-categoria.schema";
 import { CategoriasController } from "../controllers/categorias.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -20,7 +24,8 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           response: {
-            200: z.array(CategoriaOutputSchema),
+            200: findAllCategoriaOutputSchema,
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -34,10 +39,12 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string().describe("El ID de la categoría"),
+            id: z.string().min(1).describe("El ID de la categoría"),
           }),
           response: {
-            200: CategoriaOutputSchema,
+            200: findByIdCategoriaOutputSchema,
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -50,9 +57,11 @@ export const CategoriasRouter = (app: Elysia) =>
             return nuevaCategoria;
           }),
         {
-          body: CreateCategoriaSchema,
+          body: createCategoriaSchema,
           response: {
-            201: CategoriaOutputSchema,
+            201: createCategoriaOutputSchema,
+            409: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -66,10 +75,12 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string().describe("El ID de la categoría"),
+            id: z.string().min(1).describe("El ID de la categoría"),
           }),
           response: {
             204: z.null(),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -83,10 +94,12 @@ export const CategoriasRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            nombre: z.string().describe("El nombre de la categoría"),
+            nombre: z.string().min(1).describe("El nombre de la categoría"),
           }),
           response: {
             204: z.null(),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
           },
         },
       ),

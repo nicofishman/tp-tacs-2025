@@ -8,5 +8,3 @@ export const updateEventoInputSchema = EventoSchema.omit({
 export type UpdateEventoInput = z.infer<typeof updateEventoInputSchema>;
 
 export const updateEventoOutputSchema = EventoSchema;
-
-export type UpdateEventoOutput = z.infer<typeof updateEventoOutputSchema>;
