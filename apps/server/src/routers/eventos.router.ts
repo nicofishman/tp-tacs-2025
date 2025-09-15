@@ -64,6 +64,8 @@ export const EventosRouter = (app: Elysia) =>
           }),
           response: {
             200: InscripcionOutputSchema,
+            400: z.object({ error: z.string() }),
+            404: z.object({ error: z.string() }),
           },
         },
       )
