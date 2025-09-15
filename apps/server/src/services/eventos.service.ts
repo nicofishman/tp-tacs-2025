@@ -5,24 +5,12 @@ import { CategoriasRepository } from "@/repositories/categorias.repository.js";
 import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
 import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema.js";
 import type { CreateEventoDto } from "@/schemas/eventos/evento.input.schema.js";
+import type { FindAllEventoQuery } from "@/schemas/eventos/findAll-evento.schema.js";
 import {
   EventosRepository,
   type EventoWithCategoriaAndOrganizador,
 } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
-
-type FindManyFilters = {
-  dateFrom?: string;
-  dateTo?: string;
-  categoriaId?: string;
-  priceMin?: number;
-  priceMax?: number;
-  q?: string;
-  limit?: number;
-  page?: number;
-  orderBy?: "fechaInicio" | "precio";
-  order?: "asc" | "desc";
-};
 
 export const EventosService = {
   async create(data: CreateEventoInput) {
@@ -48,27 +36,12 @@ export const EventosService = {
       throw new NotFoundError("Evento no encontrado");
     }
   },
-  async findAll() {
-    const eventos = await EventosRepository.findAll();
-    return eventos;
-  },
 
-  async findById(id: string) {
-    const evento = await EventosRepository.findById(id);
-    if (!evento) {
-      throw new NotFoundError("Evento no encontrado");
-    }
-    return {
-      ...evento,
-      fechaInicio: evento.fechaInicio.toISOString(),
-    };
-  },
-
-  async findMany(f: FindManyFilters) {
+  async findAll(f: FindAllEventoQuery) {
     const page = f.page ?? 1;
     const limit = f.limit ?? 20;
 
-    const filtrados = await EventosRepository.findMany({
+    const filtrados = await EventosRepository.findAll({
       categoriaId: f.categoriaId,
       dateFrom: f.dateFrom,
       dateTo: f.dateTo,
@@ -89,6 +62,17 @@ export const EventosService = {
       })),
       limit,
       page,
+    };
+  },
+
+  async findById(id: string) {
+    const evento = await EventosRepository.findById(id);
+    if (!evento) {
+      throw new NotFoundError("Evento no encontrado");
+    }
+    return {
+      ...evento,
+      fechaInicio: evento.fechaInicio.toISOString(),
     };
   },
 

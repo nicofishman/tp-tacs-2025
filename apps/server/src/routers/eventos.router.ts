@@ -9,6 +9,10 @@ import {
   UpdateEventoSchema,
 } from "@/schemas/eventos/evento.input.schema";
 import { EventoOutputSchema } from "@/schemas/eventos/evento.output.schema";
+import {
+  findAllEventoOutputSchema,
+  findAllEventoQuerySchema,
+} from "@/schemas/eventos/findAll-evento.schema";
 import { findByIdEventoSchema } from "@/schemas/eventos/findById-evento.schema";
 import { findParticipantsEventosOutputSchema } from "@/schemas/eventos/findParticipants-eventos.schema";
 import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
@@ -24,52 +28,16 @@ export const EventosRouter = (app: Elysia) =>
         "/",
         async ({ query, set }) =>
           handleRoute(async () => {
-            const filtros = {
-              categoriaId: query.categoriaId,
-              dateFrom: query.dateFrom,
-              dateTo: query.dateTo,
-              limit: query.limit,
-              order: query.order,
-              orderBy: query.orderBy,
-              page: query.page,
-              priceMax: query.priceMax,
-              priceMin: query.priceMin,
-              q: query.q,
-            };
-
-            const result = await EventosController.findMany(filtros);
+            const result = await EventosController.findAll(query);
             set.status = 200;
             return result;
           }),
         {
-          query: z.object({
-            categoriaId: z
-              .optional(z.string())
-              .describe("El ID de la categoría"),
-            dateFrom: z.optional(z.string()).describe("La fecha de inicio"),
-            dateTo: z.optional(z.string()).describe("La fecha de fin"),
-            limit: z.optional(z.number()).describe("El límite de eventos"),
-            order: z
-              .optional(z.union([z.literal("asc"), z.literal("desc")]))
-              .describe("El orden de los eventos"),
-            orderBy: z
-              .optional(
-                z.union([z.literal("fechaInicio"), z.literal("precio")]),
-              )
-              .describe("El campo por el que se ordenará los eventos"),
-            page: z.optional(z.number()).describe("La página de los eventos"),
-            priceMax: z
-              .optional(z.number())
-              .describe("El precio máximo de los eventos"),
-            priceMin: z
-              .optional(z.number())
-              .describe("El precio mínimo de los eventos"),
-            q: z.optional(z.string()).describe("La consulta de los eventos"),
-          }),
+          query: findAllEventoQuerySchema,
           response: {
             200: z.object({
               count: z.number(),
-              items: z.array(EventoOutputSchema),
+              items: findAllEventoOutputSchema,
               limit: z.number(),
               page: z.number(),
             }),

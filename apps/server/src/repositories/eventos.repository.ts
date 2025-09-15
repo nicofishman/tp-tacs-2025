@@ -87,40 +87,8 @@ export const EventosRepository = {
       return null;
     }
   },
-  async findAll(): Promise<EventoWithCategoriaAndOrganizador[]> {
-    try {
-      const eventos = await prisma.evento.findMany({
-        include: {
-          categoria: true,
-          organizador: true,
-        },
-      });
-      return eventos.map(mapPrismaEventoToEvento);
-    } catch (error) {
-      console.error("Error al buscar eventos:", error);
-      return [];
-    }
-  },
 
-  async findById(
-    id: string,
-  ): Promise<EventoWithCategoriaAndOrganizador | null> {
-    try {
-      const prismaEvento = await prisma.evento.findUnique({
-        include: {
-          categoria: true,
-          organizador: true,
-        },
-        where: { id },
-      });
-      return prismaEvento;
-    } catch (error) {
-      console.error("Error al buscar evento por ID:", error);
-      return null;
-    }
-  },
-
-  async findMany(
+  async findAll(
     f: FindManyDBFilters,
   ): Promise<EventoWithCategoriaAndOrganizador[]> {
     try {
@@ -159,10 +127,28 @@ export const EventosRepository = {
         where: AND.length ? { AND } : undefined,
       });
 
-      return rows.map(mapPrismaEventoToEvento);
+      return rows;
     } catch (error) {
       console.error("Error al buscar eventos con filtros:", error);
       return [];
+    }
+  },
+
+  async findById(
+    id: string,
+  ): Promise<EventoWithCategoriaAndOrganizador | null> {
+    try {
+      const prismaEvento = await prisma.evento.findUnique({
+        include: {
+          categoria: true,
+          organizador: true,
+        },
+        where: { id },
+      });
+      return prismaEvento;
+    } catch (error) {
+      console.error("Error al buscar evento por ID:", error);
+      return null;
     }
   },
 

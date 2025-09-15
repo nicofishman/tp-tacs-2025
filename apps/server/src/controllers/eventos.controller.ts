@@ -1,14 +1,13 @@
-import type { FindEventosQueryDto } from "@/dtos/eventos/input/query-evento.dto";
 import { ValidationError } from "@/exceptions/ValidationError";
 import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema";
 import {
-  FindEventosQuerySchema,
   IdSchema,
   type ReplaceEventoDto,
   ReplaceEventoSchema,
   type UpdateEventoDto,
   UpdateEventoSchema,
 } from "@/schemas/eventos/evento.input.schema";
+import type { FindAllEventoQuery } from "@/schemas/eventos/findAll-evento.schema";
 import { EventosService } from "../services/eventos.service";
 
 export const EventosController = {
@@ -26,8 +25,9 @@ export const EventosController = {
     }
     await EventosService.delete(id);
   },
-  async findAll() {
-    return await EventosService.findAll();
+
+  async findAll(eventosQuery: FindAllEventoQuery) {
+    return await EventosService.findAll(eventosQuery);
   },
 
   async findById(id: string) {
@@ -39,17 +39,6 @@ export const EventosController = {
       throw new ValidationError(`Error de validación: ${message}`);
     }
     return await EventosService.findById(id);
-  },
-
-  async findMany(eventosQuery: FindEventosQueryDto) {
-    const resultData = FindEventosQuerySchema.safeParse(eventosQuery);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await EventosService.findMany(resultData.data);
   },
 
   async findParticipantsByEvent(eventId: string) {
