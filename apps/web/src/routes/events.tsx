@@ -1,8 +1,16 @@
 // routes/events.tsx
-import type { Route } from "react-router";
-import { useState, useMemo } from "react";
-import { Calendar, MapPin, Clock, Users, Search, Filter, DollarSign, X } from "lucide-react";
-import { cn } from "../lib/utils";
+
+import {
+  Calendar,
+  Clock,
+  DollarSign,
+  Filter,
+  MapPin,
+  Search,
+  Users,
+  X,
+} from "lucide-react";
+import { useMemo, useState } from "react";
 
 // Interfaces basadas en tu DTO
 interface Duracion {
@@ -62,152 +70,204 @@ interface EventFilters {
 export function meta(): any[] {
   return [
     { title: "Eventos - Mi Aplicación" },
-    { name: "description", content: "Descubre nuestros próximos eventos" },
+    { content: "Descubre nuestros próximos eventos", name: "description" },
   ];
 }
 
 // Datos de ejemplo con el nuevo formato
 const mockEvents: EventoOutputDto[] = [
   {
-    id: "1",
-    titulo: "Workshop de Desarrollo Web",
-    descripcion: "Aprende las últimas tecnologías web con expertos de la industria. Cubriremos React, TypeScript y mejores prácticas.",
-    fechaInicio: "2024-03-15T10:00:00Z",
-    duracion: { horas: 4, minutos: 0 },
-    ubicacion: {
-      nombre: "Centro de Conferencias TechHub",
-      direccion: "Av. Libertador 1234",
-      ciudad: "Buenos Aires",
-      pais: "Argentina",
-      esVirtual: false
+    categoria: {
+      descripcion: "Talleres prácticos",
+      id: "1",
+      nombre: "Workshops",
     },
     cupoMaximo: 60,
     cupoMinimo: 10,
-    precio: 0,
-    categoria: { id: "1", nombre: "Workshops", descripcion: "Talleres prácticos" },
+    descripcion:
+      "Aprende las últimas tecnologías web con expertos de la industria. Cubriremos React, TypeScript y mejores prácticas.",
+    duracion: { horas: 4, minutos: 0 },
     estado: "activo",
-    organizador: { id: "1", nombre: "María González", email: "maria@example.com" }
+    fechaInicio: "2024-03-15T10:00:00Z",
+    id: "1",
+    organizador: {
+      email: "maria@example.com",
+      id: "1",
+      nombre: "María González",
+    },
+    precio: 0,
+    titulo: "Workshop de Desarrollo Web",
+    ubicacion: {
+      ciudad: "Buenos Aires",
+      direccion: "Av. Libertador 1234",
+      esVirtual: false,
+      nombre: "Centro de Conferencias TechHub",
+      pais: "Argentina",
+    },
   },
   {
-    id: "2",
-    titulo: "Conferencia de Tecnología 2024",
-    descripcion: "Las tendencias tecnológicas del futuro presentadas por líderes del sector. IA, Blockchain y más.",
-    fechaInicio: "2024-03-22T09:00:00Z",
-    duracion: { horas: 8, minutos: 30 },
-    ubicacion: {
-      nombre: "Auditorio Principal UADE",
-      direccion: "Lima 717",
-      ciudad: "Buenos Aires",
-      pais: "Argentina",
-      esVirtual: false
+    categoria: {
+      descripcion: "Eventos de gran escala",
+      id: "2",
+      nombre: "Conferencias",
     },
     cupoMaximo: 200,
     cupoMinimo: 50,
-    precio: 12500,
-    categoria: { id: "2", nombre: "Conferencias", descripcion: "Eventos de gran escala" },
+    descripcion:
+      "Las tendencias tecnológicas del futuro presentadas por líderes del sector. IA, Blockchain y más.",
+    duracion: { horas: 8, minutos: 30 },
     estado: "activo",
-    organizador: { id: "2", nombre: "Carlos Ruiz", email: "carlos@example.com" }
+    fechaInicio: "2024-03-22T09:00:00Z",
+    id: "2",
+    organizador: {
+      email: "carlos@example.com",
+      id: "2",
+      nombre: "Carlos Ruiz",
+    },
+    precio: 12500,
+    titulo: "Conferencia de Tecnología 2024",
+    ubicacion: {
+      ciudad: "Buenos Aires",
+      direccion: "Lima 717",
+      esVirtual: false,
+      nombre: "Auditorio Principal UADE",
+      pais: "Argentina",
+    },
   },
   {
-    id: "3",
-    titulo: "Networking Night Virtual",
-    descripcion: "Conecta con profesionales de la industria en un ambiente relajado desde tu casa.",
-    fechaInicio: "2024-03-29T18:00:00Z",
-    duracion: { horas: 2, minutos: 30 },
-    ubicacion: {
-      nombre: "Zoom Meeting",
-      esVirtual: true,
-      urlVirtual: "https://zoom.us/meeting123"
+    categoria: {
+      descripcion: "Eventos de networking",
+      id: "3",
+      nombre: "Networking",
     },
     cupoMaximo: 100,
-    precio: 5000,
-    categoria: { id: "3", nombre: "Networking", descripcion: "Eventos de networking" },
+    descripcion:
+      "Conecta con profesionales de la industria en un ambiente relajado desde tu casa.",
+    duracion: { horas: 2, minutos: 30 },
     estado: "activo",
-    organizador: { id: "3", nombre: "Ana López", email: "ana@example.com" }
+    fechaInicio: "2024-03-29T18:00:00Z",
+    id: "3",
+    organizador: { email: "ana@example.com", id: "3", nombre: "Ana López" },
+    precio: 5000,
+    titulo: "Networking Night Virtual",
+    ubicacion: {
+      esVirtual: true,
+      nombre: "Zoom Meeting",
+      urlVirtual: "https://zoom.us/meeting123",
+    },
   },
   {
-    id: "4",
-    titulo: "Masterclass de UX/UI Design",
-    descripcion: "Mejora tus habilidades de diseño con casos reales y ejercicios prácticos usando Figma.",
-    fechaInicio: "2024-04-05T14:00:00Z",
-    duracion: { horas: 6, minutos: 0 },
-    ubicacion: {
-      nombre: "Laboratorio de Diseño CreativeSpace",
-      direccion: "Palermo Soho, Gurruchaga 1423",
-      ciudad: "Buenos Aires",
-      pais: "Argentina",
-      esVirtual: false
+    categoria: {
+      descripcion: "Talleres prácticos",
+      id: "1",
+      nombre: "Workshops",
     },
     cupoMaximo: 30,
     cupoMinimo: 8,
-    precio: 18750,
-    categoria: { id: "1", nombre: "Workshops", descripcion: "Talleres prácticos" },
+    descripcion:
+      "Mejora tus habilidades de diseño con casos reales y ejercicios prácticos usando Figma.",
+    duracion: { horas: 6, minutos: 0 },
     estado: "activo",
-    organizador: { id: "4", nombre: "Sofía Martinez", email: "sofia@example.com" }
+    fechaInicio: "2024-04-05T14:00:00Z",
+    id: "4",
+    organizador: {
+      email: "sofia@example.com",
+      id: "4",
+      nombre: "Sofía Martinez",
+    },
+    precio: 18750,
+    titulo: "Masterclass de UX/UI Design",
+    ubicacion: {
+      ciudad: "Buenos Aires",
+      direccion: "Palermo Soho, Gurruchaga 1423",
+      esVirtual: false,
+      nombre: "Laboratorio de Diseño CreativeSpace",
+      pais: "Argentina",
+    },
   },
   {
-    id: "5",
-    titulo: "Bootcamp de JavaScript Avanzado",
-    descripcion: "Domina JavaScript ES6+, async/await, y patrones de diseño en una semana intensiva.",
-    fechaInicio: "2024-04-12T09:00:00Z",
-    duracion: { horas: 40, minutos: 0 },
-    ubicacion: {
-      nombre: "Campus Digital",
-      direccion: "Av. Corrientes 3247",
-      ciudad: "Buenos Aires",
-      pais: "Argentina",
-      esVirtual: false
+    categoria: {
+      descripcion: "Cursos intensivos",
+      id: "4",
+      nombre: "Bootcamps",
     },
     cupoMaximo: 25,
     cupoMinimo: 15,
-    precio: 45000,
-    categoria: { id: "4", nombre: "Bootcamps", descripcion: "Cursos intensivos" },
+    descripcion:
+      "Domina JavaScript ES6+, async/await, y patrones de diseño en una semana intensiva.",
+    duracion: { horas: 40, minutos: 0 },
     estado: "activo",
-    organizador: { id: "1", nombre: "María González", email: "maria@example.com" }
-  }
+    fechaInicio: "2024-04-12T09:00:00Z",
+    id: "5",
+    organizador: {
+      email: "maria@example.com",
+      id: "1",
+      nombre: "María González",
+    },
+    precio: 45000,
+    titulo: "Bootcamp de JavaScript Avanzado",
+    ubicacion: {
+      ciudad: "Buenos Aires",
+      direccion: "Av. Corrientes 3247",
+      esVirtual: false,
+      nombre: "Campus Digital",
+      pais: "Argentina",
+    },
+  },
 ];
 
 export default function Events() {
   const [filters, setFilters] = useState<EventFilters>({
     categoria: "all",
+    estado: "activo",
     fechaDesde: "",
     fechaHasta: "",
-    ubicacion: "all",
-    precioMin: "",
-    precioMax: "",
     palabrasClave: "",
-    estado: "activo"
+    precioMax: "",
+    precioMin: "",
+    ubicacion: "all",
   });
 
   const [showFilters, setShowFilters] = useState(false);
 
   // Obtener categorías únicas
   const categories = useMemo(() => {
-    const uniqueCategories = Array.from(new Set(mockEvents.map(event => event.categoria.nombre)));
+    const uniqueCategories = Array.from(
+      new Set(mockEvents.map((event) => event.categoria.nombre)),
+    );
     return [
-      { value: "all", label: "Todas las categorías" },
-      ...uniqueCategories.map(cat => ({ value: cat, label: cat }))
+      { label: "Todas las categorías", value: "all" },
+      ...uniqueCategories.map((cat) => ({ label: cat, value: cat })),
     ];
   }, []);
 
   // Obtener ubicaciones únicas (solo físicas)
   const locations = useMemo(() => {
-    const physicalEvents = mockEvents.filter(event => !event.ubicacion.esVirtual);
-    const uniqueLocations = Array.from(new Set(
-      physicalEvents.map(event => event.ubicacion.ciudad || event.ubicacion.nombre)
-    ));
+    const physicalEvents = mockEvents.filter(
+      (event) => !event.ubicacion.esVirtual,
+    );
+    const uniqueLocations = Array.from(
+      new Set(
+        physicalEvents.map(
+          (event) => event.ubicacion.ciudad || event.ubicacion.nombre,
+        ),
+      ),
+    );
     return [
-      { value: "all", label: "Todas las ubicaciones" },
-      { value: "virtual", label: "Eventos virtuales" },
-      ...uniqueLocations.map(loc => ({ value: loc, label: loc }))
+      { label: "Todas las ubicaciones", value: "all" },
+      { label: "Eventos virtuales", value: "virtual" },
+      ...uniqueLocations.map((loc) => ({ label: loc, value: loc })),
     ];
   }, []);
 
   // Filtrar eventos
   const filteredEvents = useMemo(() => {
-    return mockEvents.filter(event => {
+    return mockEvents.filter((event) => {
       // Filtro por categoría
-      if (filters.categoria !== "all" && event.categoria.nombre !== filters.categoria) {
+      if (
+        filters.categoria !== "all" &&
+        event.categoria.nombre !== filters.categoria
+      ) {
         return false;
       }
 
@@ -236,25 +296,33 @@ export default function Events() {
           if (!event.ubicacion.esVirtual) return false;
         } else {
           if (event.ubicacion.esVirtual) return false;
-          const eventLocation = event.ubicacion.ciudad || event.ubicacion.nombre;
+          const eventLocation =
+            event.ubicacion.ciudad || event.ubicacion.nombre;
           if (eventLocation !== filters.ubicacion) return false;
         }
       }
 
       // Filtro por precio mínimo
-      if (filters.precioMin && event.precio < parseFloat(filters.precioMin)) {
+      if (
+        filters.precioMin &&
+        event.precio < Number.parseFloat(filters.precioMin)
+      ) {
         return false;
       }
 
       // Filtro por precio máximo
-      if (filters.precioMax && event.precio > parseFloat(filters.precioMax)) {
+      if (
+        filters.precioMax &&
+        event.precio > Number.parseFloat(filters.precioMax)
+      ) {
         return false;
       }
 
       // Filtro por palabras clave
       if (filters.palabrasClave) {
         const keywords = filters.palabrasClave.toLowerCase();
-        const searchText = `${event.titulo} ${event.descripcion} ${event.organizador.nombre}`.toLowerCase();
+        const searchText =
+          `${event.titulo} ${event.descripcion} ${event.organizador.nombre}`.toLowerCase();
         if (!searchText.includes(keywords)) return false;
       }
 
@@ -263,45 +331,45 @@ export default function Events() {
   }, [filters]);
 
   const updateFilter = (key: keyof EventFilters, value: string) => {
-    setFilters(prev => ({ ...prev, [key]: value }));
+    setFilters((prev) => ({ ...prev, [key]: value }));
   };
 
   const clearFilters = () => {
     setFilters({
       categoria: "all",
+      estado: "activo",
       fechaDesde: "",
       fechaHasta: "",
-      ubicacion: "all",
-      precioMin: "",
-      precioMax: "",
       palabrasClave: "",
-      estado: "activo"
+      precioMax: "",
+      precioMin: "",
+      ubicacion: "all",
     });
   };
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', { 
-      weekday: 'long', 
-      year: 'numeric', 
-      month: 'long', 
-      day: 'numeric' 
+    return date.toLocaleDateString("es-ES", {
+      day: "numeric",
+      month: "long",
+      weekday: "long",
+      year: "numeric",
     });
   };
 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleTimeString('es-ES', { 
-      hour: '2-digit', 
-      minute: '2-digit' 
+    return date.toLocaleTimeString("es-ES", {
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const formatPrice = (price: number) => {
     if (price === 0) return "Gratis";
-    return new Intl.NumberFormat('es-AR', {
-      style: 'currency',
-      currency: 'ARS'
+    return new Intl.NumberFormat("es-AR", {
+      currency: "ARS",
+      style: "currency",
     }).format(price);
   };
 
@@ -330,11 +398,12 @@ export default function Events() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 text-white py-16">
+      <section className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 text-white">
         <div className="container mx-auto px-4 text-center">
-          <h1 className="text-5xl font-bold mb-4">Próximos Eventos</h1>
-          <p className="text-xl text-blue-100 max-w-2xl mx-auto">
-            Únete a nosotros en estas increíbles experiencias de aprendizaje y networking
+          <h1 className="mb-4 font-bold text-5xl">Próximos Eventos</h1>
+          <p className="mx-auto max-w-2xl text-blue-100 text-xl">
+            Únete a nosotros en estas increíbles experiencias de aprendizaje y
+            networking
           </p>
         </div>
       </section>
@@ -346,26 +415,27 @@ export default function Events() {
           <div className="mb-8 space-y-4">
             {/* Búsqueda principal */}
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+              <Search className="-translate-y-1/2 absolute top-1/2 left-3 h-5 w-5 transform text-gray-400" />
               <input
                 type="text"
                 placeholder="Buscar eventos por título, descripción u organizador..."
                 value={filters.palabrasClave}
                 onChange={(e) => updateFilter("palabrasClave", e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full rounded-lg border border-gray-300 py-3 pr-4 pl-10 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
             {/* Toggle filtros */}
             <div className="flex items-center justify-between">
               <button
+                type="button"
                 onClick={() => setShowFilters(!showFilters)}
-                className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+                className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 transition-colors hover:bg-gray-50"
               >
-                <Filter className="w-4 h-4" />
+                <Filter className="h-4 w-4" />
                 Filtros avanzados
                 {getActiveFiltersCount() > 0 && (
-                  <span className="bg-blue-600 text-white text-xs px-2 py-1 rounded-full">
+                  <span className="rounded-full bg-blue-600 px-2 py-1 text-white text-xs">
                     {getActiveFiltersCount()}
                   </span>
                 )}
@@ -373,10 +443,11 @@ export default function Events() {
 
               {getActiveFiltersCount() > 0 && (
                 <button
+                  type="button"
                   onClick={clearFilters}
-                  className="flex items-center gap-2 text-gray-600 hover:text-red-600 transition-colors"
+                  className="flex items-center gap-2 text-gray-600 transition-colors hover:text-red-600"
                 >
-                  <X className="w-4 h-4" />
+                  <X className="h-4 w-4" />
                   Limpiar filtros
                 </button>
               )}
@@ -384,19 +455,24 @@ export default function Events() {
 
             {/* Panel de filtros */}
             {showFilters && (
-              <div className="bg-white p-6 rounded-lg border border-gray-200 space-y-4">
-                <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                   {/* Categoría */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="categoria"
+                      className="mb-2 block font-medium text-gray-700 text-sm"
+                    >
                       Categoría
                     </label>
                     <select
                       value={filters.categoria}
-                      onChange={(e) => updateFilter("categoria", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) =>
+                        updateFilter("categoria", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     >
-                      {categories.map(category => (
+                      {categories.map((category) => (
                         <option key={category.value} value={category.value}>
                           {category.label}
                         </option>
@@ -406,15 +482,20 @@ export default function Events() {
 
                   {/* Ubicación */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="ubicacion"
+                      className="mb-2 block font-medium text-gray-700 text-sm"
+                    >
                       Ubicación
                     </label>
                     <select
                       value={filters.ubicacion}
-                      onChange={(e) => updateFilter("ubicacion", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) =>
+                        updateFilter("ubicacion", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     >
-                      {locations.map(location => (
+                      {locations.map((location) => (
                         <option key={location.value} value={location.value}>
                           {location.label}
                         </option>
@@ -424,13 +505,16 @@ export default function Events() {
 
                   {/* Estado */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="estado"
+                      className="mb-2 block font-medium text-gray-700 text-sm"
+                    >
                       Estado
                     </label>
                     <select
                       value={filters.estado}
                       onChange={(e) => updateFilter("estado", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     >
                       <option value="all">Todos los estados</option>
                       <option value="activo">Activos</option>
@@ -440,58 +524,78 @@ export default function Events() {
                   </div>
                 </div>
 
-                <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                   {/* Fecha desde */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="fechaDesde"
+                      className="mb-2 block font-medium text-gray-700 text-sm"
+                    >
                       Fecha desde
                     </label>
                     <input
                       type="date"
                       value={filters.fechaDesde}
-                      onChange={(e) => updateFilter("fechaDesde", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) =>
+                        updateFilter("fechaDesde", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   {/* Fecha hasta */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="fechaHasta"
+                      className="mb-2 block font-medium text-gray-700 text-sm"
+                    >
                       Fecha hasta
                     </label>
                     <input
                       type="date"
                       value={filters.fechaHasta}
-                      onChange={(e) => updateFilter("fechaHasta", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) =>
+                        updateFilter("fechaHasta", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   {/* Precio mínimo */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="precioMin"
+                      className="mb-2 block font-medium text-gray-700 text-sm"
+                    >
                       Precio mínimo (ARS)
                     </label>
                     <input
                       type="number"
                       placeholder="0"
                       value={filters.precioMin}
-                      onChange={(e) => updateFilter("precioMin", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) =>
+                        updateFilter("precioMin", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
 
                   {/* Precio máximo */}
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <label
+                      htmlFor="precioMax"
+                      className="mb-2 block font-medium text-gray-700 text-sm"
+                    >
                       Precio máximo (ARS)
                     </label>
                     <input
                       type="number"
                       placeholder="Sin límite"
                       value={filters.precioMax}
-                      onChange={(e) => updateFilter("precioMax", e.target.value)}
-                      className="w-full p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      onChange={(e) =>
+                        updateFilter("precioMax", e.target.value)
+                      }
+                      className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                     />
                   </div>
                 </div>
@@ -507,80 +611,91 @@ export default function Events() {
           </div>
 
           {/* Lista de eventos */}
-          <div className="grid lg:grid-cols-2 gap-8">
-            {filteredEvents.map(event => (
-              <div 
-                key={event.id} 
-                className="bg-white rounded-xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
+          <div className="grid gap-8 lg:grid-cols-2">
+            {filteredEvents.map((event) => (
+              <div
+                key={event.id}
+                className="hover:-translate-y-1 overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl"
               >
-                <div className="h-48 bg-gradient-to-r from-blue-400 to-purple-500 relative overflow-hidden">
-                  <div className="absolute inset-0 bg-black/20"></div>
+                <div className="relative h-48 overflow-hidden bg-gradient-to-r from-blue-400 to-purple-500">
+                  <div className="absolute inset-0 bg-black/20" />
                   <div className="absolute bottom-4 left-4 text-white">
-                    <span className="bg-black/30 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm">
+                    <span className="rounded-full bg-black/30 px-3 py-1 font-medium text-sm backdrop-blur-sm">
                       {event.categoria.nombre}
                     </span>
                   </div>
                   <div className="absolute top-4 right-4">
                     {event.ubicacion.esVirtual && (
-                      <span className="bg-green-500 text-white px-2 py-1 rounded text-xs font-medium">
+                      <span className="rounded bg-green-500 px-2 py-1 font-medium text-white text-xs">
                         Virtual
                       </span>
                     )}
                   </div>
                 </div>
-                
+
                 <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  <h3 className="mb-3 font-bold text-2xl text-gray-900">
                     {event.titulo}
                   </h3>
-                  
-                  <div className="space-y-2 mb-4 text-gray-600 text-sm">
+
+                  <div className="mb-4 space-y-2 text-gray-600 text-sm">
                     <div className="flex items-center gap-2">
-                      <Calendar className="w-4 h-4" />
+                      <Calendar className="h-4 w-4" />
                       <span>{formatDate(event.fechaInicio)}</span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      <span>{formatTime(event.fechaInicio)} • {formatDuration(event.duracion)}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4" />
+                      <Clock className="h-4 w-4" />
                       <span>
-                        {event.ubicacion.esVirtual 
-                          ? "Evento Virtual" 
-                          : `${event.ubicacion.nombre}, ${event.ubicacion.ciudad}`
-                        }
+                        {formatTime(event.fechaInicio)} •{" "}
+                        {formatDuration(event.duracion)}
                       </span>
                     </div>
                     <div className="flex items-center gap-2">
-                      <Users className="w-4 h-4" />
+                      <MapPin className="h-4 w-4" />
+                      <span>
+                        {event.ubicacion.esVirtual
+                          ? "Evento Virtual"
+                          : `${event.ubicacion.nombre}, ${event.ubicacion.ciudad}`}
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Users className="h-4 w-4" />
                       <span>
                         Máximo {event.cupoMaximo} participantes
                         {event.cupoMinimo && ` • Mínimo ${event.cupoMinimo}`}
                       </span>
                     </div>
                   </div>
-                  
-                  <p className="text-gray-700 mb-4 leading-relaxed text-sm">
+
+                  <p className="mb-4 text-gray-700 text-sm leading-relaxed">
                     {event.descripcion}
                   </p>
 
-                  <div className="text-xs text-gray-500 mb-4">
-                    Organizado por <span className="font-medium">{event.organizador.nombre}</span>
+                  <div className="mb-4 text-gray-500 text-xs">
+                    Organizado por{" "}
+                    <span className="font-medium">
+                      {event.organizador.nombre}
+                    </span>
                   </div>
-                  
+
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
-                      <DollarSign className="w-5 h-5 text-blue-600" />
-                      <span className="text-2xl font-bold text-blue-600">
+                      <DollarSign className="h-5 w-5 text-blue-600" />
+                      <span className="font-bold text-2xl text-blue-600">
                         {formatPrice(event.precio)}
                       </span>
                     </div>
                     <div className="flex gap-3">
-                      <button className="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition-colors text-sm">
+                      <button
+                        type="button"
+                        className="rounded-lg bg-gray-100 px-4 py-2 text-gray-700 text-sm transition-colors hover:bg-gray-200"
+                      >
                         Más Info
                       </button>
-                      <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium text-sm">
+                      <button
+                        type="button"
+                        className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"
+                      >
                         Inscribirse
                       </button>
                     </div>
@@ -591,17 +706,18 @@ export default function Events() {
           </div>
 
           {filteredEvents.length === 0 && (
-            <div className="text-center py-12">
-              <div className="text-6xl mb-4">🔍</div>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">
+            <div className="py-12 text-center">
+              <div className="mb-4 text-6xl">🔍</div>
+              <h3 className="mb-2 font-bold text-2xl text-gray-900">
                 No se encontraron eventos
               </h3>
-              <p className="text-gray-600 mb-4">
+              <p className="mb-4 text-gray-600">
                 No hay eventos que coincidan con los filtros seleccionados
               </p>
               <button
+                type="button"
                 onClick={clearFilters}
-                className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+                className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
               >
                 Limpiar filtros
               </button>
