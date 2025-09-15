@@ -6,10 +6,7 @@ import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
 import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema.js";
 import type { CreateEventoDto } from "@/schemas/eventos/evento.input.schema.js";
 import type { FindAllEventoQuery } from "@/schemas/eventos/findAll-evento.schema.js";
-import {
-  EventosRepository,
-  type EventoWithCategoriaAndOrganizador,
-} from "../repositories/eventos.repository.js";
+import { EventosRepository } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
 
 export const EventosService = {
@@ -135,38 +132,6 @@ export const EventosService = {
         fechaInicio: response.evento.fechaInicio.toISOString(),
       },
       fechaRegistro: response.fechaRegistro.toISOString(),
-    };
-  },
-
-  async replace(id: string, data: CreateEventoDto) {
-    const eventoExistente = await EventosRepository.findById(id);
-    if (!eventoExistente) {
-      throw new NotFoundError("Evento no encontrado");
-    }
-
-    const categoria = await CategoriasRepository.findById(data.categoriaId);
-    if (!categoria) {
-      throw new NotFoundError("Categoría no encontrada");
-    }
-    const organizador = await UsuariosRepository.findById(data.organizadorId);
-    if (!organizador) {
-      throw new NotFoundError("Organizador no encontrado");
-    }
-
-    const eventoParaActualizar: EventoWithCategoriaAndOrganizador = {
-      ...eventoExistente,
-      ...data,
-      categoria: categoria,
-      fechaInicio: new Date(data.fechaInicio),
-      organizador: organizador,
-    };
-    const evento = await EventosRepository.update(id, eventoParaActualizar);
-    if (!evento) {
-      throw new NotFoundError("Evento no encontrado");
-    }
-    return {
-      ...evento,
-      fechaInicio: evento.fechaInicio.toISOString(),
     };
   },
 

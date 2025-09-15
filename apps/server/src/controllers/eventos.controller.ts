@@ -2,8 +2,6 @@ import { ValidationError } from "@/exceptions/ValidationError";
 import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema";
 import {
   IdSchema,
-  type ReplaceEventoDto,
-  ReplaceEventoSchema,
   type UpdateEventoDto,
   UpdateEventoSchema,
 } from "@/schemas/eventos/evento.input.schema";
@@ -54,24 +52,6 @@ export const EventosController = {
 
   async registerToEvent(eventId: string, userId: string) {
     return await EventosService.registerToEvent(eventId, userId);
-  },
-
-  async replace(id: string, data: ReplaceEventoDto) {
-    const resultId = IdSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    const resultData = ReplaceEventoSchema.safeParse(data);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await EventosService.replace(id, resultData.data);
   },
 
   async unregisterFromEvent(eventId: string, userId: string) {

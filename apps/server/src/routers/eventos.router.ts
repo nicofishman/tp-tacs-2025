@@ -4,10 +4,7 @@ import {
   createEventoInputSchema,
   createEventoOutputSchema,
 } from "@/schemas/eventos/create-evento.schema";
-import {
-  ReplaceEventoSchema,
-  UpdateEventoSchema,
-} from "@/schemas/eventos/evento.input.schema";
+import { UpdateEventoSchema } from "@/schemas/eventos/evento.input.schema";
 import { EventoOutputSchema } from "@/schemas/eventos/evento.output.schema";
 import {
   findAllEventoOutputSchema,
@@ -119,24 +116,6 @@ export const EventosRouter = (app: Elysia) =>
             201: createEventoOutputSchema,
             400: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
-          },
-        },
-      )
-      .put(
-        "/:id",
-        async ({ params, body, set }) =>
-          handleRoute(async () => {
-            const evento = await EventosController.replace(params.id, body);
-            set.status = 200;
-            return evento;
-          }),
-        {
-          body: ReplaceEventoSchema,
-          params: z.object({
-            id: z.string().describe("El ID del evento"),
-          }),
-          response: {
-            200: EventoOutputSchema,
           },
         },
       )
