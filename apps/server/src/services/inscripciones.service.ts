@@ -6,13 +6,11 @@ import {
   type InscripcionWithEventoAndUsuario,
 } from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
-import type {
-  CreateInscripcionDto,
-  UpdateInscripcionDto,
-} from "@/schemas/inscripciones/inscripcion.input.schema";
+import type { CreateInscripcionInput } from "@/schemas/inscripciones/create-inscripcion.schema";
+import type { updateInscripcionInput } from "@/schemas/inscripciones/update-inscripcion.schema";
 
 export const InscripcionesService = {
-  async create(data: CreateInscripcionDto) {
+  async create(data: CreateInscripcionInput) {
     const usuario = await UsuariosRepository.findById(data.usuarioId);
     if (!usuario) {
       throw new NotFoundError("Usuario no encontrado");
@@ -69,7 +67,7 @@ export const InscripcionesService = {
     };
   },
 
-  async update(id: string, data: UpdateInscripcionDto) {
+  async update(id: string, data: updateInscripcionInput) {
     if (!data.estado || Object.keys(data).length !== 1) {
       throw new ValidationError(
         "Solo se puede modificar el estado de la inscripción",

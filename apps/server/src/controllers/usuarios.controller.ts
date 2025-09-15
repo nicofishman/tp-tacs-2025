@@ -1,24 +1,9 @@
-import { ValidationError } from "@/exceptions/ValidationError";
-import {
-  type CreateUsuarioInput,
-  createUsuarioInputSchema,
-} from "@/schemas/usuarios/create-usuario.schema";
-import {
-  type UpdateUsuarioInput,
-  updateUsuarioInputSchema,
-} from "@/schemas/usuarios/update-usuario.schema";
-import { idSchema } from "@/schemas/usuarios/usuario.schema";
+import type { CreateUsuarioInput } from "@/schemas/usuarios/create-usuario.schema";
+import type { UpdateUsuarioInput } from "@/schemas/usuarios/update-usuario.schema";
 import { UsuariosService } from "../services/usuarios.service";
 
 export const UsuariosController = {
   async delete(id: string) {
-    const resultId = idSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
     await UsuariosService.delete(id);
   },
 
@@ -31,53 +16,18 @@ export const UsuariosController = {
   },
 
   async findById(id: string) {
-    const resultId = idSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
     return await UsuariosService.findById(id);
   },
 
   async findEventsByUserId(id: string) {
-    const resultId = idSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
     return await UsuariosService.findEventsByUserId(id);
   },
 
   async register(data: CreateUsuarioInput) {
-    const resultData = createUsuarioInputSchema.safeParse(data);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await UsuariosService.register(resultData.data);
+    return await UsuariosService.register(data);
   },
 
   async update(id: string, data: UpdateUsuarioInput) {
-    const resultId = idSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    const resultData = updateUsuarioInputSchema.safeParse(data);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await UsuariosService.update(id, resultData.data);
+    return await UsuariosService.update(id, data);
   },
 };

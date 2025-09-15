@@ -124,7 +124,7 @@ export const InscripcionesRepository = {
           usuario: true,
         },
       });
-      return inscripciones.map(mapPrismaInscripcionToInscripcion);
+      return inscripciones;
     } catch (error) {
       console.error("Error al buscar inscripciones:", error);
       return [];
@@ -167,9 +167,7 @@ export const InscripcionesRepository = {
         },
         where: { id },
       });
-      return prismaInscripcion
-        ? mapPrismaInscripcionToInscripcion(prismaInscripcion)
-        : null;
+      return prismaInscripcion;
     } catch (error) {
       console.error("Error al buscar inscripción por ID:", error);
       return null;

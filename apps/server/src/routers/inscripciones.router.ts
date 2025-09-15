@@ -1,10 +1,15 @@
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
-  CreateInscripcionSchema,
-  UpdateInscripcionSchema,
-} from "@/schemas/inscripciones/inscripcion.input.schema";
-import { inscripcionOutputSchema as InscripcionOutputSchema } from "@/schemas/inscripciones/inscripcion.output.schema";
+  createInscripcionInputSchema,
+  createInscripcionOutputSchema,
+} from "@/schemas/inscripciones/create-inscripcion.schema";
+import { findAllInscripcionOutputSchema } from "@/schemas/inscripciones/findall-inscripcion.schema";
+import { findByIdInscripcionSchema } from "@/schemas/inscripciones/findById-inscripcion.schema";
+import {
+  updateInscripcionInputSchema,
+  updateInscripcionOutputSchema,
+} from "@/schemas/inscripciones/update-inscripcion.schema";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
 import { handleRoute } from "./handleRoute";
 
@@ -23,7 +28,8 @@ export const InscripcionesRouter = (app: Elysia) =>
           }),
         {
           response: {
-            200: z.array(InscripcionOutputSchema),
+            200: findAllInscripcionOutputSchema,
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -39,10 +45,12 @@ export const InscripcionesRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string().describe("El ID de la inscripción"),
+            id: z.string().min(1).describe("El ID de la inscripción"),
           }),
           response: {
-            200: InscripcionOutputSchema,
+            200: findByIdInscripcionSchema,
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -55,9 +63,11 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          body: CreateInscripcionSchema,
+          body: createInscripcionInputSchema,
           response: {
-            201: InscripcionOutputSchema,
+            201: createInscripcionOutputSchema,
+            400: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -73,12 +83,15 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          body: UpdateInscripcionSchema,
+          body: updateInscripcionInputSchema,
           params: z.object({
-            id: z.string().describe("El ID de la inscripción"),
+            id: z.string().min(1).describe("El ID de la inscripción"),
           }),
           response: {
-            200: InscripcionOutputSchema,
+            200: updateInscripcionOutputSchema,
+            400: z.object({ error: z.string() }),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
           },
         },
       )
@@ -92,7 +105,7 @@ export const InscripcionesRouter = (app: Elysia) =>
           }),
         {
           params: z.object({
-            id: z.string().describe("El ID de la inscripción"),
+            id: z.string().min(1).describe("El ID de la inscripción"),
           }),
           response: {
             204: z.null(),
