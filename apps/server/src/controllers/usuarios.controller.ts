@@ -4,10 +4,6 @@ import {
   createUsuarioInputSchema,
 } from "@/schemas/usuarios/create-usuario.schema";
 import {
-  type ReplaceUsuarioInput,
-  replaceUsuarioInputSchema,
-} from "@/schemas/usuarios/replace-usuario.schema";
-import {
   type UpdateUsuarioInput,
   updateUsuarioInputSchema,
 } from "@/schemas/usuarios/update-usuario.schema";
@@ -65,24 +61,6 @@ export const UsuariosController = {
       throw new ValidationError(`Error de validación: ${message}`);
     }
     return await UsuariosService.register(resultData.data);
-  },
-
-  async replace(id: string, data: ReplaceUsuarioInput) {
-    const resultId = idSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    const resultData = replaceUsuarioInputSchema.safeParse(data);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await UsuariosService.replace(id, resultData.data);
   },
 
   async update(id: string, data: UpdateUsuarioInput) {

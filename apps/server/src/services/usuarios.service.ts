@@ -6,7 +6,6 @@ import { ValidationError } from "@/exceptions/ValidationError";
 import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
 import type { CreateUsuarioInput } from "@/schemas/usuarios/create-usuario.schema";
-import type { ReplaceUsuarioInput } from "@/schemas/usuarios/replace-usuario.schema";
 import type { UpdateUsuarioInput } from "@/schemas/usuarios/update-usuario.schema";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
@@ -72,23 +71,6 @@ export const UsuariosService = {
 
     const usuario = await UsuariosRepository.create(usuarioParaCrear);
     return usuario;
-  },
-
-  async replace(id: string, data: ReplaceUsuarioInput) {
-    // Validacion de email repetido SOLO si se quiere cambiar el email
-    if (data.email) {
-      const emailExistente = await UsuariosRepository.findByEmail(data.email);
-      // Si existe y no es el mismo usuario
-      if (emailExistente && emailExistente.id !== id) {
-        throw new ConflictError("El email ya está registrado");
-      }
-    }
-    // No sobrescribas la contraseña, solo actualiza los campos permitidos
-    const usuarioActualizado = await UsuariosRepository.update(id, data);
-    if (!usuarioActualizado) {
-      throw new NotFoundError("Usuario no encontrado");
-    }
-    return usuarioActualizado;
   },
 
   async update(id: string, data: UpdateUsuarioInput) {

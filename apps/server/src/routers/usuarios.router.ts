@@ -8,20 +8,11 @@ import { findAllUsuariosOutputSchema } from "@/schemas/usuarios/findAll-usuarios
 import { findByIdUsuariosOutputSchema } from "@/schemas/usuarios/findById-usuarios.schema";
 import { findEventsByUserIdUsuariosOutputSchema } from "@/schemas/usuarios/findEventsByUserId-usuarios.schema";
 import {
-  replaceUsuarioInputSchema,
-  replaceUsuarioOutputSchema,
-} from "@/schemas/usuarios/replace-usuario.schema";
-import {
   updateUsuarioInputSchema,
   updateUsuarioOutputSchema,
 } from "@/schemas/usuarios/update-usuario.schema";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import { handleRoute } from "./handleRoute";
-
-// Define las rutas para la entidad Usuario
-// Params => PathVariable
-// Query => QueryParam
-// Body => RequestBody
 
 const RUTA_USUARIOS = "/usuarios";
 
@@ -93,24 +84,7 @@ export const UsuariosRouter = (app: Elysia) =>
           },
         },
       )
-      .put(
-        "/:id",
-        async ({ params, body, set }) =>
-          handleRoute(async () => {
-            const usuario = await UsuariosController.replace(params.id, body);
-            set.status = 200;
-            return usuario;
-          }),
-        {
-          body: replaceUsuarioInputSchema,
-          params: z.object({
-            id: z.string().describe("El ID del usuario"),
-          }),
-          response: {
-            200: replaceUsuarioOutputSchema,
-          },
-        },
-      )
+
       .patch(
         "/:id",
         async ({ params, body, set }) =>
