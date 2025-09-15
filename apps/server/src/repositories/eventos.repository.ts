@@ -1,4 +1,4 @@
-import type { Prisma } from "@prisma/client";
+import type { Evento, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 
 export type EventoWithCategoriaAndOrganizador = Prisma.EventoGetPayload<{
@@ -43,22 +43,19 @@ type FindManyDBFilters = {
 
 export const EventosRepository = {
   async create(
-    data: Omit<
-      EventoWithCategoriaAndOrganizador,
-      "id" | "createdAt" | "updatedAt"
-    >,
+    data: Omit<Evento, "id" | "createdAt" | "updatedAt">,
   ): Promise<EventoWithCategoriaAndOrganizador | null> {
     try {
       const prismaEvento = await prisma.evento.create({
         data: {
-          categoriaId: data.categoria.id,
+          categoriaId: data.categoriaId,
           cupoMaximo: data.cupoMaximo,
           cupoMinimo: data.cupoMinimo ?? null,
           descripcion: data.descripcion,
           duracion: { ...data.duracion },
           estado: data.estado,
           fechaInicio: data.fechaInicio,
-          organizadorId: data.organizador.id,
+          organizadorId: data.organizadorId,
           precio: data.precio,
           titulo: data.titulo,
           ubicacion: { ...data.ubicacion },
@@ -68,7 +65,7 @@ export const EventosRepository = {
           organizador: true,
         },
       });
-      return mapPrismaEventoToEvento(prismaEvento);
+      return prismaEvento;
     } catch (error) {
       console.error("Error al crear evento:", error);
       return null;

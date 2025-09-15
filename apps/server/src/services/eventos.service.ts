@@ -3,6 +3,7 @@ import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { CategoriasRepository } from "@/repositories/categorias.repository.js";
 import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
+import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema.js";
 import type { CreateEventoDto } from "@/schemas/eventos/evento.input.schema.js";
 import {
   EventosRepository,
@@ -24,7 +25,7 @@ type FindManyFilters = {
 };
 
 export const EventosService = {
-  async create(data: CreateEventoDto) {
+  async create(data: CreateEventoInput) {
     const categoria = await CategoriasRepository.findById(data.categoriaId);
     if (!categoria) {
       throw new NotFoundError("Categoría no encontrada");
@@ -33,15 +34,9 @@ export const EventosService = {
     if (!organizador) {
       throw new NotFoundError("Organizador no encontrado");
     }
-
-    const eventoParaCrear: Omit<
-      EventoWithCategoriaAndOrganizador,
-      "id" | "createdAt" | "updatedAt"
-    > = {
+    const eventoParaCrear: Omit<Evento, "id" | "createdAt" | "updatedAt"> = {
       ...data,
-      categoria: categoria,
       fechaInicio: new Date(data.fechaInicio),
-      organizador: organizador,
     };
     const evento = await EventosRepository.create(eventoParaCrear);
     return evento;

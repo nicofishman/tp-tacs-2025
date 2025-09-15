@@ -1,7 +1,10 @@
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
-  CreateEventoSchema,
+  createEventoInputSchema,
+  createEventoOutputSchema,
+} from "@/schemas/eventos/create-evento.schema";
+import {
   ReplaceEventoSchema,
   UpdateEventoSchema,
 } from "@/schemas/eventos/evento.input.schema";
@@ -139,7 +142,12 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          body: CreateEventoSchema,
+          body: createEventoInputSchema,
+          response: {
+            201: createEventoOutputSchema,
+            400: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .put(

@@ -28,7 +28,7 @@
     "db:generate": "bunx prisma generate",
     "db:migrate": "bunx prisma migrate dev",
     "db:push": "bunx prisma db push",
-    "db:start": "docker compose up -d",
+    "db:start": "docker-compose up -d",
     "db:stop": "docker compose stop",
     "db:studio": "bunx prisma studio",
     "db:watch": "bunx docker compose up",

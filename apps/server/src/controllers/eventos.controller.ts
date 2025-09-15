@@ -1,8 +1,7 @@
 import type { FindEventosQueryDto } from "@/dtos/eventos/input/query-evento.dto";
 import { ValidationError } from "@/exceptions/ValidationError";
+import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema";
 import {
-  type CreateEventoDto,
-  CreateEventoSchema,
   FindEventosQuerySchema,
   IdSchema,
   type ReplaceEventoDto,
@@ -13,15 +12,8 @@ import {
 import { EventosService } from "../services/eventos.service";
 
 export const EventosController = {
-  async create(data: CreateEventoDto) {
-    const resultData = CreateEventoSchema.safeParse(data);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await EventosService.create(resultData.data);
+  async create(data: CreateEventoInput) {
+    return await EventosService.create(data);
   },
 
   async delete(id: string) {
