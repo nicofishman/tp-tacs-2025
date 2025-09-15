@@ -1,28 +1,16 @@
-import { EstadoInscripcion } from "@prisma/client";
+import { type Categoria, EstadoInscripcion, type Evento } from "@prisma/client";
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { CategoriasRepository } from "@/repositories/categorias.repository.js";
 import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
-import type { CreateEventoDto } from "@/schemas/eventos/evento.input.schema.js";
-import type { Evento } from "@/types.js";
+import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema.js";
+import type { FindAllEventoQuery } from "@/schemas/eventos/findAll-evento.schema.js";
+import type { UpdateEventoInput } from "@/schemas/eventos/update-evento.schema.js";
 import { EventosRepository } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
 
-type FindManyFilters = {
-  dateFrom?: string;
-  dateTo?: string;
-  categoriaId?: string;
-  priceMin?: number;
-  priceMax?: number;
-  q?: string;
-  limit?: number;
-  page?: number;
-  orderBy?: "fechaInicio" | "precio";
-  order?: "asc" | "desc";
-};
-
 export const EventosService = {
-  async create(data: CreateEventoDto) {
+  async create(data: CreateEventoInput) {
     const categoria = await CategoriasRepository.findById(data.categoriaId);
     if (!categoria) {
       throw new NotFoundError("Categoría no encontrada");
@@ -31,11 +19,9 @@ export const EventosService = {
     if (!organizador) {
       throw new NotFoundError("Organizador no encontrado");
     }
-
-    const eventoParaCrear: Omit<Evento, "id"> = {
+    const eventoParaCrear: Omit<Evento, "id" | "createdAt" | "updatedAt"> = {
       ...data,
-      categoria: categoria,
-      organizador: organizador,
+      fechaInicio: new Date(data.fechaInicio),
     };
     const evento = await EventosRepository.create(eventoParaCrear);
     return evento;
@@ -47,24 +33,12 @@ export const EventosService = {
       throw new NotFoundError("Evento no encontrado");
     }
   },
-  async findAll() {
-    const eventos = await EventosRepository.findAll();
-    return eventos;
-  },
 
-  async findById(id: string) {
-    const evento = await EventosRepository.findById(id);
-    if (!evento) {
-      throw new NotFoundError("Evento no encontrado");
-    }
-    return evento;
-  },
-
-  async findMany(f: FindManyFilters) {
+  async findAll(f: FindAllEventoQuery) {
     const page = f.page ?? 1;
     const limit = f.limit ?? 20;
 
-    const filtrados = await EventosRepository.findMany({
+    const filtrados = await EventosRepository.findAll({
       categoriaId: f.categoriaId,
       dateFrom: f.dateFrom,
       dateTo: f.dateTo,
@@ -79,9 +53,23 @@ export const EventosService = {
 
     return {
       count: filtrados.length,
-      items: filtrados,
+      items: filtrados.map((evento) => ({
+        ...evento,
+        fechaInicio: evento.fechaInicio.toISOString(),
+      })),
       limit,
       page,
+    };
+  },
+
+  async findById(id: string) {
+    const evento = await EventosRepository.findById(id);
+    if (!evento) {
+      throw new NotFoundError("Evento no encontrado");
+    }
+    return {
+      ...evento,
+      fechaInicio: evento.fechaInicio.toISOString(),
     };
   },
 
@@ -90,6 +78,7 @@ export const EventosService = {
     if (!evento) {
       throw new NotFoundError("Evento no encontrado");
     }
+
     const inscripcionesDelEvento =
       await InscripcionesRepository.findByEventId(eventId);
 
@@ -101,7 +90,13 @@ export const EventosService = {
       (inscripcion) => inscripcion.usuario,
     );
 
-    return participantes;
+    const eventoConParticipantes = {
+      id: evento.id,
+      participantes,
+      titulo: evento.titulo,
+    };
+
+    return eventoConParticipantes;
   },
 
   async registerToEvent(eventId: string, userId: string) {
@@ -132,36 +127,19 @@ export const EventosService = {
       estado = EstadoInscripcion.WAITLIST;
     }
 
-    return await InscripcionesRepository.registerUserToEvent(
+    const response = await InscripcionesRepository.registerUserToEvent(
       eventId,
       userId,
       estado,
     );
-  },
-
-  async replace(id: string, data: CreateEventoDto) {
-    const eventoExistente = await EventosRepository.findById(id);
-    if (!eventoExistente) {
-      throw new NotFoundError("Evento no encontrado");
-    }
-
-    const categoria = await CategoriasRepository.findById(data.categoriaId);
-    if (!categoria) {
-      throw new NotFoundError("Categoría no encontrada");
-    }
-    const organizador = await UsuariosRepository.findById(data.organizadorId);
-    if (!organizador) {
-      throw new NotFoundError("Organizador no encontrado");
-    }
-
-    const eventoParaActualizar: Evento = {
-      ...eventoExistente,
-      ...data,
-      categoria: categoria,
-      organizador: organizador,
+    return {
+      ...response,
+      evento: {
+        ...response.evento,
+        fechaInicio: response.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: response.fechaRegistro.toISOString(),
     };
-    const evento = await EventosRepository.update(id, eventoParaActualizar);
-    return evento;
   },
 
   async unregisterFromEvent(eventId: string, userId: string) {
@@ -199,7 +177,7 @@ export const EventosService = {
     return { message: "Inscripción cancelada exitosamente" };
   },
 
-  async update(id: string, data: Partial<CreateEventoDto>) {
+  async update(id: string, data: UpdateEventoInput) {
     if (Object.keys(data).length === 0) {
       throw new ValidationError(
         "Debes enviar al menos un campo para actualizar",
@@ -211,7 +189,7 @@ export const EventosService = {
       throw new NotFoundError("Evento no encontrado");
     }
 
-    let categoria = null;
+    let categoria: Categoria | null = null;
     if (data.categoriaId) {
       categoria = await CategoriasRepository.findById(data.categoriaId);
       if (!categoria) {
@@ -230,10 +208,17 @@ export const EventosService = {
     const eventoParaActualizar: Evento = {
       ...eventoExistente,
       ...data,
-      categoria: categoria ? categoria : eventoExistente.categoria,
-      organizador: organizador ? organizador : eventoExistente.organizador,
+      fechaInicio: data.fechaInicio
+        ? new Date(data.fechaInicio)
+        : eventoExistente.fechaInicio,
     };
     const evento = await EventosRepository.update(id, eventoParaActualizar);
-    return evento;
+    if (!evento) {
+      throw new NotFoundError("Evento no encontrado");
+    }
+    return {
+      ...evento,
+      fechaInicio: evento.fechaInicio.toISOString(),
+    };
   },
 };

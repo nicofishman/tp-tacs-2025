@@ -1,31 +1,37 @@
-import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
-  CreateUsuarioSchema,
-  RegisterUsuarioSchema,
-  ReplaceUsuarioSchema,
-  UpdateUsuarioSchema,
-} from "@/schemas/usuarios/usuario.input.schema";
+  createUsuarioInputSchema,
+  createUsuarioOutputSchema,
+} from "@/schemas/usuarios/create-usuario.schema";
+import { findAllUsuariosOutputSchema } from "@/schemas/usuarios/findAll-usuarios.schema";
+import { findByIdUsuariosOutputSchema } from "@/schemas/usuarios/findById-usuarios.schema";
+import { findEventsByUserIdUsuariosOutputSchema } from "@/schemas/usuarios/findEventsByUserId-usuarios.schema";
+import {
+  updateUsuarioInputSchema,
+  updateUsuarioOutputSchema,
+} from "@/schemas/usuarios/update-usuario.schema";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import { handleRoute } from "./handleRoute";
-
-// Define las rutas para la entidad Usuario
-// Params => PathVariable
-// Query => QueryParam
-// Body => RequestBody
 
 const RUTA_USUARIOS = "/usuarios";
 
 export const UsuariosRouter = (app: Elysia) =>
-  app.group(RUTA_USUARIOS, (app) =>
+  app.group(RUTA_USUARIOS, { tags: ["Usuarios"] }, (app) =>
     app
-      .get("/", async ({ set }) =>
-        handleRoute(async () => {
-          const usuarios = await UsuariosController.findAll();
-          set.status = 200;
-          return usuarios;
-        }),
+      .get(
+        "/",
+        async ({ set }) =>
+          handleRoute(async () => {
+            const usuarios = await UsuariosController.findAll();
+            set.status = 200;
+            return usuarios;
+          }),
+        {
+          response: {
+            200: findAllUsuariosOutputSchema,
+          },
+        },
       )
       .get(
         "/:id",
@@ -36,11 +42,12 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().describe("El ID del usuario"),
+          }),
+          response: {
+            200: findByIdUsuariosOutputSchema,
+          },
         },
       )
       .get(
@@ -54,27 +61,16 @@ export const UsuariosRouter = (app: Elysia) =>
             return eventos;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().describe("El ID del usuario"),
+          }),
+          response: {
+            200: findEventsByUserIdUsuariosOutputSchema,
+          },
         },
       )
       .post(
         "/",
-        async ({ body, set }) =>
-          handleRoute(async () => {
-            const usuario = await UsuariosController.create(body);
-            set.status = 201;
-            return usuario;
-          }),
-        {
-          body: TypeBoxFromZod(CreateUsuarioSchema),
-        },
-      )
-      .post(
-        "/register",
         async ({ body, set }) =>
           handleRoute(async () => {
             const usuario = await UsuariosController.register(body);
@@ -82,26 +78,13 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: TypeBoxFromZod(RegisterUsuarioSchema),
+          body: createUsuarioInputSchema,
+          response: {
+            201: createUsuarioOutputSchema,
+          },
         },
       )
-      .put(
-        "/:id",
-        async ({ params, body, set }) =>
-          handleRoute(async () => {
-            const usuario = await UsuariosController.replace(params.id, body);
-            set.status = 200;
-            return usuario;
-          }),
-        {
-          body: TypeBoxFromZod(ReplaceUsuarioSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
-        },
-      )
+
       .patch(
         "/:id",
         async ({ params, body, set }) =>
@@ -111,12 +94,13 @@ export const UsuariosRouter = (app: Elysia) =>
             return usuario;
           }),
         {
-          body: TypeBoxFromZod(UpdateUsuarioSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: updateUsuarioInputSchema,
+          params: z.object({
+            id: z.string().describe("El ID del usuario"),
+          }),
+          response: {
+            200: updateUsuarioOutputSchema,
+          },
         },
       )
       .delete(
@@ -128,11 +112,12 @@ export const UsuariosRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().describe("El ID del usuario"),
+          }),
+          response: {
+            204: z.null(),
+          },
         },
       )
       .delete(
@@ -144,11 +129,12 @@ export const UsuariosRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              email: z.string().email(),
-            }),
-          ),
+          params: z.object({
+            email: z.email().describe("El email del usuario"),
+          }),
+          response: {
+            204: z.null(),
+          },
         },
       ),
   );

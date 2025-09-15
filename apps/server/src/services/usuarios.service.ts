@@ -1,44 +1,16 @@
+import type { Usuario } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { ConflictError } from "@/exceptions/ConflictError";
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
-import type {
-  CreateUsuarioDto,
-  RegisterUsuarioDto,
-  ReplaceUsuarioDto,
-  UpdateUsuarioDto,
-} from "@/schemas/usuarios/usuario.input.schema";
-import {
-  mapUsuarioToOutput,
-  mapUsuarioToOutputRegister,
-} from "@/schemas/usuarios/usuario.output.schema";
-import type { Usuario } from "@/types";
+import type { CreateUsuarioInput } from "@/schemas/usuarios/create-usuario.schema";
+import type { UpdateUsuarioInput } from "@/schemas/usuarios/update-usuario.schema";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 
 export const UsuariosService = {
-  async create(data: CreateUsuarioDto) {
-    // Validacion de email repetido
-    const emailExistente = await UsuariosRepository.findByEmail(data.email);
-    if (emailExistente) {
-      throw new ConflictError("El email ya está registrado");
-    }
-
-    // Si no se provee password, asignar una temporal
-    // Genera un hash de una contraseña temporal (por ejemplo, el email + fecha)
-    const temp = data.email + Date.now();
-    const passwordHash = await bcrypt.hash(temp, 10);
-
-    const usuarioParaCrear: Omit<Usuario, "id"> = {
-      ...data,
-      password: passwordHash,
-    };
-    const usuario = await UsuariosRepository.create(usuarioParaCrear);
-    return mapUsuarioToOutput(usuario);
-  },
-
   async delete(id: string) {
     const eliminado = await UsuariosRepository.delete(id);
     if (!eliminado) {
@@ -53,7 +25,7 @@ export const UsuariosService = {
   },
   async findAll() {
     const usuarios = await UsuariosRepository.findAll();
-    return usuarios.map(mapUsuarioToOutput);
+    return usuarios;
   },
 
   async findById(id: string) {
@@ -61,7 +33,7 @@ export const UsuariosService = {
     if (!usuario) {
       throw new NotFoundError("Usuario no encontrado");
     }
-    return mapUsuarioToOutput(usuario);
+    return usuario;
   },
 
   async findEventsByUserId(id: string) {
@@ -72,10 +44,17 @@ export const UsuariosService = {
 
     const inscripciones = await InscripcionesRepository.findByUserId(id);
 
-    return inscripciones;
+    return inscripciones.map((inscripcion) => ({
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    }));
   },
 
-  async register(data: RegisterUsuarioDto) {
+  async register(data: CreateUsuarioInput) {
     // Validacion de email repetido
     const emailExistente = await UsuariosRepository.findByEmail(data.email);
     if (emailExistente) {
@@ -91,27 +70,10 @@ export const UsuariosService = {
     };
 
     const usuario = await UsuariosRepository.create(usuarioParaCrear);
-    return mapUsuarioToOutputRegister(usuario);
+    return usuario;
   },
 
-  async replace(id: string, data: ReplaceUsuarioDto) {
-    // Validacion de email repetido SOLO si se quiere cambiar el email
-    if (data.email) {
-      const emailExistente = await UsuariosRepository.findByEmail(data.email);
-      // Si existe y no es el mismo usuario
-      if (emailExistente && emailExistente.id !== id) {
-        throw new ConflictError("El email ya está registrado");
-      }
-    }
-    // No sobrescribas la contraseña, solo actualiza los campos permitidos
-    const usuarioActualizado = await UsuariosRepository.update(id, data);
-    if (!usuarioActualizado) {
-      throw new NotFoundError("Usuario no encontrado");
-    }
-    return mapUsuarioToOutput(usuarioActualizado);
-  },
-
-  async update(id: string, data: UpdateUsuarioDto) {
+  async update(id: string, data: UpdateUsuarioInput) {
     // Validacion de datos
     if (Object.keys(data).length === 0) {
       throw new ValidationError(
@@ -131,6 +93,6 @@ export const UsuariosService = {
     if (!usuarioActualizado) {
       throw new NotFoundError("Usuario no encontrado");
     }
-    return mapUsuarioToOutput(usuarioActualizado);
+    return usuarioActualizado;
   },
 };

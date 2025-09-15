@@ -1,24 +1,37 @@
-import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
-  CreateInscripcionSchema,
-  UpdateInscripcionSchema,
-} from "@/schemas/inscripciones/inscripcion.input.schema";
+  createInscripcionInputSchema,
+  createInscripcionOutputSchema,
+} from "@/schemas/inscripciones/create-inscripcion.schema";
+import { findAllInscripcionOutputSchema } from "@/schemas/inscripciones/findall-inscripcion.schema";
+import { findByIdInscripcionOutputSchema } from "@/schemas/inscripciones/findById-inscripcion.schema";
+import {
+  updateInscripcionInputSchema,
+  updateInscripcionOutputSchema,
+} from "@/schemas/inscripciones/update-inscripcion.schema";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
 import { handleRoute } from "./handleRoute";
 
 const RUTA_INSCRIPCIONES = "/inscripciones";
 
 export const InscripcionesRouter = (app: Elysia) =>
-  app.group(RUTA_INSCRIPCIONES, (app) =>
+  app.group(RUTA_INSCRIPCIONES, { tags: ["Inscripciones"] }, (app) =>
     app
-      .get("/", async ({ set }) =>
-        handleRoute(async () => {
-          const inscripciones = await InscripcionesController.findAll();
-          set.status = 200;
-          return inscripciones;
-        }),
+      .get(
+        "/",
+        async ({ set }) =>
+          handleRoute(async () => {
+            const inscripciones = await InscripcionesController.findAll();
+            set.status = 200;
+            return inscripciones;
+          }),
+        {
+          response: {
+            200: findAllInscripcionOutputSchema,
+            500: z.object({ error: z.string() }),
+          },
+        },
       )
       .get(
         "/:id",
@@ -31,11 +44,14 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().min(1).describe("El ID de la inscripción"),
+          }),
+          response: {
+            200: findByIdInscripcionOutputSchema,
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .post(
@@ -47,7 +63,12 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          body: TypeBoxFromZod(CreateInscripcionSchema),
+          body: createInscripcionInputSchema,
+          response: {
+            201: createInscripcionOutputSchema,
+            400: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .patch(
@@ -62,12 +83,16 @@ export const InscripcionesRouter = (app: Elysia) =>
             return inscripcion;
           }),
         {
-          body: TypeBoxFromZod(UpdateInscripcionSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: updateInscripcionInputSchema,
+          params: z.object({
+            id: z.string().min(1).describe("El ID de la inscripción"),
+          }),
+          response: {
+            200: updateInscripcionOutputSchema,
+            400: z.object({ error: z.string() }),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .delete(
@@ -79,11 +104,12 @@ export const InscripcionesRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().min(1).describe("El ID de la inscripción"),
+          }),
+          response: {
+            204: z.null(),
+          },
         },
       ),
   );

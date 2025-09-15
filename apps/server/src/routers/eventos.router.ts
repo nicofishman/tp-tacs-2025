@@ -1,57 +1,46 @@
-import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
 import z from "zod";
 import {
-  CreateEventoSchema,
-  ReplaceEventoSchema,
-  UpdateEventoSchema,
-} from "@/schemas/eventos/evento.input.schema";
+  createEventoInputSchema,
+  createEventoOutputSchema,
+} from "@/schemas/eventos/create-evento.schema";
+import {
+  findAllEventoOutputSchema,
+  findAllEventoQuerySchema,
+} from "@/schemas/eventos/findAll-evento.schema";
+import { findByIdEventoOutputSchema } from "@/schemas/eventos/findById-evento.schema";
+import { findParticipantsEventosOutputSchema } from "@/schemas/eventos/findParticipants-eventos.schema";
+import { registerEventoOutputSchema } from "@/schemas/eventos/register-evento.schema";
+import {
+  updateEventoInputSchema,
+  updateEventoOutputSchema,
+} from "@/schemas/eventos/update-evento.schema";
 import { EventosController } from "../controllers/eventos.controller";
 import { handleRoute } from "./handleRoute";
 
 const RUTA_EVENTOS = "/eventos";
 
 export const EventosRouter = (app: Elysia) =>
-  app.group(RUTA_EVENTOS, (app) =>
+  app.group(RUTA_EVENTOS, { tags: ["Eventos"] }, (app) =>
     app
       .get(
         "/",
         async ({ query, set }) =>
           handleRoute(async () => {
-            const filtros = {
-              categoriaId: query.categoriaId,
-              dateFrom: query.dateFrom,
-              dateTo: query.dateTo,
-              limit: query.limit,
-              order: query.order,
-              orderBy: query.orderBy,
-              page: query.page,
-              priceMax: query.priceMax,
-              priceMin: query.priceMin,
-              q: query.q,
-            };
-
-            const result = await EventosController.findMany(filtros);
+            const result = await EventosController.findAll(query);
             set.status = 200;
             return result;
           }),
         {
-          query: TypeBoxFromZod(
-            z.object({
-              categoriaId: z.optional(z.string()),
-              dateFrom: z.optional(z.string()),
-              dateTo: z.optional(z.string()),
-              limit: z.optional(z.number()),
-              order: z.optional(z.union([z.literal("asc"), z.literal("desc")])),
-              orderBy: z.optional(
-                z.union([z.literal("fechaInicio"), z.literal("precio")]),
-              ),
-              page: z.optional(z.number()),
-              priceMax: z.optional(z.number()),
-              priceMin: z.optional(z.number()),
-              q: z.optional(z.string()),
+          query: findAllEventoQuerySchema,
+          response: {
+            200: z.object({
+              count: z.number(),
+              items: findAllEventoOutputSchema,
+              limit: z.number(),
+              page: z.number(),
             }),
-          ),
+          },
         },
       )
       .post(
@@ -66,33 +55,39 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
-          query: TypeBoxFromZod(
-            z.object({
-              user_id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().min(1).describe("El ID del evento"),
+          }),
+          query: z.object({
+            user_id: z.string().min(1).describe("El ID del usuario"),
+          }),
+          response: {
+            200: registerEventoOutputSchema,
+            400: z.object({ error: z.string() }),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .get(
         "/:id/participants",
-        async ({
-          params,
-          set,
-        }: {
-          params: { id: string };
-          set: { status: number };
-        }) =>
+        async ({ params, set }) =>
           handleRoute(async () => {
-            const participantes =
+            const eventoConParticipantes =
               await EventosController.findParticipantsByEvent(params.id);
             set.status = 200;
-            return participantes;
+            return eventoConParticipantes;
           }),
+        {
+          params: z.object({
+            id: z.string().min(1).describe("El ID del evento"),
+          }),
+          response: {
+            200: findParticipantsEventosOutputSchema,
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
+        },
       )
       .get(
         "/:id",
@@ -103,11 +98,14 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().min(1).describe("El ID del evento"),
+          }),
+          response: {
+            200: findByIdEventoOutputSchema,
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .post(
@@ -119,24 +117,12 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          body: TypeBoxFromZod(CreateEventoSchema),
-        },
-      )
-      .put(
-        "/:id",
-        async ({ params, body, set }) =>
-          handleRoute(async () => {
-            const evento = await EventosController.replace(params.id, body);
-            set.status = 200;
-            return evento;
-          }),
-        {
-          body: TypeBoxFromZod(ReplaceEventoSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: createEventoInputSchema,
+          response: {
+            201: createEventoOutputSchema,
+            400: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .patch(
@@ -148,12 +134,16 @@ export const EventosRouter = (app: Elysia) =>
             return evento;
           }),
         {
-          body: TypeBoxFromZod(UpdateEventoSchema),
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          body: updateEventoInputSchema,
+          params: z.object({
+            id: z.string().min(1).describe("El ID del evento"),
+          }),
+          response: {
+            200: updateEventoOutputSchema,
+            400: z.object({ error: z.string() }),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .delete(
@@ -165,22 +155,19 @@ export const EventosRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().min(1).describe("El ID del evento"),
+          }),
+          response: {
+            204: z.null(),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .patch(
         "/:id/register/:userid",
-        async ({
-          params,
-          set,
-        }: {
-          params: { id: string; userid: string };
-          set: { status: number };
-        }) =>
+        async ({ params, set }) =>
           handleRoute(async () => {
             await EventosController.unregisterFromEvent(
               params.id,
@@ -189,5 +176,17 @@ export const EventosRouter = (app: Elysia) =>
             set.status = 204;
             return null;
           }),
+        {
+          params: z.object({
+            id: z.string().min(1).describe("El ID del evento"),
+            userid: z.string().min(1).describe("El ID del usuario"),
+          }),
+          response: {
+            204: z.null(),
+            400: z.object({ error: z.string() }),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
+        },
       ),
   );

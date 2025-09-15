@@ -1,34 +1,30 @@
-import type { Prisma } from "@prisma/client";
+import type { Evento, Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
-import type { Evento } from "@/types";
+
+export type EventoWithCategoriaAndOrganizador = Prisma.EventoGetPayload<{
+  include: { categoria: true; organizador: true };
+}>;
 
 export function mapPrismaEventoToEvento(
-  prismaEvento: Prisma.EventoGetPayload<{
-    include: { categoria: true; organizador: true };
-  }>,
-): Evento {
+  prismaEvento: EventoWithCategoriaAndOrganizador,
+): EventoWithCategoriaAndOrganizador {
   return {
     categoria: prismaEvento.categoria,
+    categoriaId: prismaEvento.categoriaId,
+    createdAt: prismaEvento.createdAt,
     cupoMaximo: prismaEvento.cupoMaximo,
-    cupoMinimo: prismaEvento.cupoMinimo ?? undefined,
+    cupoMinimo: prismaEvento.cupoMinimo ?? null,
     descripcion: prismaEvento.descripcion,
-    duracion:
-      typeof prismaEvento.duracion === "string"
-        ? JSON.parse(prismaEvento.duracion)
-        : prismaEvento.duracion,
+    duracion: prismaEvento.duracion,
     estado: prismaEvento.estado,
-    fechaInicio:
-      prismaEvento.fechaInicio instanceof Date
-        ? prismaEvento.fechaInicio.toISOString()
-        : prismaEvento.fechaInicio,
+    fechaInicio: prismaEvento.fechaInicio,
     id: prismaEvento.id,
     organizador: prismaEvento.organizador,
+    organizadorId: prismaEvento.organizadorId,
     precio: prismaEvento.precio,
     titulo: prismaEvento.titulo,
-    ubicacion:
-      typeof prismaEvento.ubicacion === "string"
-        ? JSON.parse(prismaEvento.ubicacion)
-        : prismaEvento.ubicacion,
+    ubicacion: prismaEvento.ubicacion,
+    updatedAt: prismaEvento.updatedAt,
   };
 }
 
@@ -46,18 +42,20 @@ type FindManyDBFilters = {
 };
 
 export const EventosRepository = {
-  async create(data: Omit<Evento, "id">): Promise<Evento | null> {
+  async create(
+    data: Omit<Evento, "id" | "createdAt" | "updatedAt">,
+  ): Promise<EventoWithCategoriaAndOrganizador | null> {
     try {
       const prismaEvento = await prisma.evento.create({
         data: {
-          categoriaId: data.categoria.id,
+          categoriaId: data.categoriaId,
           cupoMaximo: data.cupoMaximo,
           cupoMinimo: data.cupoMinimo ?? null,
           descripcion: data.descripcion,
           duracion: { ...data.duracion },
           estado: data.estado,
           fechaInicio: data.fechaInicio,
-          organizadorId: data.organizador.id,
+          organizadorId: data.organizadorId,
           precio: data.precio,
           titulo: data.titulo,
           ubicacion: { ...data.ubicacion },
@@ -67,14 +65,14 @@ export const EventosRepository = {
           organizador: true,
         },
       });
-      return mapPrismaEventoToEvento(prismaEvento);
+      return prismaEvento;
     } catch (error) {
       console.error("Error al crear evento:", error);
       return null;
     }
   },
 
-  async delete(id: string): Promise<Evento | null> {
+  async delete(id: string): Promise<EventoWithCategoriaAndOrganizador | null> {
     try {
       const prismaEvento = await prisma.evento.delete({
         include: {
@@ -83,44 +81,16 @@ export const EventosRepository = {
         },
         where: { id },
       });
-      return prismaEvento ? mapPrismaEventoToEvento(prismaEvento) : null;
+      return prismaEvento;
     } catch (error) {
       console.error("Error al eliminar evento:", error);
       return null;
     }
   },
-  async findAll(): Promise<Evento[]> {
-    try {
-      const eventos = await prisma.evento.findMany({
-        include: {
-          categoria: true,
-          organizador: true,
-        },
-      });
-      return eventos.map(mapPrismaEventoToEvento);
-    } catch (error) {
-      console.error("Error al buscar eventos:", error);
-      return [];
-    }
-  },
 
-  async findById(id: string): Promise<Evento | null> {
-    try {
-      const prismaEvento = await prisma.evento.findUnique({
-        include: {
-          categoria: true,
-          organizador: true,
-        },
-        where: { id },
-      });
-      return prismaEvento ? mapPrismaEventoToEvento(prismaEvento) : null;
-    } catch (error) {
-      console.error("Error al buscar evento por ID:", error);
-      return null;
-    }
-  },
-
-  async findMany(f: FindManyDBFilters): Promise<Evento[]> {
+  async findAll(
+    f: FindManyDBFilters,
+  ): Promise<EventoWithCategoriaAndOrganizador[]> {
     try {
       const AND: Prisma.EventoWhereInput[] = [];
 
@@ -157,14 +127,35 @@ export const EventosRepository = {
         where: AND.length ? { AND } : undefined,
       });
 
-      return rows.map(mapPrismaEventoToEvento);
+      return rows;
     } catch (error) {
       console.error("Error al buscar eventos con filtros:", error);
       return [];
     }
   },
 
-  async update(id: string, data: Partial<Evento>): Promise<Evento | null> {
+  async findById(
+    id: string,
+  ): Promise<EventoWithCategoriaAndOrganizador | null> {
+    try {
+      const prismaEvento = await prisma.evento.findUnique({
+        include: {
+          categoria: true,
+          organizador: true,
+        },
+        where: { id },
+      });
+      return prismaEvento;
+    } catch (error) {
+      console.error("Error al buscar evento por ID:", error);
+      return null;
+    }
+  },
+
+  async update(
+    id: string,
+    data: Partial<EventoWithCategoriaAndOrganizador>,
+  ): Promise<EventoWithCategoriaAndOrganizador | null> {
     try {
       const prismaEvento = await prisma.evento.update({
         data: {
@@ -186,10 +177,9 @@ export const EventosRepository = {
         },
         where: { id },
       });
-      return prismaEvento ? mapPrismaEventoToEvento(prismaEvento) : null;
+      return prismaEvento;
     } catch (error) {
-      console.error("Error al actualizar evento:", error);
-      return null;
+      throw new Error("Error al actualizar evento", { cause: error });
     }
   },
 };

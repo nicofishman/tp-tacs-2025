@@ -1,31 +1,12 @@
-import { ValidationError } from "@/exceptions/ValidationError";
-import {
-  type CreateCategoriaDto,
-  CreateCategoriaSchema,
-  IdSchema,
-} from "@/schemas/categorias/categoria.input.schema";
+import type { CreateCategoriaInput } from "@/schemas/categorias/create-categoria.schema";
 import { CategoriasService } from "@/services/categorias.service";
 
 export const CategoriasController = {
-  async create(data: CreateCategoriaDto) {
-    const resultData = CreateCategoriaSchema.safeParse(data);
-    if (!resultData.success) {
-      const message = resultData.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    return await CategoriasService.create(resultData.data);
+  async create(data: CreateCategoriaInput) {
+    return await CategoriasService.create(data);
   },
   async delete(id: string) {
-    const resultId = IdSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
-    await CategoriasService.delete(resultId.data);
+    await CategoriasService.delete(id);
   },
   async deleteByName(nombre: string) {
     await CategoriasService.deleteByName(nombre);
@@ -35,13 +16,6 @@ export const CategoriasController = {
   },
 
   async findById(id: string) {
-    const resultId = IdSchema.safeParse(id);
-    if (!resultId.success) {
-      const message = resultId.error.issues
-        .map((err: { message: string }) => err.message)
-        .join(", ");
-      throw new ValidationError(`Error de validación: ${message}`);
-    }
     return await CategoriasService.findById(id);
   },
 };

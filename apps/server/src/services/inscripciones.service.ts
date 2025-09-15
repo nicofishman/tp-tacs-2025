@@ -1,16 +1,16 @@
 import { NotFoundError } from "@/exceptions/NotFoundError";
 import { ValidationError } from "@/exceptions/ValidationError";
 import { EventosRepository } from "@/repositories/eventos.repository";
-import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
+import {
+  InscripcionesRepository,
+  type InscripcionWithEventoAndUsuario,
+} from "@/repositories/inscripciones.repository";
 import { UsuariosRepository } from "@/repositories/usuarios.repository";
-import type {
-  CreateInscripcionDto,
-  UpdateInscripcionDto,
-} from "@/schemas/inscripciones/inscripcion.input.schema";
-import type { Inscripcion } from "@/types";
+import type { CreateInscripcionInput } from "@/schemas/inscripciones/create-inscripcion.schema";
+import type { updateInscripcionInput } from "@/schemas/inscripciones/update-inscripcion.schema";
 
 export const InscripcionesService = {
-  async create(data: CreateInscripcionDto) {
+  async create(data: CreateInscripcionInput) {
     const usuario = await UsuariosRepository.findById(data.usuarioId);
     if (!usuario) {
       throw new NotFoundError("Usuario no encontrado");
@@ -20,11 +20,13 @@ export const InscripcionesService = {
       throw new NotFoundError("Evento no encontrado");
     }
 
-    const inscripcionParaCrear: Omit<Inscripcion, "id"> = {
+    const inscripcionParaCrear: Omit<InscripcionWithEventoAndUsuario, "id"> = {
       estado: data.estado,
       evento,
-      fechaRegistro: data.fechaRegistro,
+      eventoId: evento.id,
+      fechaRegistro: new Date(data.fechaRegistro),
       usuario,
+      usuarioId: usuario.id,
     };
 
     const inscripcion =
@@ -40,7 +42,14 @@ export const InscripcionesService = {
   },
   async findAll() {
     const inscripciones = await InscripcionesRepository.findAll();
-    return inscripciones;
+    return inscripciones.map((inscripcion) => ({
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    }));
   },
 
   async findById(id: string) {
@@ -48,10 +57,17 @@ export const InscripcionesService = {
     if (!inscripcion) {
       throw new NotFoundError("Inscripción no encontrada");
     }
-    return inscripcion;
+    return {
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    };
   },
 
-  async update(id: string, data: UpdateInscripcionDto) {
+  async update(id: string, data: updateInscripcionInput) {
     if (!data.estado || Object.keys(data).length !== 1) {
       throw new ValidationError(
         "Solo se puede modificar el estado de la inscripción",
@@ -63,7 +79,7 @@ export const InscripcionesService = {
       throw new NotFoundError("Inscripción no encontrada");
     }
 
-    const inscripcionParaActualizar: Inscripcion = {
+    const inscripcionParaActualizar: InscripcionWithEventoAndUsuario = {
       ...inscripcionExistente,
       estado: data.estado,
     };
@@ -71,6 +87,16 @@ export const InscripcionesService = {
       id,
       inscripcionParaActualizar,
     );
-    return inscripcion;
+    if (!inscripcion) {
+      throw new NotFoundError("Inscripción no encontrada");
+    }
+    return {
+      ...inscripcion,
+      evento: {
+        ...inscripcion.evento,
+        fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      },
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+    };
   },
 };

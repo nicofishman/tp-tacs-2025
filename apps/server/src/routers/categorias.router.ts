@@ -1,21 +1,33 @@
-import { TypeBoxFromZod } from "@sinclair/typemap";
 import type { Elysia } from "elysia";
 import z from "zod";
-import { CreateCategoriaSchema } from "@/schemas/categorias/categoria.input.schema";
+import {
+  createCategoriaOutputSchema,
+  createCategoriaSchema,
+} from "@/schemas/categorias/create-categoria.schema";
+import { findAllCategoriaOutputSchema } from "@/schemas/categorias/findAll-categoria.schema";
+import { findByIdCategoriaOutputSchema } from "@/schemas/categorias/findById-categoria.schema";
 import { CategoriasController } from "../controllers/categorias.controller";
 import { handleRoute } from "./handleRoute";
 
 const RUTA_CATEGORIAS = "/categorias";
 
 export const CategoriasRouter = (app: Elysia) =>
-  app.group(RUTA_CATEGORIAS, (app) =>
+  app.group(RUTA_CATEGORIAS, { tags: ["Categorias"] }, (app) =>
     app
-      .get("/", async ({ set }) =>
-        handleRoute(async () => {
-          const categorias = await CategoriasController.findAll();
-          set.status = 200;
-          return categorias;
-        }),
+      .get(
+        "/",
+        async ({ set }) =>
+          handleRoute(async () => {
+            const categorias = await CategoriasController.findAll();
+            set.status = 200;
+            return categorias;
+          }),
+        {
+          response: {
+            200: findAllCategoriaOutputSchema,
+            500: z.object({ error: z.string() }),
+          },
+        },
       )
       .get(
         "/:id",
@@ -26,11 +38,14 @@ export const CategoriasRouter = (app: Elysia) =>
             return categoria;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().min(1).describe("El ID de la categoría"),
+          }),
+          response: {
+            200: findByIdCategoriaOutputSchema,
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .post(
@@ -42,7 +57,12 @@ export const CategoriasRouter = (app: Elysia) =>
             return nuevaCategoria;
           }),
         {
-          body: TypeBoxFromZod(CreateCategoriaSchema),
+          body: createCategoriaSchema,
+          response: {
+            201: createCategoriaOutputSchema,
+            409: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .delete(
@@ -54,11 +74,14 @@ export const CategoriasRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              id: z.string(),
-            }),
-          ),
+          params: z.object({
+            id: z.string().min(1).describe("El ID de la categoría"),
+          }),
+          response: {
+            204: z.null(),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       )
       .delete(
@@ -70,11 +93,14 @@ export const CategoriasRouter = (app: Elysia) =>
             return null;
           }),
         {
-          params: TypeBoxFromZod(
-            z.object({
-              nombre: z.string(),
-            }),
-          ),
+          params: z.object({
+            nombre: z.string().min(1).describe("El nombre de la categoría"),
+          }),
+          response: {
+            204: z.null(),
+            404: z.object({ error: z.string() }),
+            500: z.object({ error: z.string() }),
+          },
         },
       ),
   );
