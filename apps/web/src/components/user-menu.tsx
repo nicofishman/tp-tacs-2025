@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router";
+import { Link } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,22 +7,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { authClient } from "@/lib/auth-client";
+import { useAuth } from "./auth-provider";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";
 
 export default function UserMenu() {
-  const navigate = useNavigate();
-  const { data: session, isPending } = authClient.useSession();
+  const { user, isLoading } = useAuth();
 
-  if (isPending) {
+  if (isLoading) {
     return <Skeleton className="h-9 w-24" />;
   }
 
-  if (!session) {
+  if (!user) {
     return (
       <Button variant="outline" asChild>
-        <Link to="/login">Sign In</Link>
+        <Link to="/sign-in">Sign In</Link>
       </Button>
     );
   }
@@ -30,28 +29,18 @@ export default function UserMenu() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline">{session.user.name}</Button>
+        <Button variant="outline">{user.nombre}</Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="bg-card">
         <DropdownMenuLabel>My Account</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>{session.user.email}</DropdownMenuItem>
+        <DropdownMenuItem>{user.email}</DropdownMenuItem>
         <DropdownMenuItem asChild>
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={() => {
-              authClient.signOut({
-                fetchOptions: {
-                  onSuccess: () => {
-                    navigate("/");
-                  },
-                },
-              });
-            }}
-          >
-            Sign Out
-          </Button>
+          <Link to="/logout">
+            <Button variant="destructive" className="w-full">
+              Sign Out
+            </Button>
+          </Link>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

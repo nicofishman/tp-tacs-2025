@@ -52,7 +52,8 @@
         "useExhaustiveDependencies": {
           "fix": "unsafe",
           "level": "warn"
-        }
+        },
+        "useUniqueElementIds": "off"
       },
       "nursery": {
         "useSortedClasses": {

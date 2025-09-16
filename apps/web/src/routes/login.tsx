@@ -1,13 +1,13 @@
-import { useState } from "react";
-import SignInForm from "@/components/sign-in-form";
-import SignUpForm from "@/components/sign-up-form";
+import { useEffect } from "react";
+import { useNavigate } from "react-router";
 
 export default function Login() {
-  const [showSignIn, setShowSignIn] = useState(false);
+  const navigate = useNavigate();
 
-  return showSignIn ? (
-    <SignInForm onSwitchToSignUp={() => setShowSignIn(false)} />
-  ) : (
-    <SignUpForm onSwitchToSignIn={() => setShowSignIn(true)} />
-  );
+  useEffect(() => {
+    // Redirect old login route to new sign-in route
+    navigate("/sign-in", { replace: true });
+  }, [navigate]);
+
+  return null;
 }

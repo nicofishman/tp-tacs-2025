@@ -15,11 +15,11 @@ export default function Dashboard() {
   return (
     <div className="container mx-auto p-6">
       <h1 className="mb-4 font-bold text-3xl">Dashboard</h1>
-      <p className="text-lg">Welcome back, {user?.name}!</p>
+      <p className="text-lg">Welcome back, {user?.nombre}!</p>
       <div className="mt-6 rounded-lg bg-card p-4 shadow-sm">
         <h2 className="mb-2 font-semibold text-xl">User Information</h2>
         <p>
-          <strong>Name:</strong> {user?.name}
+          <strong>Name:</strong> {user?.nombre}
         </p>
         <p>
           <strong>Email:</strong> {user?.email}

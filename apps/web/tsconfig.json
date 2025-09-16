@@ -8,7 +8,8 @@
     "moduleResolution": "bundler",
     "noEmit": true,
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@server/*": ["../server/src/*"]
     },
     "resolveJsonModule": true,
     "rootDirs": [".", "./.react-router/types"],
@@ -23,10 +24,5 @@
     "**/.server/**/*",
     "**/.client/**/*",
     ".react-router/types/**/*"
-  ],
-  "references": [
-    {
-      "path": "../server"
-    }
   ]
 }
