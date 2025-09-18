@@ -1,5 +1,15 @@
 // routes/create-event.tsx
 
+import { Button } from "@web/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@web/components/ui/card";
+import { Input } from "@web/components/ui/input";
+import { Label } from "@web/components/ui/label";
 import {
   Calendar,
   Clock,
@@ -11,16 +21,6 @@ import {
   X,
 } from "lucide-react";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 // Interfaces basadas en el schema
 interface Duracion {

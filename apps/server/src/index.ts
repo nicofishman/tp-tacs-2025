@@ -20,6 +20,7 @@ export const app = new Elysia()
         },
       },
       path: "/swagger",
+      specPath: "/swagger.json",
     }),
   )
   .use(HealthRouter)

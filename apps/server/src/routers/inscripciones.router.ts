@@ -1,15 +1,15 @@
-import type { Elysia } from "elysia";
-import z from "zod";
 import {
   createInscripcionInputSchema,
   createInscripcionOutputSchema,
-} from "@/schemas/inscripciones/create-inscripcion.schema";
-import { findAllInscripcionOutputSchema } from "@/schemas/inscripciones/findall-inscripcion.schema";
-import { findByIdInscripcionOutputSchema } from "@/schemas/inscripciones/findById-inscripcion.schema";
+} from "@server/schemas/inscripciones/create-inscripcion.schema";
+import { findAllInscripcionOutputSchema } from "@server/schemas/inscripciones/findall-inscripcion.schema";
+import { findByIdInscripcionOutputSchema } from "@server/schemas/inscripciones/findById-inscripcion.schema";
 import {
   updateInscripcionInputSchema,
   updateInscripcionOutputSchema,
-} from "@/schemas/inscripciones/update-inscripcion.schema";
+} from "@server/schemas/inscripciones/update-inscripcion.schema";
+import type { Elysia } from "elysia";
+import z from "zod";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
 import { handleRoute } from "./handleRoute";
 

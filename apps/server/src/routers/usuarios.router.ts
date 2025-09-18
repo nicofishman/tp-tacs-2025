@@ -1,16 +1,16 @@
-import type { Elysia } from "elysia";
-import z from "zod";
 import {
   createUsuarioInputSchema,
   createUsuarioOutputSchema,
-} from "@/schemas/usuarios/create-usuario.schema";
-import { findAllUsuariosOutputSchema } from "@/schemas/usuarios/findAll-usuarios.schema";
-import { findByIdUsuariosOutputSchema } from "@/schemas/usuarios/findById-usuarios.schema";
-import { findEventsByUserIdUsuariosOutputSchema } from "@/schemas/usuarios/findEventsByUserId-usuarios.schema";
+} from "@server/schemas/usuarios/create-usuario.schema";
+import { findAllUsuariosOutputSchema } from "@server/schemas/usuarios/findAll-usuarios.schema";
+import { findByIdUsuariosOutputSchema } from "@server/schemas/usuarios/findById-usuarios.schema";
+import { findEventsByUserIdUsuariosOutputSchema } from "@server/schemas/usuarios/findEventsByUserId-usuarios.schema";
 import {
   updateUsuarioInputSchema,
   updateUsuarioOutputSchema,
-} from "@/schemas/usuarios/update-usuario.schema";
+} from "@server/schemas/usuarios/update-usuario.schema";
+import type { Elysia } from "elysia";
+import z from "zod";
 import { UsuariosController } from "../controllers/usuarios.controller";
 import { handleRoute } from "./handleRoute";
 

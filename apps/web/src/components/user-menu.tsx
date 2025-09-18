@@ -1,4 +1,3 @@
-import { Link } from "react-router";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,7 +5,8 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@web/components/ui/dropdown-menu";
+import { Link } from "react-router";
 import { useAuth } from "./auth-provider";
 import { Button } from "./ui/button";
 import { Skeleton } from "./ui/skeleton";

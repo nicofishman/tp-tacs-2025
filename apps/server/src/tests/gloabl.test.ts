@@ -2,7 +2,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { treaty } from "@elysiajs/eden";
-import { app } from "@/index"; // <- dejá tu import como está
+import { app } from "@server/index"; // <- dejá tu import como está
 
 const api = treaty(app);
 

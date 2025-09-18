@@ -1,12 +1,12 @@
 import type { Usuario } from "@prisma/client";
+import { ConflictError } from "@server/exceptions/ConflictError";
+import { NotFoundError } from "@server/exceptions/NotFoundError";
+import { ValidationError } from "@server/exceptions/ValidationError";
+import { InscripcionesRepository } from "@server/repositories/inscripciones.repository";
+import { UsuariosRepository } from "@server/repositories/usuarios.repository";
+import type { CreateUsuarioInput } from "@server/schemas/usuarios/create-usuario.schema";
+import type { UpdateUsuarioInput } from "@server/schemas/usuarios/update-usuario.schema";
 import bcrypt from "bcryptjs";
-import { ConflictError } from "@/exceptions/ConflictError";
-import { NotFoundError } from "@/exceptions/NotFoundError";
-import { ValidationError } from "@/exceptions/ValidationError";
-import { InscripcionesRepository } from "@/repositories/inscripciones.repository";
-import { UsuariosRepository } from "@/repositories/usuarios.repository";
-import type { CreateUsuarioInput } from "@/schemas/usuarios/create-usuario.schema";
-import type { UpdateUsuarioInput } from "@/schemas/usuarios/update-usuario.schema";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 

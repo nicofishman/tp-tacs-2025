@@ -1,5 +1,5 @@
-import type { CreateUsuarioInput } from "@/schemas/usuarios/create-usuario.schema";
-import type { UpdateUsuarioInput } from "@/schemas/usuarios/update-usuario.schema";
+import type { CreateUsuarioInput } from "@server/schemas/usuarios/create-usuario.schema";
+import type { UpdateUsuarioInput } from "@server/schemas/usuarios/update-usuario.schema";
 import { UsuariosService } from "../services/usuarios.service";
 
 export const UsuariosController = {

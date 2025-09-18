@@ -1,7 +1,7 @@
-import { ConflictError } from "@/exceptions/ConflictError";
-import { NotFoundError } from "@/exceptions/NotFoundError";
-import { CategoriasRepository } from "@/repositories/categorias.repository";
-import type { CreateCategoriaInput } from "@/schemas/categorias/create-categoria.schema";
+import { ConflictError } from "@server/exceptions/ConflictError";
+import { NotFoundError } from "@server/exceptions/NotFoundError";
+import { CategoriasRepository } from "@server/repositories/categorias.repository";
+import type { CreateCategoriaInput } from "@server/schemas/categorias/create-categoria.schema";
 
 export const CategoriasService = {
   async create(data: CreateCategoriaInput) {

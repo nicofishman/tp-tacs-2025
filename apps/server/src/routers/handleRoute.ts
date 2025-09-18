@@ -1,6 +1,6 @@
-import { ConflictError } from "@/exceptions/ConflictError";
-import { NotFoundError } from "@/exceptions/NotFoundError";
-import { ValidationError } from "@/exceptions/ValidationError";
+import { ConflictError } from "@server/exceptions/ConflictError";
+import { NotFoundError } from "@server/exceptions/NotFoundError";
+import { ValidationError } from "@server/exceptions/ValidationError";
 
 // Handler genérico para rutas que captura errores y responde con el formato adecuado.
 // Usa las excepciones personalizadas para determinar el código de estado y el mensaje.

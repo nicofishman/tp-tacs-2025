@@ -17,7 +17,7 @@
     "noUncheckedIndexedAccess": false,
 
     "paths": {
-      "@/*": ["src/*"]
+      "@server/*": ["../server/src/*"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,

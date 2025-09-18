@@ -1,5 +1,5 @@
 import type { Evento, Prisma } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@server/lib/prisma";
 
 export type EventoWithCategoriaAndOrganizador = Prisma.EventoGetPayload<{
   include: { categoria: true; organizador: true };

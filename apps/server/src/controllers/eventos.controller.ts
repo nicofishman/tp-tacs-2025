@@ -1,6 +1,6 @@
-import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema";
-import type { FindAllEventoQuery } from "@/schemas/eventos/findAll-evento.schema";
-import type { UpdateEventoInput } from "@/schemas/eventos/update-evento.schema";
+import type { CreateEventoInput } from "@server/schemas/eventos/create-evento.schema";
+import type { FindAllEventoQuery } from "@server/schemas/eventos/findAll-evento.schema";
+import type { UpdateEventoInput } from "@server/schemas/eventos/update-evento.schema";
 import { EventosService } from "../services/eventos.service";
 
 export const EventosController = {

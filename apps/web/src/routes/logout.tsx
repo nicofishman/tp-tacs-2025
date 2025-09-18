@@ -1,7 +1,7 @@
+import { useAuth } from "@web/components/auth-provider";
+import Loader from "@web/components/loader";
 import { useEffect } from "react";
 import { useNavigate } from "react-router";
-import { useAuth } from "@/components/auth-provider";
-import Loader from "@/components/loader";
 
 export default function Logout() {
   const { signOut } = useAuth();

@@ -1,20 +1,20 @@
-import type { Elysia } from "elysia";
-import z from "zod";
 import {
   createEventoInputSchema,
   createEventoOutputSchema,
-} from "@/schemas/eventos/create-evento.schema";
+} from "@server/schemas/eventos/create-evento.schema";
 import {
   findAllEventoOutputSchema,
   findAllEventoQuerySchema,
-} from "@/schemas/eventos/findAll-evento.schema";
-import { findByIdEventoOutputSchema } from "@/schemas/eventos/findById-evento.schema";
-import { findParticipantsEventosOutputSchema } from "@/schemas/eventos/findParticipants-eventos.schema";
-import { registerEventoOutputSchema } from "@/schemas/eventos/register-evento.schema";
+} from "@server/schemas/eventos/findAll-evento.schema";
+import { findByIdEventoOutputSchema } from "@server/schemas/eventos/findById-evento.schema";
+import { findParticipantsEventosOutputSchema } from "@server/schemas/eventos/findParticipants-eventos.schema";
+import { registerEventoOutputSchema } from "@server/schemas/eventos/register-evento.schema";
 import {
   updateEventoInputSchema,
   updateEventoOutputSchema,
-} from "@/schemas/eventos/update-evento.schema";
+} from "@server/schemas/eventos/update-evento.schema";
+import type { Elysia } from "elysia";
+import z from "zod";
 import { EventosController } from "../controllers/eventos.controller";
 import { handleRoute } from "./handleRoute";
 

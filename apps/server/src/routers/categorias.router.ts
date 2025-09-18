@@ -1,11 +1,11 @@
-import type { Elysia } from "elysia";
-import z from "zod";
 import {
   createCategoriaOutputSchema,
   createCategoriaSchema,
-} from "@/schemas/categorias/create-categoria.schema";
-import { findAllCategoriaOutputSchema } from "@/schemas/categorias/findAll-categoria.schema";
-import { findByIdCategoriaOutputSchema } from "@/schemas/categorias/findById-categoria.schema";
+} from "@server/schemas/categorias/create-categoria.schema";
+import { findAllCategoriaOutputSchema } from "@server/schemas/categorias/findAll-categoria.schema";
+import { findByIdCategoriaOutputSchema } from "@server/schemas/categorias/findById-categoria.schema";
+import type { Elysia } from "elysia";
+import z from "zod";
 import { CategoriasController } from "../controllers/categorias.controller";
 import { handleRoute } from "./handleRoute";
 

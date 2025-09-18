@@ -1,5 +1,5 @@
-import type { CreateCategoriaInput } from "@/schemas/categorias/create-categoria.schema";
-import { CategoriasService } from "@/services/categorias.service";
+import type { CreateCategoriaInput } from "@server/schemas/categorias/create-categoria.schema";
+import { CategoriasService } from "@server/services/categorias.service";
 
 export const CategoriasController = {
   async create(data: CreateCategoriaInput) {
