@@ -1,4 +1,4 @@
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@server/lib/prisma";
 import type { Usuario } from "../types";
 
 export const UsuariosRepository = {

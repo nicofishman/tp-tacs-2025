@@ -1,11 +1,11 @@
 import { type Categoria, EstadoInscripcion, type Evento } from "@prisma/client";
-import { NotFoundError } from "@/exceptions/NotFoundError";
-import { ValidationError } from "@/exceptions/ValidationError";
-import { CategoriasRepository } from "@/repositories/categorias.repository.js";
-import { UsuariosRepository } from "@/repositories/usuarios.repository.js";
-import type { CreateEventoInput } from "@/schemas/eventos/create-evento.schema.js";
-import type { FindAllEventoQuery } from "@/schemas/eventos/findAll-evento.schema.js";
-import type { UpdateEventoInput } from "@/schemas/eventos/update-evento.schema.js";
+import { NotFoundError } from "@server/exceptions/NotFoundError";
+import { ValidationError } from "@server/exceptions/ValidationError";
+import { CategoriasRepository } from "@server/repositories/categorias.repository.js";
+import { UsuariosRepository } from "@server/repositories/usuarios.repository.js";
+import type { CreateEventoInput } from "@server/schemas/eventos/create-evento.schema.js";
+import type { FindAllEventoQuery } from "@server/schemas/eventos/findAll-evento.schema.js";
+import type { UpdateEventoInput } from "@server/schemas/eventos/update-evento.schema.js";
 import { EventosRepository } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
 
@@ -132,6 +132,7 @@ export const EventosService = {
       userId,
       estado,
     );
+
     return {
       ...response,
       evento: {

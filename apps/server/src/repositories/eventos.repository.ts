@@ -1,5 +1,5 @@
 import type { Evento, Prisma } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@server/lib/prisma";
 
 export type EventoWithCategoriaAndOrganizador = Prisma.EventoGetPayload<{
   include: { categoria: true; organizador: true };
@@ -150,6 +150,14 @@ export const EventosRepository = {
       console.error("Error al buscar evento por ID:", error);
       return null;
     }
+  },
+  async findByUserId(
+    userId: string,
+  ): Promise<EventoWithCategoriaAndOrganizador[]> {
+    return prisma.evento.findMany({
+      include: { categoria: true, organizador: true },
+      where: { organizadorId: userId },
+    });
   },
 
   async update(

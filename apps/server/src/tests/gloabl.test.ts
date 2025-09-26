@@ -2,7 +2,7 @@
 
 import { describe, expect, it } from "bun:test";
 import { treaty } from "@elysiajs/eden";
-import { app } from "@/index"; // <- dejá tu import como está
+import { app } from "@server/index";
 
 const api = treaty(app);
 
@@ -32,7 +32,7 @@ describe("Health Check Tests", () => {
 
 describe("Create Users Tests", () => {
   it("Register a user and retrieve their information", async () => {
-    const response = await api.usuarios.register.post({
+    const response = await api.usuarios.post({
       email: EMAIL_NICOLAS,
       nombre: "Nicolas Fisshman",
       password: "securepassword",
@@ -43,7 +43,10 @@ describe("Create Users Tests", () => {
     if (!response.data) {
       throw new Error("User registration failed: response.data is null");
     }
-    const responseGet = await api.usuarios({ id: response.data.id }).get();
+
+    const responseGet = await api
+      .usuarios({ id: (response.data as any).id })
+      .get();
     expect(responseGet.status).toBe(200);
     expect(responseGet.data).toHaveProperty("nombre", "Nicolas Fisshman");
     expect(responseGet.data).toHaveProperty("email", EMAIL_NICOLAS);
@@ -63,13 +66,16 @@ describe("Create category tests", () => {
       nombre: CATEGORIA_NOMBRE,
     });
     expect(response.status).toBe(201);
+
     expect(response.data).toHaveProperty("id");
     expect(response.data).toHaveProperty("nombre", CATEGORIA_NOMBRE);
 
     if (!response.data) {
       throw new Error("Category creation failed: response.data is null");
     }
-    const responseGet = await api.categorias({ id: response.data.id }).get();
+    const responseGet = await api
+      .categorias({ id: (response.data as any).id })
+      .get();
     expect(responseGet.status).toBe(200);
     expect(responseGet.data).toHaveProperty("nombre", CATEGORIA_NOMBRE);
   });
@@ -84,7 +90,7 @@ describe("Create category tests", () => {
 
 describe("Events API", () => {
   it("Create an event", async () => {
-    const userResponse = await api.usuarios.register.post({
+    const userResponse = await api.usuarios.post({
       email: EMAIL_RAMIRO,
       nombre: "Ramiro Remersaro",
       password: "supersecurepassword",
@@ -93,7 +99,7 @@ describe("Events API", () => {
     if (!userResponse.data) {
       throw new Error("User registration failed: userResponse.data is null");
     }
-    const idOrganizador = userResponse.data.id;
+    const idOrganizador = (userResponse.data as any).id;
 
     const categoriaResponse = await api.categorias.post({
       nombre: CATEGORIA_NOMBRE_2,
@@ -103,7 +109,7 @@ describe("Events API", () => {
         "Category creation failed: categoriaResponse.data is null",
       );
     }
-    const idCategoria = categoriaResponse.data.id;
+    const idCategoria = (categoriaResponse.data as any).id;
 
     const eventoResponse = await api.eventos.post({
       categoriaId: idCategoria,
@@ -122,6 +128,7 @@ describe("Events API", () => {
         lng: -122.4194,
       },
     });
+
     expect(eventoResponse.status).toBe(201);
     expect(eventoResponse.data).toHaveProperty("id");
     expect(eventoResponse.data).toHaveProperty(
@@ -138,7 +145,7 @@ describe("Events API", () => {
 describe("Inscriptions API", () => {
   it("Register to event", async () => {
     // Crear usuario y evento para la inscripción
-    const userResponse = await api.usuarios.register.post({
+    const userResponse = await api.usuarios.post({
       email: EMAIL_EITAN,
       nombre: "Eitan Fiszer",
       password: "inscripcion123",
@@ -147,7 +154,7 @@ describe("Inscriptions API", () => {
     if (!userResponse.data) {
       throw new Error("User registration failed: userResponse.data is null");
     }
-    const idUsuario = userResponse.data.id;
+    const idUsuario = (userResponse.data as any).id;
 
     const categoriaResponse = await api.categorias.post({
       nombre: CATEGORIA_NOMBRE_3,
@@ -157,7 +164,7 @@ describe("Inscriptions API", () => {
         "Category creation failed: categoriaResponse.data is null",
       );
     }
-    const idCategoria = categoriaResponse.data.id;
+    const idCategoria = (categoriaResponse.data as any).id;
 
     const eventoResponse = await api.eventos.post({
       categoriaId: idCategoria,
@@ -179,11 +186,11 @@ describe("Inscriptions API", () => {
     if (!eventoResponse.data) {
       throw new Error("Event creation failed: eventoResponse.data is null");
     }
-    const idEvento = eventoResponse.data.id;
+    const idEvento = (eventoResponse.data as any).id;
 
     // Crear la inscripción
 
-    const userInscripcionResponse = await api.usuarios.register.post({
+    const userInscripcionResponse = await api.usuarios.post({
       email: EMAIL_ALAN,
       nombre: "Alan Turing",
       password: "alan123",
@@ -197,7 +204,7 @@ describe("Inscriptions API", () => {
       .eventos({ id: idEvento })
       .register.post(
         {},
-        { query: { user_id: userInscripcionResponse.data.id } },
+        { query: { user_id: (userInscripcionResponse.data as any).id } },
       );
 
     expect(eventoInscripcionResponse.status).toBe(200);
@@ -205,13 +212,14 @@ describe("Inscriptions API", () => {
     const participantsResponse = await api
       .eventos({ id: idEvento })
       .participants.get();
+
     expect(participantsResponse.status).toBe(200);
     if (!participantsResponse.data) {
       throw new Error("Participants response data is null");
     }
-    expect(participantsResponse.data[0]).toHaveProperty(
+    expect(participantsResponse.data.participantes?.[0]).toHaveProperty(
       "id",
-      userInscripcionResponse.data.id,
+      (userInscripcionResponse.data as any).id,
     );
   });
 });

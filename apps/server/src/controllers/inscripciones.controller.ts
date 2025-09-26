@@ -1,6 +1,6 @@
-import type { CreateInscripcionInput } from "@/schemas/inscripciones/create-inscripcion.schema";
-import type { updateInscripcionInput } from "@/schemas/inscripciones/update-inscripcion.schema";
-import { InscripcionesService } from "@/services/inscripciones.service";
+import type { CreateInscripcionInput } from "@server/schemas/inscripciones/create-inscripcion.schema";
+import type { updateInscripcionInput } from "@server/schemas/inscripciones/update-inscripcion.schema";
+import { InscripcionesService } from "@server/services/inscripciones.service";
 
 export const InscripcionesController = {
   async create(data: CreateInscripcionInput) {

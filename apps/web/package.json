@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@elysiajs/eden": "^1.4.1",
+    "@elysiajs/eden": "1.4.1",
     "@react-router/fs-routes": "^7.6.1",
     "@react-router/node": "^7.6.1",
     "@react-router/serve": "^7.6.1",

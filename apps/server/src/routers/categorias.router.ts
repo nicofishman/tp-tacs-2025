@@ -1,13 +1,12 @@
-import type { Elysia } from "elysia";
-import z from "zod";
 import {
   createCategoriaOutputSchema,
   createCategoriaSchema,
-} from "@/schemas/categorias/create-categoria.schema";
-import { findAllCategoriaOutputSchema } from "@/schemas/categorias/findAll-categoria.schema";
-import { findByIdCategoriaOutputSchema } from "@/schemas/categorias/findById-categoria.schema";
+} from "@server/schemas/categorias/create-categoria.schema";
+import { findAllCategoriaOutputSchema } from "@server/schemas/categorias/findAll-categoria.schema";
+import { findByIdCategoriaOutputSchema } from "@server/schemas/categorias/findById-categoria.schema";
+import type { Elysia } from "elysia";
+import z from "zod";
 import { CategoriasController } from "../controllers/categorias.controller";
-import { handleRoute } from "./handleRoute";
 
 const RUTA_CATEGORIAS = "/categorias";
 
@@ -16,12 +15,10 @@ export const CategoriasRouter = (app: Elysia) =>
     app
       .get(
         "/",
-        async ({ set }) =>
-          handleRoute(async () => {
-            const categorias = await CategoriasController.findAll();
-            set.status = 200;
-            return categorias;
-          }),
+        async ({ status }) => {
+          const categorias = await CategoriasController.findAll();
+          return status(200, categorias);
+        },
         {
           response: {
             200: findAllCategoriaOutputSchema,
@@ -31,12 +28,10 @@ export const CategoriasRouter = (app: Elysia) =>
       )
       .get(
         "/:id",
-        async ({ params, set }) =>
-          handleRoute(async () => {
-            const categoria = await CategoriasController.findById(params.id);
-            set.status = 200;
-            return categoria;
-          }),
+        async ({ params, status }) => {
+          const categoria = await CategoriasController.findById(params.id);
+          return status(200, categoria);
+        },
         {
           params: z.object({
             id: z.string().min(1).describe("El ID de la categoría"),
@@ -50,12 +45,10 @@ export const CategoriasRouter = (app: Elysia) =>
       )
       .post(
         "/",
-        async ({ body, set }) =>
-          handleRoute(async () => {
-            const nuevaCategoria = await CategoriasController.create(body);
-            set.status = 201;
-            return nuevaCategoria;
-          }),
+        async ({ body, status }) => {
+          const nuevaCategoria = await CategoriasController.create(body);
+          return status(201, nuevaCategoria);
+        },
         {
           body: createCategoriaSchema,
           response: {
@@ -67,12 +60,10 @@ export const CategoriasRouter = (app: Elysia) =>
       )
       .delete(
         "/:id",
-        async ({ params, set }) =>
-          handleRoute(async () => {
-            await CategoriasController.delete(params.id);
-            set.status = 204;
-            return null;
-          }),
+        async ({ params, status }) => {
+          await CategoriasController.delete(params.id);
+          return status(204, null);
+        },
         {
           params: z.object({
             id: z.string().min(1).describe("El ID de la categoría"),
@@ -86,12 +77,10 @@ export const CategoriasRouter = (app: Elysia) =>
       )
       .delete(
         "/nombres/:nombre",
-        async ({ params, set }) =>
-          handleRoute(async () => {
-            await CategoriasController.deleteByName(params.nombre);
-            set.status = 204;
-            return null;
-          }),
+        async ({ params, status }) => {
+          await CategoriasController.deleteByName(params.nombre);
+          return status(204, null);
+        },
         {
           params: z.object({
             nombre: z.string().min(1).describe("El nombre de la categoría"),

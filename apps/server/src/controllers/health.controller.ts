@@ -1,5 +1,5 @@
-import { ConflictError } from "@/exceptions/ConflictError";
-import { prisma } from "@/lib/prisma";
+import { ConflictError } from "@server/exceptions/ConflictError";
+import { prisma } from "@server/lib/prisma";
 
 export const HealthController = {
   async checkHealth() {

@@ -1,5 +1,5 @@
 import { EstadoInscripcion, type Prisma } from "@prisma/client";
-import { prisma } from "@/lib/prisma";
+import { prisma } from "@server/lib/prisma";
 import { mapPrismaEventoToEvento } from "./eventos.repository";
 
 export type InscripcionWithEventoAndUsuario = Prisma.InscripcionGetPayload<{

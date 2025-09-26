@@ -1,6 +1,6 @@
-import type { CategoriaOutputDto } from "@/dtos/categorias/output/categoria.dto";
-import type { UsuarioOutputDto } from "@/dtos/usuarios/output/usuario.dto";
-import type { Duracion, Ubicacion } from "@/types";
+import type { CategoriaOutputDto } from "@server/dtos/categorias/output/categoria.dto";
+import type { UsuarioOutputDto } from "@server/dtos/usuarios/output/usuario.dto";
+import type { Duracion, Ubicacion } from "@server/types";
 
 export interface EventoOutputDto {
   id: string;

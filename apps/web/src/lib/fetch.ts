@@ -1,4 +1,4 @@
-import { edenFetch } from "@elysiajs/eden";
+import { edenTreaty } from "@elysiajs/eden";
 import type { App } from "@server/types";
 
-export const fetch = edenFetch<App>("http://localhost:3000");
+export const api = edenTreaty<App>("http://localhost:3000");

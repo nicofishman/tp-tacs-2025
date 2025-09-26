@@ -1,17 +1,17 @@
-import type { Elysia } from "elysia";
-import z from "zod";
+import { ConflictError } from "@server/exceptions/ConflictError";
 import {
   createInscripcionInputSchema,
   createInscripcionOutputSchema,
-} from "@/schemas/inscripciones/create-inscripcion.schema";
-import { findAllInscripcionOutputSchema } from "@/schemas/inscripciones/findall-inscripcion.schema";
-import { findByIdInscripcionOutputSchema } from "@/schemas/inscripciones/findById-inscripcion.schema";
+} from "@server/schemas/inscripciones/create-inscripcion.schema";
+import { findAllInscripcionOutputSchema } from "@server/schemas/inscripciones/findall-inscripcion.schema";
+import { findByIdInscripcionOutputSchema } from "@server/schemas/inscripciones/findById-inscripcion.schema";
 import {
   updateInscripcionInputSchema,
   updateInscripcionOutputSchema,
-} from "@/schemas/inscripciones/update-inscripcion.schema";
+} from "@server/schemas/inscripciones/update-inscripcion.schema";
+import type { Elysia } from "elysia";
+import z from "zod";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
-import { handleRoute } from "./handleRoute";
 
 const RUTA_INSCRIPCIONES = "/inscripciones";
 
@@ -20,12 +20,10 @@ export const InscripcionesRouter = (app: Elysia) =>
     app
       .get(
         "/",
-        async ({ set }) =>
-          handleRoute(async () => {
-            const inscripciones = await InscripcionesController.findAll();
-            set.status = 200;
-            return inscripciones;
-          }),
+        async ({ status }) => {
+          const inscripciones = await InscripcionesController.findAll();
+          return status(200, inscripciones);
+        },
         {
           response: {
             200: findAllInscripcionOutputSchema,
@@ -35,14 +33,10 @@ export const InscripcionesRouter = (app: Elysia) =>
       )
       .get(
         "/:id",
-        async ({ params, set }) =>
-          handleRoute(async () => {
-            const inscripcion = await InscripcionesController.findById(
-              params.id,
-            );
-            set.status = 200;
-            return inscripcion;
-          }),
+        async ({ params, status }) => {
+          const inscripcion = await InscripcionesController.findById(params.id);
+          return status(200, inscripcion);
+        },
         {
           params: z.object({
             id: z.string().min(1).describe("El ID de la inscripción"),
@@ -56,12 +50,21 @@ export const InscripcionesRouter = (app: Elysia) =>
       )
       .post(
         "/",
-        async ({ body, set }) =>
-          handleRoute(async () => {
-            const inscripcion = await InscripcionesController.create(body);
-            set.status = 201;
-            return inscripcion;
-          }),
+        async ({ body, status }) => {
+          const inscripcion = await InscripcionesController.create(body);
+
+          if (!inscripcion) {
+            throw new ConflictError("Error al crear la inscripción");
+          }
+          return status(201, {
+            ...inscripcion,
+            evento: {
+              ...inscripcion.evento,
+              fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+            },
+            fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+          });
+        },
         {
           body: createInscripcionInputSchema,
           response: {
@@ -73,15 +76,13 @@ export const InscripcionesRouter = (app: Elysia) =>
       )
       .patch(
         "/:id",
-        async ({ params, body, set }) =>
-          handleRoute(async () => {
-            const inscripcion = await InscripcionesController.update(
-              params.id,
-              body,
-            );
-            set.status = 200;
-            return inscripcion;
-          }),
+        async ({ params, body, status }) => {
+          const inscripcion = await InscripcionesController.update(
+            params.id,
+            body,
+          );
+          return status(200, inscripcion);
+        },
         {
           body: updateInscripcionInputSchema,
           params: z.object({
@@ -97,12 +98,10 @@ export const InscripcionesRouter = (app: Elysia) =>
       )
       .delete(
         "/:id",
-        async ({ params, set }) =>
-          handleRoute(async () => {
-            await InscripcionesController.delete(params.id);
-            set.status = 204;
-            return null;
-          }),
+        async ({ params, status }) => {
+          await InscripcionesController.delete(params.id);
+          return status(204, null);
+        },
         {
           params: z.object({
             id: z.string().min(1).describe("El ID de la inscripción"),

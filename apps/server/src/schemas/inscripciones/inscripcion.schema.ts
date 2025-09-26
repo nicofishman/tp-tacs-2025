@@ -6,7 +6,7 @@ import { usuarioSchema } from "../usuarios/usuario.schema";
 export const inscripcionSchema = z.object({
   estado: z.enum(EstadoInscripcion),
   eventoId: eventoSchema.shape.id,
-  fechaRegistro: z.iso.date({
+  fechaRegistro: z.iso.datetime({
     error: "La fecha de registro debe ser un string",
   }),
   id: z.string().min(1, { error: "El ID de inscripción no puede estar vacío" }),

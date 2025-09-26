@@ -1,13 +1,13 @@
-import { NotFoundError } from "@/exceptions/NotFoundError";
-import { ValidationError } from "@/exceptions/ValidationError";
-import { EventosRepository } from "@/repositories/eventos.repository";
+import { NotFoundError } from "@server/exceptions/NotFoundError";
+import { ValidationError } from "@server/exceptions/ValidationError";
+import { EventosRepository } from "@server/repositories/eventos.repository";
 import {
   InscripcionesRepository,
   type InscripcionWithEventoAndUsuario,
-} from "@/repositories/inscripciones.repository";
-import { UsuariosRepository } from "@/repositories/usuarios.repository";
-import type { CreateInscripcionInput } from "@/schemas/inscripciones/create-inscripcion.schema";
-import type { updateInscripcionInput } from "@/schemas/inscripciones/update-inscripcion.schema";
+} from "@server/repositories/inscripciones.repository";
+import { UsuariosRepository } from "@server/repositories/usuarios.repository";
+import type { CreateInscripcionInput } from "@server/schemas/inscripciones/create-inscripcion.schema";
+import type { updateInscripcionInput } from "@server/schemas/inscripciones/update-inscripcion.schema";
 
 export const InscripcionesService = {
   async create(data: CreateInscripcionInput) {

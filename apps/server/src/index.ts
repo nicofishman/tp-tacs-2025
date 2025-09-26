@@ -1,6 +1,9 @@
 import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import z from "zod";
+import { ConflictError } from "./exceptions/ConflictError";
+import { NotFoundError } from "./exceptions/NotFoundError";
+import { ValidationError } from "./exceptions/ValidationError";
 import { CategoriasRouter } from "./routers/categorias.router";
 import { EventosRouter } from "./routers/eventos.router";
 import { HealthRouter } from "./routers/health.router";
@@ -22,6 +25,30 @@ export const app = new Elysia()
       path: "/swagger",
     }),
   )
+  .error({
+    ConflictError,
+    NotFoundError,
+    ValidationError,
+  })
+  .onError(({ error, status, code }) => {
+    switch (code) {
+      case "ConflictError":
+        return status(409, { error: error.message });
+      case "NotFoundError":
+        return status(404, { error: error.message });
+      case "ValidationError":
+        return status(400, { error: error.message });
+      case "VALIDATION":
+        return status(400, { error: error.customError });
+      default:
+        if ("status" in error) {
+          return status(error.status, { error: error.message });
+        }
+        console.error(error);
+
+        return status(500, { error: "Error interno del servidor" });
+    }
+  })
   .use(HealthRouter)
   .use(UsuariosRouter)
   .use(EventosRouter)
