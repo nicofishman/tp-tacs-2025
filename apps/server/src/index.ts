@@ -4,6 +4,7 @@ import z from "zod";
 import { ConflictError } from "./exceptions/ConflictError";
 import { NotFoundError } from "./exceptions/NotFoundError";
 import { ValidationError } from "./exceptions/ValidationError";
+import { betterAuthElysia } from "./lib/auth";
 import { createContextualLogger, logger } from "./lib/logger";
 import { CategoriasRouter } from "./routers/categorias.router";
 import { EventosRouter } from "./routers/eventos.router";
@@ -59,11 +60,13 @@ export const app = new Elysia()
   .derive(({ request }) => ({
     logger: createContextualLogger(request),
   }))
+  .use(betterAuthElysia)
   .use(HealthRouter)
   .use(UsuariosRouter)
   .use(EventosRouter)
   .use(CategoriasRouter)
   .use(InscripcionesRouter)
+  .get("/", ({ user }) => `Hello World ${user?.name}`, { auth: true })
   .listen(3000);
 
 console.log("🚀 Servidor corriendo en http://localhost:3000");
