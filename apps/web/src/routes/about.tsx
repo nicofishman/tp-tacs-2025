@@ -1,5 +1,6 @@
 import { Heart, Lightbulb, Target, Users } from "lucide-react";
 
+// biome-ignore lint/suspicious/noExplicitAny: temporal
 export function meta(): any[] {
   return [
     { title: "Acerca de Nosotros - Mi Aplicación" },

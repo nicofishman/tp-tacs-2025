@@ -15,13 +15,13 @@ import {
   updateEventoOutputSchema,
 } from "@server/schemas/eventos/update-evento.schema";
 import { inscripcionSchema } from "@server/schemas/inscripciones/inscripcion.schema";
-import type Elysia from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { EventosController } from "../controllers/eventos.controller";
 
 const RUTA_EVENTOS = "/eventos";
 
-export const EventosRouter = (app: Elysia) =>
+export const EventosRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_EVENTOS, { tags: ["Eventos"] }, (app) =>
     app
       .get(

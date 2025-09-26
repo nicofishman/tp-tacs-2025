@@ -4,13 +4,13 @@ import {
 } from "@server/schemas/categorias/create-categoria.schema";
 import { findAllCategoriaOutputSchema } from "@server/schemas/categorias/findAll-categoria.schema";
 import { findByIdCategoriaOutputSchema } from "@server/schemas/categorias/findById-categoria.schema";
-import type { Elysia } from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { CategoriasController } from "../controllers/categorias.controller";
 
 const RUTA_CATEGORIAS = "/categorias";
 
-export const CategoriasRouter = (app: Elysia) =>
+export const CategoriasRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_CATEGORIAS, { tags: ["Categorias"] }, (app) =>
     app
       .get(

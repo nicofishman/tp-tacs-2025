@@ -6,6 +6,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { cn } from "../lib/utils";
 
+// biome-ignore lint/suspicious/noExplicitAny: temporal
 export function meta(): any[] {
   return [
     { title: "Contacto - Mi Aplicación" },
