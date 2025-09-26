@@ -9,13 +9,13 @@ import {
   updateInscripcionInputSchema,
   updateInscripcionOutputSchema,
 } from "@server/schemas/inscripciones/update-inscripcion.schema";
-import type { Elysia } from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
 
 const RUTA_INSCRIPCIONES = "/inscripciones";
 
-export const InscripcionesRouter = (app: Elysia) =>
+export const InscripcionesRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_INSCRIPCIONES, { tags: ["Inscripciones"] }, (app) =>
     app
       .get(

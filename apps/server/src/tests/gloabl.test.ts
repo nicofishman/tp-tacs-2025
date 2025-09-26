@@ -1,4 +1,5 @@
 // apps/server/src/tests/gloabl.test.ts
+/** biome-ignore-all lint/suspicious/noExplicitAny: A Elysia le gusta */
 
 import { describe, expect, it } from "bun:test";
 import { treaty } from "@elysiajs/eden";

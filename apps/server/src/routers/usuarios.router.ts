@@ -9,13 +9,13 @@ import {
   updateUsuarioInputSchema,
   updateUsuarioOutputSchema,
 } from "@server/schemas/usuarios/update-usuario.schema";
-import type { Elysia } from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { UsuariosController } from "../controllers/usuarios.controller";
 
 const RUTA_USUARIOS = "/usuarios";
 
-export const UsuariosRouter = (app: Elysia) =>
+export const UsuariosRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_USUARIOS, { tags: ["Usuarios"] }, (app) =>
     app
       .get(
