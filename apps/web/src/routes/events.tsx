@@ -67,6 +67,7 @@ interface EventFilters {
   estado: string;
 }
 
+// biome-ignore lint/suspicious/noExplicitAny: temporal
 export function meta(): any[] {
   return [
     { title: "Eventos - Mi Aplicación" },

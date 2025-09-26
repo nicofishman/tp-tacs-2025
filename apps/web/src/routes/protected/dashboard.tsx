@@ -1,5 +1,5 @@
-import { useAuth } from "@/components/auth-provider";
-import Loader from "@/components/loader";
+import { useAuth } from "@web/components/auth-provider";
+import Loader from "@web/components/loader";
 
 export default function Dashboard() {
   const { user, isLoading } = useAuth();

@@ -32,7 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const signIn = async (email: string, password: string) => {
     try {
       // Import auth client dynamically to avoid initialization errors
-      const { authClient } = await import("@/lib/auth-client");
+      const { authClient } = await import("@web/lib/auth-client");
       await authClient.signIn.email({
         email,
         password,
@@ -47,7 +47,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signUp = async (email: string, password: string, name: string) => {
     try {
-      const { authClient } = await import("@/lib/auth-client");
+      const { authClient } = await import("@web/lib/auth-client");
       await authClient.signUp.email({
         email,
         name,
@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const signOut = async () => {
     try {
-      const { authClient } = await import("@/lib/auth-client");
+      const { authClient } = await import("@web/lib/auth-client");
       await authClient.signOut();
     } catch (error) {
       console.error("Sign out error:", error);
