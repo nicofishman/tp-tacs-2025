@@ -61,6 +61,8 @@ model Usuario {
   rol                 RolUsuario
   eventos             Evento[]  @relation("EventosOrganizados")
   inscripciones       Inscripcion[]
+  sessions            Session[]
+  accounts            Account[]
 }   
 
 enum RolUsuario {
@@ -87,4 +89,49 @@ enum EstadoInscripcion {
 }
 
 
-    
+// AUTH
+
+model Session {
+  id        String   @id @map("_id")
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String  @db.ObjectId
+  user      Usuario     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @map("_id")
+  accountId             String
+  providerId            String
+  userId                String  @db.ObjectId
+  user                  Usuario      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @map("_id")
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}

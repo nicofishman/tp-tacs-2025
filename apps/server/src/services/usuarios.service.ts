@@ -7,7 +7,6 @@ import { InscripcionesRepository } from "@server/repositories/inscripciones.repo
 import { UsuariosRepository } from "@server/repositories/usuarios.repository";
 import type { CreateUsuarioInput } from "@server/schemas/usuarios/create-usuario.schema";
 import type { UpdateUsuarioInput } from "@server/schemas/usuarios/update-usuario.schema";
-import bcrypt from "bcryptjs";
 
 // Servicio para manejar la lógica de negocio relacionada con usuarios
 
@@ -70,7 +69,7 @@ export const UsuariosService = {
     }
 
     // Hasheo la password
-    const passwordHash = await bcrypt.hash(data.password, 10);
+    const passwordHash = await Bun.password.hash(data.password);
 
     const usuarioParaCrear: Omit<Usuario, "id"> = {
       ...data,
