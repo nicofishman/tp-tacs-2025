@@ -11,7 +11,7 @@ export const usuarioSchema = z.object({
     .min(1, { error: "El nombre no puede estar vacío" }),
   password: z
     .string({ error: "La contraseña es requerida" })
-    .min(6, { error: "La contraseña debe tener al menos 6 caracteres" }),
+    .min(8, { error: "La contraseña debe tener al menos 8 caracteres" }),
   rol: z.enum(RolUsuario, {
     error: "El rol no es válido",
   }),

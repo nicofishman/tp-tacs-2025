@@ -1,36 +1,30 @@
+import { RolUsuario } from "@prisma/client";
 import { usuarioSchema } from "@server/schemas/usuarios/usuario.schema";
 import { betterAuth } from "better-auth";
 import { prismaAdapter } from "better-auth/adapters/prisma";
-import { openAPI } from "better-auth/plugins";
 import Elysia from "elysia";
 import prisma from "../../prisma";
 
 export const auth = betterAuth({
   advanced: {
+    database: {
+      generateId: false,
+    },
     defaultCookieAttributes: {
       httpOnly: true,
-      sameSite: "none",
+      partitioned: true, // New browser standards will mandate this for foreign cookies
+      sameSite: "none", // Allows CORS-based cookie sharing across subdomains
       secure: true,
     },
   },
-  basePath: "/auth",
   database: prismaAdapter(prisma, {
     provider: "mongodb",
   }),
   emailAndPassword: {
     autoSignIn: true,
     enabled: true,
-    minPasswordLength: usuarioSchema.shape.password.minLength ?? 6,
-    password: {
-      hash(password) {
-        return Bun.password.hash(password);
-      },
-      verify({ password, hash }) {
-        return Bun.password.verify(password, hash);
-      },
-    },
+    requireEmailVerification: false,
   },
-  plugins: [openAPI()],
   session: {
     cookieCache: {
       enabled: true,
@@ -40,11 +34,21 @@ export const auth = betterAuth({
   },
   trustedOrigins: [process.env.CORS_ORIGIN || ""],
   user: {
+    additionalFields: {
+      rol: {
+        defaultValue: RolUsuario.PARTICIPANTE,
+        fieldName: "rol",
+        input: true,
+        returned: true,
+        type: "string",
+        validator: {
+          input: usuarioSchema.shape.rol,
+          output: usuarioSchema.shape.rol,
+        },
+      },
+    },
     fields: {
-      email: "email",
-      id: "id",
       name: "nombre",
-      rol: "rol",
     },
     modelName: "Usuario",
   },
@@ -56,12 +60,14 @@ export const betterAuthElysia = new Elysia({ name: "better-auth" }).macro({
       const session = await auth.api.getSession({
         headers,
       });
-
       if (!session) return status(401);
-
       return {
         session: session.session,
-        user: session.user,
+        user: {
+          ...session.user,
+          nombre: session.user.name,
+          rol: session.user.rol as RolUsuario,
+        },
       };
     },
   },
@@ -77,29 +83,3 @@ export type AuthMacroResultType = Extract<
   AuthMacroResult,
   { session: unknown; user: unknown }
 >;
-
-let _schema: ReturnType<typeof auth.api.generateOpenAPISchema>;
-// biome-ignore lint/suspicious/noAssignInExpressions: viene del tuto de better-auth
-const getSchema = async () => (_schema ??= auth.api.generateOpenAPISchema());
-
-export const OpenAPI = {
-  components: getSchema().then(({ components }) => components) as Promise<any>,
-  getPaths: (prefix = "/auth") =>
-    getSchema().then(({ paths }) => {
-      const reference: typeof paths = Object.create(null);
-
-      for (const path of Object.keys(paths)) {
-        const key = prefix + path;
-        reference[key] = paths[path];
-
-        for (const method of Object.keys(paths[path])) {
-          // biome-ignore lint/suspicious/noExplicitAny: viene del tuto de better-auth
-          const operation = (reference[key] as any)[method];
-
-          operation.tags = ["Better Auth"];
-        }
-      }
-
-      return reference;
-    }) as Promise<any>,
-} as const;
