@@ -10,5 +10,5 @@ export const findByIdInscripcionOutputSchema = inscripcionSchema
   })
   .extend({
     evento: eventoSchema,
-    usuario: usuarioSchema.omit({ password: true }),
+    usuario: usuarioSchema,
   });

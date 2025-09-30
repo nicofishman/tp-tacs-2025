@@ -1,11 +1,14 @@
 import z from "zod";
-import { usuarioSchema } from "../usuarios/usuario.schema";
+import { passwordSchema, usuarioSchema } from "../usuarios/usuario.schema";
 
-export const signUpSchema = usuarioSchema.pick({
-  email: true,
-  nombre: true,
-  password: true,
-});
+export const signUpSchema = usuarioSchema
+  .pick({
+    email: true,
+    nombre: true,
+  })
+  .extend({
+    password: passwordSchema,
+  });
 
 export const signUpResponseSchema = usuarioSchema
   .pick({

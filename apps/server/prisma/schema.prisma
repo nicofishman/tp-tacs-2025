@@ -69,7 +69,6 @@ model Usuario {
 }   
 
 enum RolUsuario {
-  ADMIN
   ORGANIZADOR
   PARTICIPANTE
 }

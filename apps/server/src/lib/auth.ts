@@ -28,7 +28,7 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 60 * 5,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     },
     expiresIn: 60 * 60 * 24 * 7, // 7 days
   },
@@ -37,6 +37,7 @@ export const auth = betterAuth({
     additionalFields: {
       rol: {
         defaultValue: RolUsuario.PARTICIPANTE,
+        enum: RolUsuario,
         fieldName: "rol",
         input: true,
         returned: true,
@@ -55,28 +56,32 @@ export const auth = betterAuth({
 });
 
 export const betterAuthElysia = new Elysia({ name: "better-auth" }).macro({
-  auth: {
-    async resolve({ status, request: { headers } }) {
-      const session = await auth.api.getSession({
-        headers,
-      });
-      if (!session) return status(401);
-      return {
-        session: session.session,
-        user: {
-          ...session.user,
-          nombre: session.user.name,
-          rol: session.user.rol as RolUsuario,
-        },
-      };
-    },
+  role(role: RolUsuario | RolUsuario[]) {
+    return {
+      async resolve({ status, request: { headers } }) {
+        const session = await auth.api.getSession({
+          headers,
+        });
+        const rolesArray = Array.isArray(role) ? role : [role];
+        if (!session || !rolesArray.includes(session.user.rol as RolUsuario))
+          return status(401);
+        return {
+          session: session.session,
+          user: {
+            ...session.user,
+            nombre: session.user.name,
+            rol: session.user.rol as RolUsuario,
+          },
+        };
+      },
+    };
   },
 });
 
 export type AuthMacroFn = (typeof betterAuthElysia)["~Metadata"]["macroFn"];
 export type AuthMacro = (typeof betterAuthElysia)["~Metadata"]["macro"];
 
-type AuthMacroResult = Awaited<ReturnType<AuthMacroFn["auth"]["resolve"]>>;
+type AuthMacroResult = Awaited<ReturnType<AuthMacroFn["role"]>>;
 
 // Extract just the session and user part (successful authentication case)
 export type AuthMacroResultType = Extract<

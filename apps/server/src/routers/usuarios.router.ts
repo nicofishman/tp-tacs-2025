@@ -1,3 +1,4 @@
+import { RolUsuario } from "@prisma/client";
 import {
   createUsuarioInputSchema,
   createUsuarioOutputSchema,
@@ -28,6 +29,7 @@ export const UsuariosRouter = (app: ElysiaWithLogger) =>
           response: {
             200: findAllUsuariosOutputSchema,
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .get(

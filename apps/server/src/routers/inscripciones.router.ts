@@ -1,3 +1,4 @@
+import { RolUsuario } from "@prisma/client";
 import { ConflictError } from "@server/exceptions/ConflictError";
 import {
   createInscripcionInputSchema,
@@ -29,6 +30,7 @@ export const InscripcionesRouter = (app: ElysiaWithLogger) =>
             200: findAllInscripcionOutputSchema,
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .get(
@@ -46,6 +48,7 @@ export const InscripcionesRouter = (app: ElysiaWithLogger) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .post(
@@ -72,6 +75,7 @@ export const InscripcionesRouter = (app: ElysiaWithLogger) =>
             400: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .patch(
@@ -109,6 +113,7 @@ export const InscripcionesRouter = (app: ElysiaWithLogger) =>
           response: {
             204: z.null(),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       ),
   );

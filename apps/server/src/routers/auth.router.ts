@@ -1,3 +1,4 @@
+import { RolUsuario } from "@prisma/client";
 import { AuthController } from "@server/controllers/auth.controller";
 import {
   signInResponseSchema,
@@ -62,10 +63,10 @@ export const AuthRouter = (app: ElysiaWithLogger) =>
           return status(200, user);
         },
         {
-          auth: true,
           response: {
-            200: usuarioSchema.omit({ password: true }),
+            200: usuarioSchema,
           },
+          role: [RolUsuario.ORGANIZADOR, RolUsuario.PARTICIPANTE],
         },
       ),
   );
