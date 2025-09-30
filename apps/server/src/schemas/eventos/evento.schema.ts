@@ -33,7 +33,7 @@ export const ubicacionSchema = z.object({
   }),
 });
 
-export const eventoSchema = z.strictObject({
+export const eventoSchema = z.object({
   categoriaId: categoriaSchema.shape.id,
   cupoMaximo: z
     .number({
