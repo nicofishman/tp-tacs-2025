@@ -1,6 +1,7 @@
 import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import z from "zod";
+import { cors } from "@elysiajs/cors";
 import { ConflictError } from "./exceptions/ConflictError";
 import { NotFoundError } from "./exceptions/NotFoundError";
 import { ValidationError } from "./exceptions/ValidationError";
@@ -14,6 +15,13 @@ import { UsuariosRouter } from "./routers/usuarios.router";
 z.config(z.locales.es());
 
 export const app = new Elysia()
+ .use(
+    cors({
+      origin: "*", // Durante desarrollo. Para producción usar el dominio de tu front
+      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
+    })
+  )
   .use(
     openapi({
       documentation: {
