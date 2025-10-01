@@ -57,14 +57,18 @@ model Usuario {
   id                  String    @id @default(auto()) @map("_id") @db.ObjectId
   nombre              String
   email               String    @unique
-  password            String    
-  rol                 RolUsuario
+  emailVerified       Boolean   @default(false)
+  rol                 RolUsuario @default(PARTICIPANTE)
   eventos             Evento[]  @relation("EventosOrganizados")
   inscripciones       Inscripcion[]
+  sessions            Session[]
+  accounts            Account[]
+
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }   
 
 enum RolUsuario {
-  ADMIN
   ORGANIZADOR
   PARTICIPANTE
 }
@@ -87,4 +91,49 @@ enum EstadoInscripcion {
 }
 
 
-    
+// AUTH
+
+model Session {
+  id        String   @id @map("_id") @db.ObjectId @default(auto())
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String  @db.ObjectId
+  user      Usuario     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @map("_id") @db.ObjectId @default(auto())
+  accountId             String
+  providerId            String
+  userId                String  @db.ObjectId
+  user                  Usuario      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id @map("_id") @db.ObjectId @default(auto())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
+}

@@ -1,5 +1,5 @@
+import { userContext } from "@web/lib/context";
 import { redirect } from "react-router";
-import { userContext } from "@/lib/context";
 
 async function authMiddleware({
   request,

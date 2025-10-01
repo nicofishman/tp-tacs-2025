@@ -1,3 +1,4 @@
+import { RolUsuario } from "@prisma/client";
 import {
   createCategoriaOutputSchema,
   createCategoriaSchema,
@@ -56,6 +57,7 @@ export const CategoriasRouter = (app: ElysiaWithLogger) =>
             409: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .delete(
@@ -73,6 +75,7 @@ export const CategoriasRouter = (app: ElysiaWithLogger) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .delete(
@@ -90,6 +93,7 @@ export const CategoriasRouter = (app: ElysiaWithLogger) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       ),
   );

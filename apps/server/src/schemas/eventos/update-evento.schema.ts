@@ -19,5 +19,5 @@ export const updateEventoOutputSchema = eventoSchema
   })
   .extend({
     categoria: categoriaSchema,
-    organizador: usuarioSchema.omit({ password: true }),
+    organizador: usuarioSchema,
   });

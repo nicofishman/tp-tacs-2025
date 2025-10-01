@@ -6,7 +6,7 @@ import { inscripcionSchema } from "./inscripcion.schema";
 export const findAllInscripcionOutputSchema = z.array(
   inscripcionSchema.extend({
     evento: eventoSchema,
-    usuario: usuarioSchema.omit({ password: true }),
+    usuario: usuarioSchema,
   }),
 );
 
