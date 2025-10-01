@@ -128,6 +128,7 @@ export const EventosRouter = (app: ElysiaWithLogger) =>
             400: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .patch(
