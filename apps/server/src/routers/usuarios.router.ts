@@ -1,8 +1,4 @@
 import { RolUsuario } from "@prisma/client";
-import {
-  createUsuarioInputSchema,
-  createUsuarioOutputSchema,
-} from "@server/schemas/usuarios/create-usuario.schema";
 import { findAllUsuariosOutputSchema } from "@server/schemas/usuarios/findAll-usuarios.schema";
 import { findByIdUsuariosOutputSchema } from "@server/schemas/usuarios/findById-usuarios.schema";
 import { findEventsByUserIdUsuariosOutputSchema } from "@server/schemas/usuarios/findEventsByUserId-usuarios.schema";
@@ -64,20 +60,6 @@ export const UsuariosRouter = (app: ElysiaWithLogger) =>
           },
         },
       )
-      .post(
-        "/",
-        async ({ body, status }) => {
-          const usuario = await UsuariosController.register(body);
-          return status(201, usuario);
-        },
-        {
-          body: createUsuarioInputSchema,
-          response: {
-            201: createUsuarioOutputSchema,
-          },
-        },
-      )
-
       .patch(
         "/:id",
         async ({ params, body, status }) => {
