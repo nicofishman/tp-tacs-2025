@@ -55,19 +55,29 @@ export const AuthService = {
     email,
     password,
     nombre,
+    isAdmin,
   }: {
     email: string;
     password: string;
     nombre: string;
+    isAdmin: boolean;
   }) {
     try {
+      let rol: RolUsuario;
+
+      if (isAdmin) {
+        rol = RolUsuario.ORGANIZADOR;
+      } else {
+        rol = RolUsuario.PARTICIPANTE;
+      }
+
       const { user, token } = await auth.api.signUpEmail({
         body: {
           email,
           name: nombre,
           password,
           rememberMe: false,
-          rol: RolUsuario.PARTICIPANTE,
+          rol: rol,
         },
       });
 

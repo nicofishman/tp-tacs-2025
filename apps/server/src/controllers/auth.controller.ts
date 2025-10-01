@@ -16,11 +16,13 @@ export const AuthController = {
     email,
     password,
     nombre,
+    isAdmin,
   }: {
     email: string;
     password: string;
     nombre: string;
+    isAdmin: boolean;
   }) {
-    return await AuthService.signUp({ email, nombre, password });
+    return await AuthService.signUp({ email, isAdmin, nombre, password });
   },
 };

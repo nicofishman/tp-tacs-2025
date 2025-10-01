@@ -10,6 +10,7 @@ import {
 } from "@server/schemas/auth/sign-up.schema";
 import { usuarioSchema } from "@server/schemas/usuarios/usuario.schema";
 import type { ElysiaWithLogger } from "@server/types";
+import z from "zod";
 
 const RUTA_AUTH = "/auth";
 
@@ -44,16 +45,26 @@ export const AuthRouter = (app: ElysiaWithLogger) =>
       )
       .post(
         "/sign-up",
-        async ({ body, status }) => {
+        async ({ body, status, query }) => {
           const { email, password, nombre } = body;
-          const user = await AuthController.signUp({ email, nombre, password });
+
+          const user = await AuthController.signUp({
+            email,
+            isAdmin: query.adminToken === process.env.ADMIN_TOKEN,
+            nombre,
+            password,
+          });
 
           return status(200, user);
         },
         {
           body: signUpSchema,
+          query: z.object({
+            adminToken: z.string().optional(),
+          }),
           response: {
             200: signUpResponseSchema,
+            401: z.object({ message: z.string() }),
           },
         },
       )
