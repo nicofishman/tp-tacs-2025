@@ -54,7 +54,7 @@ export const eventoSchema = z.object({
     })
     .min(1, "La descripción no puede estar vacía"),
   duracion: duracionSchema,
-  estado: z.enum(EstadoEvento),
+  estado: z.enum(EstadoEvento).default(EstadoEvento.PENDIENTE),
   fechaInicio: z.iso.datetime({
     error: "La fecha de inicio es requerida",
   }),

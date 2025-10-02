@@ -18,7 +18,7 @@ model Evento {
   cupoMaximo          Int
   cupoMinimo          Int
   precio              Float
-  estado              EstadoEvento
+  estado              EstadoEvento @default(PENDIENTE)
   categoria           Categoria    @relation(fields: [categoriaId], references: [id])
   categoriaId         String       @db.ObjectId
   organizador         Usuario      @relation("EventosOrganizados", fields: [organizadorId], references: [id])
