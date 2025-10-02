@@ -7,7 +7,7 @@ import { app } from "@server/index";
 
 const api = treaty(app);
 
-// ---------- ✅ helper para sufijos únicos por corrida ----------
+// ---------- helper para sufijos únicos por corrida ----------
 const uid = () =>
   `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 
@@ -112,7 +112,7 @@ describe("Events API", () => {
     if (!userResponse.data) {
       throw new Error("User registration failed: userResponse.data is null");
     }
-    const idOrganizador = (userResponse.data as any).id;
+    const _idOrganizador = (userResponse.data as any).id;
 
     const categoriaResponse = await api.categorias.post({
       nombre: CATEGORIA_NOMBRE_2,
@@ -130,9 +130,7 @@ describe("Events API", () => {
       cupoMinimo: 50,
       descripcion: "An exciting tech conference.",
       duracion: { horas: 8, minutos: 0 },
-      estado: "PENDIENTE",
       fechaInicio: new Date().toISOString(),
-      organizadorId: idOrganizador,
       precio: 199.99,
       titulo: "Tech Conference 2025",
       ubicacion: {
@@ -173,7 +171,7 @@ describe("Inscriptions API", () => {
     if (!userResponse.data) {
       throw new Error("User registration failed: userResponse.data is null");
     }
-    const idUsuario = (userResponse.data as any).id;
+    const _idUsuario = (userResponse.data as any).id;
 
     const categoriaResponse = await api.categorias.post({
       nombre: CATEGORIA_NOMBRE_3,
@@ -191,9 +189,7 @@ describe("Inscriptions API", () => {
       cupoMinimo: 10,
       descripcion: "Evento para inscripciones.",
       duracion: { horas: 2, minutos: 0 },
-      estado: "PENDIENTE",
       fechaInicio: new Date().toISOString(),
-      organizadorId: idUsuario,
       precio: 50,
       titulo: "Evento Inscripcion",
       ubicacion: {

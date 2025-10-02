@@ -68,7 +68,7 @@ export const EventosRouter = (app: ElysiaWithLogger) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
-          role: RolUsuario.PARTICIPANTE,
+          role: [RolUsuario.PARTICIPANTE, RolUsuario.ORGANIZADOR],
         },
       )
       .get(
@@ -109,8 +109,8 @@ export const EventosRouter = (app: ElysiaWithLogger) =>
       )
       .post(
         "/",
-        async ({ body, status }) => {
-          const evento = await EventosController.create(body);
+        async ({ body, status, user }) => {
+          const evento = await EventosController.create(user.id, body);
           if (!evento) {
             throw new ConflictError("Error al crear el evento");
           }

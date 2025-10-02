@@ -43,7 +43,7 @@ type FindManyDBFilters = {
 
 export const EventosRepository = {
   async create(
-    data: Omit<Evento, "id" | "createdAt" | "updatedAt">,
+    data: Omit<Evento, "id" | "createdAt" | "updatedAt" | "estado">,
   ): Promise<EventoWithCategoriaAndOrganizador | null> {
     try {
       const prismaEvento = await prisma.evento.create({
@@ -53,7 +53,6 @@ export const EventosRepository = {
           cupoMinimo: data.cupoMinimo ?? null,
           descripcion: data.descripcion,
           duracion: { ...data.duracion },
-          estado: data.estado,
           fechaInicio: data.fechaInicio,
           organizadorId: data.organizadorId,
           precio: data.precio,

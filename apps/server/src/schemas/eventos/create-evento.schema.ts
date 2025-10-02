@@ -3,7 +3,11 @@ import { categoriaSchema } from "../categorias/categoria.schema";
 import { usuarioSchema } from "../usuarios/usuario.schema";
 import { eventoSchema } from "./evento.schema";
 
-export const createEventoInputSchema = eventoSchema.omit({ id: true });
+export const createEventoInputSchema = eventoSchema.omit({
+  estado: true,
+  id: true,
+  organizadorId: true,
+});
 
 export type CreateEventoInput = z.infer<typeof createEventoInputSchema>;
 
