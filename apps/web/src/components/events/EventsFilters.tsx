@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 export interface EventsFiltersProps {
   categories: Array<{ label: string; value: string | undefined }>;
@@ -32,9 +32,10 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
           className="flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-gray-900 transition-colors hover:bg-gray-50"
         >
           {/* Icon placeholder */}
-          <span className="inline-block w-4 h-4 bg-gray-300 rounded-full" /> Filtros avanzados
+          <span className="inline-block h-4 w-4 rounded-full bg-gray-300" />{" "}
+          Filtros avanzados
           {getActiveFiltersCount() > 0 && (
-            <span className="rounded-full bg-blue-600 px-2 py-1 text-white text-xs font-medium">
+            <span className="rounded-full bg-blue-600 px-2 py-1 font-medium text-white text-xs">
               {getActiveFiltersCount()}
             </span>
           )}
@@ -46,7 +47,8 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
             className="flex items-center gap-2 text-gray-600 transition-colors hover:text-red-600"
           >
             {/* Icon placeholder */}
-            <span className="inline-block w-4 h-4 bg-gray-300 rounded-full" /> Limpiar filtros
+            <span className="inline-block h-4 w-4 rounded-full bg-gray-300" />{" "}
+            Limpiar filtros
           </button>
         )}
       </div>
@@ -59,11 +61,16 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
               </label>
               <select
                 value={pendingFilters.categoriaId ?? ""}
-                onChange={e => updatePendingFilter("categoriaId", e.target.value || undefined)}
+                onChange={(e) =>
+                  updatePendingFilter(
+                    "categoriaId",
+                    e.target.value || undefined,
+                  )
+                }
                 className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 disabled={loadingCategories}
               >
-                {categories.map(c => (
+                {categories.map((c) => (
                   <option key={c.value ?? "all"} value={c.value ?? ""}>
                     {c.label}
                   </option>
@@ -79,7 +86,9 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
               <input
                 type="date"
                 value={pendingFilters.dateFrom ?? ""}
-                onChange={e => updatePendingFilter("dateFrom", e.target.value || undefined)}
+                onChange={(e) =>
+                  updatePendingFilter("dateFrom", e.target.value || undefined)
+                }
                 className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -90,7 +99,9 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
               <input
                 type="date"
                 value={pendingFilters.dateTo ?? ""}
-                onChange={e => updatePendingFilter("dateTo", e.target.value || undefined)}
+                onChange={(e) =>
+                  updatePendingFilter("dateTo", e.target.value || undefined)
+                }
                 className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -102,7 +113,12 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
                 type="number"
                 placeholder="0"
                 value={pendingFilters.priceMin ?? ""}
-                onChange={e => updatePendingFilter("priceMin", e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) =>
+                  updatePendingFilter(
+                    "priceMin",
+                    e.target.value ? Number(e.target.value) : undefined,
+                  )
+                }
                 className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -114,7 +130,12 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
                 type="number"
                 placeholder="Sin límite"
                 value={pendingFilters.priceMax ?? ""}
-                onChange={e => updatePendingFilter("priceMax", e.target.value ? Number(e.target.value) : undefined)}
+                onChange={(e) =>
+                  updatePendingFilter(
+                    "priceMax",
+                    e.target.value ? Number(e.target.value) : undefined,
+                  )
+                }
                 className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
               />
             </div>
@@ -123,18 +144,20 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
             <button
               type="button"
               onClick={clearFilters}
-              className="flex items-center gap-2 text-gray-600 transition-colors hover:text-red-600 border border-gray-300 rounded-lg px-4 py-2"
+              className="flex items-center gap-2 rounded-lg border border-gray-300 px-4 py-2 text-gray-600 transition-colors hover:text-red-600"
             >
               {/* Icon placeholder */}
-              <span className="inline-block w-4 h-4 bg-gray-300 rounded-full" /> Limpiar filtros
+              <span className="inline-block h-4 w-4 rounded-full bg-gray-300" />{" "}
+              Limpiar filtros
             </button>
             <button
               type="button"
               onClick={applyFilters}
-              className="flex items-center gap-2 bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 transition-colors"
+              className="flex items-center gap-2 rounded-lg bg-blue-600 px-4 py-2 text-white transition-colors hover:bg-blue-700"
             >
               {/* Icon placeholder */}
-              <span className="inline-block w-4 h-4 bg-gray-300 rounded-full" /> Aplicar filtros
+              <span className="inline-block h-4 w-4 rounded-full bg-gray-300" />{" "}
+              Aplicar filtros
             </button>
           </div>
         </div>

@@ -1,9 +1,8 @@
-import React from "react";
+import type { Treaty } from "@elysiajs/eden";
+import type { api } from "@web/lib/fetch";
+import type React from "react";
 import { EventCard } from "./EventCard";
 
-
-import type { Treaty } from "@elysiajs/eden";
-import { api } from "@web/lib/fetch";
 type EventosGetResponse = Treaty.Data<typeof api.eventos.get>;
 type Evento = EventosGetResponse extends { items: (infer E)[] } ? E : never;
 
@@ -27,7 +26,7 @@ export const EventsList: React.FC<EventsListProps> = ({
   return (
     <div className="relative">
       {loadingPage && (
-        <div className="absolute inset-0 bg-white/50 backdrop-blur-sm z-10 flex items-center justify-center">
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-white/50 backdrop-blur-sm">
           <div className="text-gray-600">Cargando...</div>
         </div>
       )}
