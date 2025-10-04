@@ -33,12 +33,14 @@ export default function Events() {
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingPage, setLoadingPage] = useState(false);
-  const [categories, setCategories] = useState([{ label: "Todas las categorías", value: undefined }]);
+  const [categories, setCategories] = useState<Array<{ label: string; value: string | undefined }>>([
+    { label: "Todas las categorías", value: undefined },
+  ]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
   // --- Fetch events and categories ---
   useEffect(() => {
-    const fetchEvents = async (p, l, isPageChange = false) => {
+  const fetchEvents = async (p: number, l: number, isPageChange: boolean = false) => {
       try {
         if (isPageChange) setLoadingPage(true);
         else setLoading(true);
@@ -67,7 +69,7 @@ export default function Events() {
         if (result && result.status === 200 && Array.isArray(result.data)) {
           setCategories([
             { label: "Todas las categorías", value: undefined },
-            ...result.data.map(cat => ({ label: cat.nombre, value: cat.id })),
+            ...result.data.map((cat: any) => ({ label: cat.nombre, value: cat.id })),
           ]);
         }
       } catch {
@@ -114,7 +116,7 @@ export default function Events() {
   ]);
 
   // --- Filter helpers ---
-  const updatePendingFilter = (key, value) => setPendingFilters(prev => ({ ...prev, [key]: value }));
+  const updatePendingFilter = (key: string, value: any) => setPendingFilters(prev => ({ ...prev, [key]: value }));
   const applyFilters = () => setFilters({ ...pendingFilters, page: 1 });
   const clearFilters = () => { setFilters(defaultFilters); setPendingFilters(defaultFilters); };
   const getActiveFiltersCount = () => {
@@ -135,14 +137,14 @@ export default function Events() {
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
   const prevPage = () => { if (page > 1) setPage(page - 1); };
   const nextPage = () => { if (page < totalPages) setPage(page + 1); };
-  const goToPage = (p) => { if (p >= 1 && p <= totalPages && p !== page) setPage(p); };
-  const changeLimit = (newLimit) => { setLimit(newLimit); setPage(1); };
+  const goToPage = (p: number) => { if (p >= 1 && p <= totalPages && p !== page) setPage(p); };
+  const changeLimit = (newLimit: number) => { setLimit(newLimit); setPage(1); };
 
   // --- Formatters ---
-  const formatDate = (d) => d ? new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "long", weekday: "long", year: "numeric" }) : "-";
-  const formatTime = (d) => d ? new Date(d).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) : "-";
-  const formatPrice = (p) => p == null ? "-" : p === 0 ? "Gratis" : new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(p);
-  const formatDuration = (dur) => {
+  const formatDate = (d?: string) => d ? new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "long", weekday: "long", year: "numeric" }) : "-";
+  const formatTime = (d?: string) => d ? new Date(d).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) : "-";
+  const formatPrice = (p?: number) => p == null ? "-" : p === 0 ? "Gratis" : new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(p);
+  const formatDuration = (dur?: { horas?: number; minutos?: number } | null) => {
     if (!dur) return "-";
     const { horas = 0, minutos = 0 } = dur;
     if (horas === 0 && minutos === 0) return "-";
