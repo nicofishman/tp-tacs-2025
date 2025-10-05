@@ -50,7 +50,6 @@
       "correctness": {
         "noUnusedImports": "error",
         "useExhaustiveDependencies": {
-          "fix": "unsafe",
           "level": "warn"
         },
         "useUniqueElementIds": "off"

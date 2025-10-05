@@ -7,7 +7,7 @@ import { app } from "@server/index";
 
 const api = treaty(app);
 
-// ---------- ✅ helper para sufijos únicos por corrida ----------
+// ---------- helper para sufijos únicos por corrida ----------
 const uid = () =>
   `${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`;
 
@@ -33,12 +33,18 @@ describe("Health Check Tests", () => {
 
 describe("Create Users Tests", () => {
   it("Register a user and retrieve their information", async () => {
-    const response = await api.usuarios.post({
-      email: EMAIL_NICOLAS,
-      nombre: "Nicolas Fisshman",
-      password: "securepassword",
-      rol: "ADMIN",
-    });
+    const response = await api.auth["sign-up"].post(
+      {
+        email: EMAIL_NICOLAS,
+        nombre: "Nicolas Fisshman",
+        password: "securepassword",
+      },
+      {
+        query: {
+          adminToken: process.env.ADMIN_TOKEN,
+        },
+      },
+    );
     expect(response.status).toBe(201);
     expect(response.data).toHaveProperty("id");
     if (!response.data) {
@@ -91,16 +97,22 @@ describe("Create category tests", () => {
 
 describe("Events API", () => {
   it("Create an event", async () => {
-    const userResponse = await api.usuarios.post({
-      email: EMAIL_RAMIRO,
-      nombre: "Ramiro Remersaro",
-      password: "supersecurepassword",
-      rol: "ORGANIZADOR",
-    });
+    const userResponse = await api.auth["sign-up"].post(
+      {
+        email: EMAIL_RAMIRO,
+        nombre: "Ramiro Remersaro",
+        password: "supersecurepassword",
+      },
+      {
+        query: {
+          adminToken: process.env.ADMIN_TOKEN,
+        },
+      },
+    );
     if (!userResponse.data) {
       throw new Error("User registration failed: userResponse.data is null");
     }
-    const idOrganizador = (userResponse.data as any).id;
+    const _idOrganizador = (userResponse.data as any).id;
 
     const categoriaResponse = await api.categorias.post({
       nombre: CATEGORIA_NOMBRE_2,
@@ -118,9 +130,7 @@ describe("Events API", () => {
       cupoMinimo: 50,
       descripcion: "An exciting tech conference.",
       duracion: { horas: 8, minutos: 0 },
-      estado: "PENDIENTE",
       fechaInicio: new Date().toISOString(),
-      organizadorId: idOrganizador,
       precio: 199.99,
       titulo: "Tech Conference 2025",
       ubicacion: {
@@ -146,16 +156,22 @@ describe("Events API", () => {
 describe("Inscriptions API", () => {
   it("Register to event", async () => {
     // Crear usuario y evento para la inscripción
-    const userResponse = await api.usuarios.post({
-      email: EMAIL_EITAN,
-      nombre: "Eitan Fiszer",
-      password: "inscripcion123",
-      rol: "ORGANIZADOR",
-    });
+    const userResponse = await api.auth["sign-up"].post(
+      {
+        email: EMAIL_EITAN,
+        nombre: "Eitan Fiszer",
+        password: "inscripcion123",
+      },
+      {
+        query: {
+          adminToken: process.env.ADMIN_TOKEN,
+        },
+      },
+    );
     if (!userResponse.data) {
       throw new Error("User registration failed: userResponse.data is null");
     }
-    const idUsuario = (userResponse.data as any).id;
+    const _idUsuario = (userResponse.data as any).id;
 
     const categoriaResponse = await api.categorias.post({
       nombre: CATEGORIA_NOMBRE_3,
@@ -173,9 +189,7 @@ describe("Inscriptions API", () => {
       cupoMinimo: 10,
       descripcion: "Evento para inscripciones.",
       duracion: { horas: 2, minutos: 0 },
-      estado: "PENDIENTE",
       fechaInicio: new Date().toISOString(),
-      organizadorId: idUsuario,
       precio: 50,
       titulo: "Evento Inscripcion",
       ubicacion: {
@@ -191,12 +205,18 @@ describe("Inscriptions API", () => {
 
     // Crear la inscripción
 
-    const userInscripcionResponse = await api.usuarios.post({
-      email: EMAIL_ALAN,
-      nombre: "Alan Turing",
-      password: "alan123",
-      rol: "PARTICIPANTE",
-    });
+    const userInscripcionResponse = await api.auth["sign-up"].post(
+      {
+        email: EMAIL_ALAN,
+        nombre: "Alan Turing",
+        password: "alan123",
+      },
+      {
+        query: {
+          adminToken: process.env.ADMIN_TOKEN,
+        },
+      },
+    );
     if (!userInscripcionResponse.data) {
       throw new Error("User registration failed: userResponse.data is null");
     }

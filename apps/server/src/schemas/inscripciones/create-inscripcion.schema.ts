@@ -19,5 +19,5 @@ export const createInscripcionOutputSchema = inscripcionSchema
   })
   .extend({
     evento: eventoSchema,
-    usuario: usuarioSchema.omit({ password: true }),
+    usuario: usuarioSchema,
   });

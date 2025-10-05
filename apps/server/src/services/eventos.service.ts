@@ -10,18 +10,30 @@ import { EventosRepository } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
 
 export const EventosService = {
-  async create(data: CreateEventoInput) {
+  async create(organizadorId: string, data: CreateEventoInput) {
     const categoria = await CategoriasRepository.findById(data.categoriaId);
     if (!categoria) {
       throw new NotFoundError("Categoría no encontrada");
     }
-    const organizador = await UsuariosRepository.findById(data.organizadorId);
+    const organizador = await UsuariosRepository.findById(organizadorId);
     if (!organizador) {
       throw new NotFoundError("Organizador no encontrado");
     }
-    const eventoParaCrear: Omit<Evento, "id" | "createdAt" | "updatedAt"> = {
+    if (data.fechaInicio) {
+      const nuevaFecha = new Date(data.fechaInicio);
+      if (nuevaFecha < new Date()) {
+        throw new ValidationError(
+          "La fecha de inicio no puede ser una fecha pasada",
+        );
+      }
+    }
+    const eventoParaCrear: Omit<
+      Evento,
+      "id" | "createdAt" | "updatedAt" | "estado"
+    > = {
       ...data,
       fechaInicio: new Date(data.fechaInicio),
+      organizadorId,
     };
     const evento = await EventosRepository.create(eventoParaCrear);
     return evento;
@@ -203,6 +215,29 @@ export const EventosService = {
       organizador = await UsuariosRepository.findById(data.organizadorId);
       if (!organizador) {
         throw new NotFoundError("Organizador no encontrado");
+      }
+    }
+
+    if (data.fechaInicio) {
+      const nuevaFecha = new Date(data.fechaInicio);
+      if (nuevaFecha < new Date()) {
+        throw new ValidationError(
+          "La fecha de inicio no puede ser una fecha pasada",
+        );
+      }
+    }
+
+    const cupoExistente = eventoExistente.cupoMaximo;
+    if (data.cupoMaximo !== null && data.cupoMaximo !== undefined) {
+      console.log({ cupoExistente, nuevoCupo: data.cupoMaximo });
+      if (data.cupoMaximo < cupoExistente) {
+        const inscripcionesConfirmadas =
+          await InscripcionesRepository.findConfirmedRegistrationsByEvent(id);
+        if (data.cupoMaximo < inscripcionesConfirmadas.length) {
+          throw new ValidationError(
+            `El cupo máximo no puede ser menor a la cantidad de inscripciones confirmadas (${inscripcionesConfirmadas.length})`,
+          );
+        }
       }
     }
 
