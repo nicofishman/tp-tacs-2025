@@ -1,38 +1,35 @@
 import { NotFoundError } from "@server/exceptions/NotFoundError";
 import { ValidationError } from "@server/exceptions/ValidationError";
-import { EventosRepository } from "@server/repositories/eventos.repository";
 import {
   InscripcionesRepository,
   type InscripcionWithEventoAndUsuario,
 } from "@server/repositories/inscripciones.repository";
-import { UsuariosRepository } from "@server/repositories/usuarios.repository";
-import type { CreateInscripcionInput } from "@server/schemas/inscripciones/create-inscripcion.schema";
 import type { updateInscripcionInput } from "@server/schemas/inscripciones/update-inscripcion.schema";
 
 export const InscripcionesService = {
-  async create(data: CreateInscripcionInput) {
-    const usuario = await UsuariosRepository.findById(data.usuarioId);
-    if (!usuario) {
-      throw new NotFoundError("Usuario no encontrado");
-    }
-    const evento = await EventosRepository.findById(data.eventoId);
-    if (!evento) {
-      throw new NotFoundError("Evento no encontrado");
-    }
+  // async create(data: CreateInscripcionInput) {
+  //   const usuario = await UsuariosRepository.findById(data.usuarioId);
+  //   if (!usuario) {
+  //     throw new NotFoundError("Usuario no encontrado");
+  //   }
+  //   const evento = await EventosRepository.findById(data.eventoId);
+  //   if (!evento) {
+  //     throw new NotFoundError("Evento no encontrado");
+  //   }
 
-    const inscripcionParaCrear: Omit<InscripcionWithEventoAndUsuario, "id"> = {
-      estado: data.estado,
-      evento,
-      eventoId: evento.id,
-      fechaRegistro: new Date(data.fechaRegistro),
-      usuario,
-      usuarioId: usuario.id,
-    };
+  //   const inscripcionParaCrear: Omit<InscripcionWithEventoAndUsuario, "id"> = {
+  //     estado: data.estado,
+  //     evento,
+  //     eventoId: evento.id,
+  //     fechaRegistro: new Date(data.fechaRegistro),
+  //     usuario,
+  //     usuarioId: usuario.id,
+  //   };
 
-    const inscripcion =
-      await InscripcionesRepository.create(inscripcionParaCrear);
-    return inscripcion;
-  },
+  //   const inscripcion =
+  //     await InscripcionesRepository.create(inscripcionParaCrear);
+  //   return inscripcion;
+  // },
 
   async delete(id: string) {
     const deleted = await InscripcionesRepository.delete(id);

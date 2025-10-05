@@ -1,9 +1,4 @@
 import { RolUsuario } from "@prisma/client";
-import { ConflictError } from "@server/exceptions/ConflictError";
-import {
-  createInscripcionInputSchema,
-  createInscripcionOutputSchema,
-} from "@server/schemas/inscripciones/create-inscripcion.schema";
 import { findAllInscripcionOutputSchema } from "@server/schemas/inscripciones/findall-inscripcion.schema";
 import { findByIdInscripcionOutputSchema } from "@server/schemas/inscripciones/findById-inscripcion.schema";
 import {
@@ -51,33 +46,33 @@ export const InscripcionesRouter = (app: ElysiaWithLogger) =>
           role: RolUsuario.ORGANIZADOR,
         },
       )
-      .post(
-        "/",
-        async ({ body, status }) => {
-          const inscripcion = await InscripcionesController.create(body);
+      // .post(
+      //   "/",
+      //   async ({ body, status }) => {
+      //     const inscripcion = await InscripcionesController.create(body);
 
-          if (!inscripcion) {
-            throw new ConflictError("Error al crear la inscripción");
-          }
-          return status(201, {
-            ...inscripcion,
-            evento: {
-              ...inscripcion.evento,
-              fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
-            },
-            fechaRegistro: inscripcion.fechaRegistro.toISOString(),
-          });
-        },
-        {
-          body: createInscripcionInputSchema,
-          response: {
-            201: createInscripcionOutputSchema,
-            400: z.object({ error: z.string() }),
-            500: z.object({ error: z.string() }),
-          },
-          role: RolUsuario.ORGANIZADOR,
-        },
-      )
+      //     if (!inscripcion) {
+      //       throw new ConflictError("Error al crear la inscripción");
+      //     }
+      //     return status(201, {
+      //       ...inscripcion,
+      //       evento: {
+      //         ...inscripcion.evento,
+      //         fechaInicio: inscripcion.evento.fechaInicio.toISOString(),
+      //       },
+      //       fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+      //     });
+      //   },
+      //   {
+      //     body: createInscripcionInputSchema,
+      //     response: {
+      //       201: createInscripcionOutputSchema,
+      //       400: z.object({ error: z.string() }),
+      //       500: z.object({ error: z.string() }),
+      //     },
+      //     role: RolUsuario.ORGANIZADOR,
+      //   },
+      // )
       .patch(
         "/:id",
         async ({ params, body, status }) => {
