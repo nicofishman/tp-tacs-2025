@@ -1,37 +1,11 @@
+import type { Treaty } from "@elysiajs/eden";
+import type { Usuario } from "@server/types";
 import { api } from "@web/lib/fetch";
 import type { ReactNode } from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { z } from "zod";
-
-// Local RolUsuario and Usuario types (sync with backend)
-export type RolUsuario = "ORGANIZADOR" | "PARTICIPANTE";
-export interface Usuario {
-  id: string;
-  email: string;
-  nombre: string;
-  rol: RolUsuario;
-}
-
-// Inline Zod schemas for responses
-const signInResponseSchema = z.object({
-  user: z.object({
-    email: z.string().email(),
-    id: z.string(),
-    nombre: z.string(),
-    rol: z.enum(["ORGANIZADOR", "PARTICIPANTE"]),
-  }),
-});
-const signUpResponseSchema = z.object({
-  email: z.string().email(),
-  id: z.string(),
-  nombre: z.string(),
-  rol: z.enum(["ORGANIZADOR", "PARTICIPANTE"]),
-  token: z.string(),
-});
-
 interface AuthContextType {
-  user: Usuario | null;
+  user: Pick<Usuario, "id" | "nombre" | "email" | "rol"> | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<void>;
@@ -42,7 +16,9 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Usuario | null>(null);
+  const [user, setUser] = useState<
+    Treaty.Data<(typeof api.auth)["sign-in"]["post"]>["user"] | null
+  >(null);
   const [isLoading, setIsLoading] = useState(false);
 
   // Load user from localStorage on app start
@@ -68,16 +44,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(msg);
       }
 
-      // Validate response using Zod
-      const parsed = signInResponseSchema.parse(data);
-      const userObj: Usuario = parsed.user;
+      // Set user data - cookies are automatically handled by the server
+      setUser(data.user);
 
-      setUser(userObj);
-      localStorage.setItem(
-        "token",
-        (data as { token?: string } | undefined)?.token ?? "",
-      );
-      localStorage.setItem("user", JSON.stringify(userObj));
+      // Store token and user data in localStorage for persistence
+      localStorage.setItem("user", JSON.stringify(data.user));
     } finally {
       setIsLoading(false);
     }
@@ -98,18 +69,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         throw new Error(msg);
       }
 
-      // Validate response using Zod
-      const parsed = signUpResponseSchema.parse(data);
-      const userObj: Usuario = {
-        email: parsed.email,
-        id: parsed.id,
-        nombre: parsed.nombre,
-        rol: parsed.rol,
-      };
+      const { token, ...user } = data;
 
-      setUser(userObj);
-      localStorage.setItem("token", parsed.token);
-      localStorage.setItem("user", JSON.stringify(userObj));
+      setUser(user);
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
     } finally {
       setIsLoading(false);
     }
