@@ -106,7 +106,7 @@ export default function Header() {
 
         {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
-          <div className="relative z-50 border-gray-200 border-t bg-white md:hidden">
+          <div className="absolute inset-x-0 z-50 w-full border-gray-200 border-t bg-white md:hidden">
             <div className="space-y-2 py-4">
               {links.map(({ to, label, icon: Icon }) => (
                 <NavLink
@@ -135,7 +135,7 @@ export default function Header() {
       {isMobileMenuOpen && (
         <button
           type="button"
-          className="fixed inset-0 z-30 bg-black bg-opacity-25 md:hidden"
+          className="fixed inset-0 z-30 bg-black/50 bg-opacity-25 md:hidden"
           onClick={closeMobileMenu}
           style={{ top: "64px" }} // Empieza después del header
         />
