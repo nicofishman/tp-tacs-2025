@@ -239,6 +239,14 @@ export const EventosService = {
           );
         }
       }
+
+      if (data.cupoMaximo > cupoExistente) {
+        const lugaresNuevos = data.cupoMaximo - cupoExistente;
+        const waitlist = await InscripcionesRepository.findWaitlistByEvent(id);
+        for (let i = 0; i < lugaresNuevos && i < waitlist.length; i++) {
+          await InscripcionesRepository.promoteFromWaitlist(waitlist[i].id);
+        }
+      }
     }
 
     const eventoParaActualizar: Evento = {
