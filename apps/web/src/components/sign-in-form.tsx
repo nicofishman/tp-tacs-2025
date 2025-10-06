@@ -20,8 +20,10 @@ export default function SignInForm() {
     onSubmit: async ({ value }) => {
       try {
         await signIn(value.email, value.password);
-        navigate("/dashboard");
         toast.success("Sign in successful");
+        setTimeout(() => {
+          navigate("/", { replace: true });
+        }, 500);
       } catch (error: unknown) {
         toast.error(error instanceof Error ? error.message : "Sign in failed");
       }

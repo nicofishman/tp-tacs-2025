@@ -169,24 +169,27 @@ export const EventosRouter = (app: ElysiaWithLogger) =>
           role: RolUsuario.ORGANIZADOR,
         },
       )
-      .patch(
+      .post(
         "/:id/unregister/",
         async ({ params, status, user }) => {
-          await EventosController.unregisterFromEvent(params.id, user.id);
-
-          return status(204, null);
+          const response = await EventosController.unregisterFromEvent(
+            params.id,
+            user.id,
+          );
+          console.log(response);
+          return status(200, response);
         },
         {
           params: z.object({
             id: z.string().min(1).describe("El ID del evento"),
           }),
           response: {
-            204: z.null(),
+            200: z.object({ message: z.string() }),
             400: z.object({ error: z.string() }),
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
-          role: RolUsuario.ORGANIZADOR,
+          role: [RolUsuario.PARTICIPANTE, RolUsuario.ORGANIZADOR],
         },
       ),
   );

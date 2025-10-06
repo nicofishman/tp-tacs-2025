@@ -23,10 +23,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   // Load user from localStorage on app start
   useEffect(() => {
-    const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
-    if (token && userData) {
-      setUser(JSON.parse(userData));
+    if (userData) {
+      try {
+        setUser(JSON.parse(userData));
+      } catch {
+        // If there's an error parsing the stored user data, remove it
+        localStorage.removeItem("user");
+      }
     }
   }, []);
 

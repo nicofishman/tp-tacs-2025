@@ -31,7 +31,9 @@ export default function SignUpForm() {
 
         await signUp(value.email, value.password, value.name);
         toast.success("Sign up successful");
-        navigate("/dashboard");
+        setTimeout(() => {
+          navigate("/", { replace: true });
+        }, 500);
       } catch (error: unknown) {
         if (error instanceof z.ZodError) {
           // field errors will automatically show if we integrate with form fields
@@ -71,6 +73,7 @@ export default function SignUpForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: chatgpt
                 <p key={i} className="text-red-500">
                   {String(error)}
                 </p>
@@ -91,6 +94,7 @@ export default function SignUpForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: chatgpt
                 <p key={i} className="text-red-500">
                   {String(error)}
                 </p>
@@ -111,6 +115,7 @@ export default function SignUpForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
               />
               {field.state.meta.errors.map((error, i) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: chatgpt
                 <p key={i} className="text-red-500">
                   {String(error)}
                 </p>

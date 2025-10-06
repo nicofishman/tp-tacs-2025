@@ -13,7 +13,6 @@ export default [
   route("/events", "./routes/events.tsx"),
   route("/sign-in", "./routes/sign-in.tsx"),
   route("/sign-up", "./routes/sign-up.tsx"),
-  route("/login", "./routes/login.tsx"), // Redirect to sign-in for backward compatibility
   route("/logout", "./routes/logout.tsx"),
   route("/create-event", "./routes/create-event.tsx"),
 
