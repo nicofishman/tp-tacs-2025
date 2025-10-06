@@ -62,6 +62,7 @@ export const EventosService = {
       priceMin: f.priceMin,
       q: f.q,
     });
+    console.log(f, filtrados);
 
     return {
       count: filtrados.length,

@@ -1,5 +1,6 @@
 // routes/create-event.tsx
 
+import type { Treaty } from "@elysiajs/eden";
 import { Button } from "@web/components/ui/button";
 import {
   Card,
@@ -10,6 +11,8 @@ import {
 } from "@web/components/ui/card";
 import { Input } from "@web/components/ui/input";
 import { Label } from "@web/components/ui/label";
+import { userContext } from "@web/lib/context"; // 👈 importa tu contexto
+import { api } from "@web/lib/fetch";
 import {
   Calendar,
   Clock,
@@ -20,43 +23,13 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 
-// Interfaces basadas en el schema
-interface Duracion {
-  horas: number;
-  minutos: number;
-}
+// Tipos inferidos automáticamente desde Treaty
+type CreateEventBody = Parameters<typeof api.eventos.post>[0];
+type CreateEventResponse = Treaty.Data<typeof api.eventos.post>;
 
-interface Ubicacion {
-  direccion: string;
-  lat: number;
-  lng: number;
-}
-
-interface CreateEventForm {
-  titulo: string;
-  descripcion: string;
-  fechaInicio: string;
-  duracion: Duracion;
-  ubicacion: Ubicacion;
-  cupoMaximo: number;
-  cupoMinimo: number;
-  precio: number;
-  categoriaId: string;
-}
-
-// Mock categories data - in a real app this would come from an API
-const mockCategories = [
-  { descripcion: "Talleres prácticos", id: "1", nombre: "Workshops" },
-  { descripcion: "Eventos de gran escala", id: "2", nombre: "Conferencias" },
-  { descripcion: "Eventos de networking", id: "3", nombre: "Networking" },
-  { descripcion: "Cursos intensivos", id: "4", nombre: "Bootcamps" },
-  { descripcion: "Presentaciones educativas", id: "5", nombre: "Seminarios" },
-];
-
-// biome-ignore lint/suspicious/noExplicitAny: temporal
-export function meta(): any[] {
+export function meta(): Array<Record<string, string>> {
   return [
     { title: "Crear Evento - Mi Aplicación" },
     { content: "Crea un nuevo evento para la comunidad", name: "description" },
@@ -64,7 +37,9 @@ export function meta(): any[] {
 }
 
 export default function CreateEvent() {
-  const [formData, setFormData] = useState<CreateEventForm>({
+  const _user = useContext(userContext);
+
+  const [formData, setFormData] = useState<CreateEventBody>({
     categoriaId: "",
     cupoMaximo: 1,
     cupoMinimo: 0,
@@ -76,26 +51,58 @@ export default function CreateEvent() {
     ubicacion: { direccion: "", lat: 0, lng: 0 },
   });
 
+  const [categories, setCategories] = useState<
+    { label: string; value?: string }[]
+  >([]);
+  const [loadingCategories, setLoadingCategories] = useState(false);
+
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // biome-ignore lint/suspicious/noExplicitAny: temporal
-  const updateField = (field: keyof CreateEventForm, value: any) => {
+  // Cargar categorías al montar
+  useEffect(() => {
+    (async () => {
+      setLoadingCategories(true);
+      try {
+        const result = await api.categorias.get();
+        if (result && result.status === 200 && Array.isArray(result.data)) {
+          setCategories(
+            result.data.map((cat: { id: string; nombre: string }) => ({
+              label: cat.nombre,
+              value: cat.id,
+            })),
+          );
+        }
+      } catch {
+        setCategories([]);
+      } finally {
+        setLoadingCategories(false);
+      }
+    })();
+  }, []);
+
+  // Helpers para actualizar el form
+  const updateField = (
+    field: keyof CreateEventBody,
+    value: CreateEventBody[keyof CreateEventBody],
+  ) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    // Clear error when user starts typing
-    if (errors[field]) {
+    if (errors[field as string]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
   };
 
-  const updateDuracion = (field: keyof Duracion, value: number) => {
+  const updateDuracion = (field: "horas" | "minutos", value: number) => {
     setFormData((prev) => ({
       ...prev,
       duracion: { ...prev.duracion, [field]: value },
     }));
   };
 
-  const updateUbicacion = (field: keyof Ubicacion, value: string | number) => {
+  const updateUbicacion = (
+    field: "direccion" | "lat" | "lng",
+    value: string | number,
+  ) => {
     setFormData((prev) => ({
       ...prev,
       ubicacion: { ...prev.ubicacion, [field]: value },
@@ -104,50 +111,23 @@ export default function CreateEvent() {
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-
-    if (!formData.titulo.trim()) {
-      newErrors.titulo = "El título es requerido";
-    }
-
-    if (!formData.descripcion.trim()) {
+    if (!formData.titulo.trim()) newErrors.titulo = "El título es requerido";
+    if (!formData.descripcion.trim())
       newErrors.descripcion = "La descripción es requerida";
-    }
-
-    if (!formData.fechaInicio) {
+    if (!formData.fechaInicio)
       newErrors.fechaInicio = "La fecha de inicio es requerida";
-    }
-
-    if (!formData.categoriaId) {
+    if (!formData.categoriaId)
       newErrors.categoriaId = "La categoría es requerida";
-    }
-
-    if (formData.cupoMaximo < 1) {
+    if (formData.cupoMaximo < 1)
       newErrors.cupoMaximo = "El cupo máximo debe ser mayor a 0";
-    }
-
-    if (formData.cupoMinimo < 0) {
-      newErrors.cupoMinimo = "El cupo mínimo no puede ser negativo";
-    }
-
-    if (formData.cupoMinimo > formData.cupoMaximo) {
+    if (formData.cupoMinimo > formData.cupoMaximo)
       newErrors.cupoMinimo = "El cupo mínimo no puede ser mayor al máximo";
-    }
-
-    if (formData.precio < 0) {
+    if (formData.precio < 0)
       newErrors.precio = "El precio no puede ser negativo";
-    }
-
-    if (formData.duracion.horas === 0 && formData.duracion.minutos === 0) {
+    if (formData.duracion.horas === 0 && formData.duracion.minutos === 0)
       newErrors.duracion = "La duración debe ser mayor a 0";
-    }
-
-    if (formData.duracion.minutos > 59) {
-      newErrors.duracionMinutos = "Los minutos no pueden ser mayores a 59";
-    }
-
-    if (!formData.ubicacion.direccion.trim()) {
+    if (!formData.ubicacion.direccion.trim())
       newErrors.direccion = "La dirección es requerida";
-    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -155,20 +135,18 @@ export default function CreateEvent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!validateForm()) {
-      return;
-    }
+    if (!validateForm()) return;
 
     setIsSubmitting(true);
-
-    // Simulate API call
     try {
-      console.log("Submitting event:", formData);
-      // Here you would make the actual API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const payload: CreateEventBody = {
+        ...formData, // obligatorio
+      };
 
-      // Reset form after successful submission
+      const response: CreateEventResponse = await api.eventos.post(payload);
+      console.log("Evento creado:", response);
+
+      alert("¡Evento creado exitosamente!");
       setFormData({
         categoriaId: "",
         cupoMaximo: 1,
@@ -180,22 +158,12 @@ export default function CreateEvent() {
         titulo: "",
         ubicacion: { direccion: "", lat: 0, lng: 0 },
       });
-
-      alert("¡Evento creado exitosamente!");
     } catch (error) {
-      console.error("Error creating event:", error);
-      alert("Error al crear el evento. Por favor, intenta nuevamente.");
+      console.error("Error creando evento:", error);
+      alert("Error al crear el evento.");
     } finally {
       setIsSubmitting(false);
     }
-  };
-
-  const formatPrice = (price: number) => {
-    if (price === 0) return "Gratis";
-    return new Intl.NumberFormat("es-AR", {
-      currency: "ARS",
-      style: "currency",
-    }).format(price);
   };
 
   return (
@@ -211,38 +179,36 @@ export default function CreateEvent() {
         </div>
       </section>
 
-      {/* Form Content */}
+      {/* Form */}
       <section className="py-12">
         <div className="container mx-auto max-w-4xl px-4">
           <form onSubmit={handleSubmit} className="space-y-8">
-            {/* Basic Information */}
-            <Card className="border-gray-200 bg-white">
+            {/* Basic Info */}
+            <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-gray-900">
                   <Plus className="h-5 w-5" />
                   Información Básica
                 </CardTitle>
-                <CardDescription className="text-gray-600">
+                <CardDescription>
                   Detalles principales de tu evento
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
                 <div className="grid gap-6 md:grid-cols-2">
-                  <div className="space-y-2">
-                    <Label htmlFor="titulo">Título del Evento *</Label>
+                  <div>
+                    <Label htmlFor="titulo">Título *</Label>
                     <Input
                       id="titulo"
-                      placeholder="Ej: Workshop de React Avanzado"
                       value={formData.titulo}
                       onChange={(e) => updateField("titulo", e.target.value)}
-                      className={errors.titulo ? "border-red-500" : ""}
                     />
                     {errors.titulo && (
-                      <p className="text-red-500 text-sm">{errors.titulo}</p>
+                      <p className="text-red-500">{errors.titulo}</p>
                     )}
                   </div>
 
-                  <div className="space-y-2">
+                  <div>
                     <Label htmlFor="categoria">Categoría *</Label>
                     <select
                       id="categoria"
@@ -250,39 +216,32 @@ export default function CreateEvent() {
                       onChange={(e) =>
                         updateField("categoriaId", e.target.value)
                       }
-                      className={`w-full rounded-md border px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
-                        errors.categoriaId ? "border-red-500" : "border-input"
-                      }`}
+                      disabled={loadingCategories}
+                      className="w-full rounded-md border px-3 py-2"
                     >
                       <option value="">Selecciona una categoría</option>
-                      {mockCategories.map((category) => (
-                        <option key={category.id} value={category.id}>
-                          {category.nombre} - {category.descripcion}
+                      {categories.map((c) => (
+                        <option key={c.value} value={c.value}>
+                          {c.label}
                         </option>
                       ))}
                     </select>
                     {errors.categoriaId && (
-                      <p className="text-red-500 text-sm">
-                        {errors.categoriaId}
-                      </p>
+                      <p className="text-red-500">{errors.categoriaId}</p>
                     )}
                   </div>
                 </div>
 
-                <div className="space-y-2">
+                <div>
                   <Label htmlFor="descripcion">Descripción *</Label>
                   <textarea
                     id="descripcion"
-                    placeholder="Describe tu evento, qué aprenderán los participantes, requisitos, etc."
                     value={formData.descripcion}
                     onChange={(e) => updateField("descripcion", e.target.value)}
-                    rows={4}
-                    className={`w-full rounded-md border px-3 py-2 text-sm focus:border-transparent focus:ring-2 focus:ring-blue-500 ${
-                      errors.descripcion ? "border-red-500" : "border-input"
-                    }`}
+                    className="w-full rounded-md border px-3 py-2"
                   />
                   {errors.descripcion && (
-                    <p className="text-red-500 text-sm">{errors.descripcion}</p>
+                    <p className="text-red-500">{errors.descripcion}</p>
                   )}
                 </div>
               </CardContent>
@@ -308,12 +267,21 @@ export default function CreateEvent() {
                     <Input
                       id="fechaInicio"
                       type="datetime-local"
-                      value={formData.fechaInicio}
-                      onChange={(e) =>
-                        updateField("fechaInicio", e.target.value)
+                      value={
+                        formData.fechaInicio
+                          ? new Date(formData.fechaInicio)
+                              .toISOString()
+                              .slice(0, 16)
+                          : ""
                       }
-                      className={errors.fechaInicio ? "border-red-500" : ""}
+                      onChange={(e) =>
+                        updateField(
+                          "fechaInicio",
+                          new Date(e.target.value).toISOString(),
+                        )
+                      }
                     />
+
                     {errors.fechaInicio && (
                       <p className="text-red-500 text-sm">
                         {errors.fechaInicio}
@@ -515,9 +483,7 @@ export default function CreateEvent() {
                     {errors.precio && (
                       <p className="text-red-500 text-sm">{errors.precio}</p>
                     )}
-                    <p className="text-gray-500 text-xs">
-                      {formatPrice(formData.precio)}
-                    </p>
+                    <p className="text-gray-500 text-xs">{formData.precio}</p>
                   </div>
                 </div>
               </CardContent>
@@ -538,9 +504,9 @@ export default function CreateEvent() {
                     <div className="absolute bottom-4 left-4 text-white">
                       <span className="rounded-full bg-black/30 px-3 py-1 font-medium text-sm backdrop-blur-sm">
                         {formData.categoriaId
-                          ? mockCategories.find(
-                              (c) => c.id === formData.categoriaId,
-                            )?.nombre || "Categoría"
+                          ? categories.find(
+                              (c) => c.value === formData.categoriaId,
+                            )?.label || "Categoría"
                           : "Categoría"}
                       </span>
                     </div>
@@ -609,7 +575,7 @@ export default function CreateEvent() {
                       <div className="flex items-center gap-1">
                         <DollarSign className="h-5 w-5 text-blue-600" />
                         <span className="font-bold text-2xl text-blue-600">
-                          {formatPrice(formData.precio)}
+                          {formData.precio}
                         </span>
                       </div>
                     </div>
@@ -618,43 +584,27 @@ export default function CreateEvent() {
               </CardContent>
             </Card>
 
-            {/* Submit Buttons */}
             <div className="flex justify-end gap-4">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => {
-                  if (
-                    confirm(
-                      "¿Estás seguro de que quieres cancelar? Se perderán todos los cambios.",
-                    )
-                  ) {
-                    // Reset form
-                    setFormData({
-                      categoriaId: "",
-                      cupoMaximo: 1,
-                      cupoMinimo: 0,
-                      descripcion: "",
-                      duracion: { horas: 0, minutos: 0 },
-                      fechaInicio: "",
-                      precio: 0,
-                      titulo: "",
-                      ubicacion: { direccion: "", lat: 0, lng: 0 },
-                    });
-                    setErrors({});
-                  }
-                }}
-                className="flex items-center gap-2"
+                onClick={() =>
+                  setFormData({
+                    categoriaId: "",
+                    cupoMaximo: 1,
+                    cupoMinimo: 0,
+                    descripcion: "",
+                    duracion: { horas: 0, minutos: 0 },
+                    fechaInicio: "",
+                    precio: 0,
+                    titulo: "",
+                    ubicacion: { direccion: "", lat: 0, lng: 0 },
+                  })
+                }
               >
-                <X className="h-4 w-4" />
-                Cancelar
+                <X className="h-4 w-4" /> Cancelar
               </Button>
-
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex items-center gap-2"
-              >
+              <Button type="submit" disabled={isSubmitting}>
                 <Save className="h-4 w-4" />
                 {isSubmitting ? "Creando..." : "Crear Evento"}
               </Button>
