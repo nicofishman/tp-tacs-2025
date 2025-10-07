@@ -107,7 +107,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             </span>
           </div>
           <div className="flex gap-3">
-            {mode === "ver-eventos" ? (
+            {mode === "events" ? (
               <button
                 onClick={handleInscribirse}
                 className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"

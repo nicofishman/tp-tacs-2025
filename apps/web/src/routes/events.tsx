@@ -160,7 +160,7 @@ export default function Events() {
   if (loading) {
     return (
       <div className="min-h-screen bg-gray-50">
-        <EventsHeader />
+        <EventsHeader title="Eventos Disponibles" />
         <div className="flex justify-center items-center py-20">
           <div className="text-gray-600 text-xl">Cargando eventos...</div>
         </div>
@@ -171,7 +171,7 @@ export default function Events() {
   // --- Render ---
   return (
     <div className="min-h-screen bg-gray-50">
-      <EventsHeader />
+      <EventsHeader title="Eventos Disponibles" />
       <section className="py-12">
         <div className="container mx-auto px-4">
           <EventsFilters

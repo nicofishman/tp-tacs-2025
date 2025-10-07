@@ -11,16 +11,17 @@ export default [
   route("/about", "./routes/about.tsx"),
   route("/contact", "./routes/contact.tsx"),
   route("/events", "./routes/events.tsx"),
-  route("/my-inscriptions", "./routes/my-inscriptions.tsx"),
   route("/sign-in", "./routes/sign-in.tsx"),
   route("/sign-up", "./routes/sign-up.tsx"),
   route("/logout", "./routes/logout.tsx"),
 
-  // Protected routes
+  // Protected routes - ORGANIZADOR
   layout("./routes/organizador-layout.tsx", [
-    route("/organizador/dashboard", "./routes/organizador/dashboard.tsx"),
-    route("/organizador/create-event", "./routes/organizador/create-event.tsx"),
+    route("/dashboard", "./routes/organizador/dashboard.tsx"),
+    route("/create-event", "./routes/organizador/create-event.tsx"),
   ]),
+
+  // Protected routes - PARTICIPANTE
   layout("./routes/participante-layout.tsx", [
     route("/my-inscriptions", "./routes/participante/my-inscriptions.tsx"),
   ]),

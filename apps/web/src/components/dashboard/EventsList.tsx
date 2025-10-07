@@ -13,7 +13,7 @@ export function EventsList({ events }: EventsListProps) {
       <div className="flex items-center justify-between">
         <h2 className="font-bold text-2xl">Eventos creados por vos!</h2>
         <Link
-          to="/organizador/create-event"
+          to="/create-event"
           className="flex items-center gap-2 rounded-md bg-blue-600 px-2 py-1 font-bold text-white"
         >
           Crear evento
