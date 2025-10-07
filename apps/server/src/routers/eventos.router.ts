@@ -73,7 +73,11 @@ export const EventosRouter = (app: ElysiaWithLogger) =>
       )
       .get(
         "/:id/participants",
-        async ({ params, status }) => {
+        async ({ params, status, user }) => {
+          const evento = await EventosController.findById(params.id);
+          if (evento.organizadorId !== user.id) {
+            return status(403, { error: "No estas Autorizado" });
+          }
           const eventoConParticipantes =
             await EventosController.findParticipantsByEvent(params.id);
           return status(200, eventoConParticipantes);
@@ -84,6 +88,7 @@ export const EventosRouter = (app: ElysiaWithLogger) =>
           }),
           response: {
             200: findParticipantsEventosOutputSchema,
+            403: z.object({ error: z.string() }),
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
