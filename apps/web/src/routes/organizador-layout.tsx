@@ -2,7 +2,7 @@ import { AuthProvider } from "@web/components/auth-provider";
 import ProtectedLayout from "@web/components/protected-layout";
 import { userContext } from "@web/lib/context";
 import { useContext } from "react";
-import { middleware as authMiddleware } from "./middleware/auth";
+import { middleware as authMiddleware } from "./middleware/organizador";
 
 export default function Protected() {
   const serverUser = useContext(userContext);

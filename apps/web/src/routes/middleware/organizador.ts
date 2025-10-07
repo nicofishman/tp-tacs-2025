@@ -2,7 +2,7 @@ import { userContext } from "@web/lib/context";
 import { api } from "@web/lib/fetch";
 import { redirect } from "react-router";
 
-async function authMiddleware({
+async function organizadorMiddleware({
   request,
   context,
 }: {
@@ -21,7 +21,7 @@ async function authMiddleware({
     // Validate the session by calling the server's /auth/me endpoint
     const response = await api.auth.me.get();
 
-    if (!response.data) {
+    if (!response.data || response.data.rol !== "ORGANIZADOR") {
       throw redirect("/sign-in");
     }
 
@@ -38,4 +38,4 @@ async function authMiddleware({
   }
 }
 
-export const middleware = [authMiddleware];
+export const middleware = [organizadorMiddleware];

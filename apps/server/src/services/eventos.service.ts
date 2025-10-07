@@ -86,6 +86,11 @@ export const EventosService = {
     };
   },
 
+  async findByOrganizadorId(organizadorId: string) {
+    const eventos = await EventosRepository.findByUserId(organizadorId);
+    return eventos;
+  },
+
   async findParticipantsByEvent(eventId: string) {
     const evento = await EventosRepository.findById(eventId);
     if (!evento) {
