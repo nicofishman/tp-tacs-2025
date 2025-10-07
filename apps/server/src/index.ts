@@ -12,6 +12,7 @@ import { CategoriasRouter } from "./routers/categorias.router";
 import { EventosRouter } from "./routers/eventos.router";
 import { HealthRouter } from "./routers/health.router";
 import { InscripcionesRouter } from "./routers/inscripciones.router";
+import { MeRouter } from "./routers/me.router";
 import { UsuariosRouter } from "./routers/usuarios.router";
 
 z.config(z.locales.es());
@@ -76,6 +77,7 @@ export const app = new Elysia()
   .use(EventosRouter)
   .use(CategoriasRouter)
   .use(InscripcionesRouter)
+  .use(MeRouter)
   .use(AuthRouter)
   .listen(3000);
 
