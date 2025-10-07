@@ -20,4 +20,7 @@ export default [
     route("/organizador/dashboard", "./routes/organizador/dashboard.tsx"),
     route("/organizador/create-event", "./routes/organizador/create-event.tsx"),
   ]),
+  layout("./routes/participante-layout.tsx", [
+    route("/my-inscriptions", "./routes/participante/my-inscriptions.tsx"),
+  ]),
 ] satisfies RouteConfig;
