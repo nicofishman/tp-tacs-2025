@@ -11,6 +11,7 @@ export default [
   route("/about", "./routes/about.tsx"),
   route("/contact", "./routes/contact.tsx"),
   route("/events", "./routes/events.tsx"),
+  route("/my-inscriptions", "./routes/my-inscriptions.tsx"),
   route("/sign-in", "./routes/sign-in.tsx"),
   route("/sign-up", "./routes/sign-up.tsx"),
   route("/logout", "./routes/logout.tsx"),
