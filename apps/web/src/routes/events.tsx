@@ -194,6 +194,7 @@ export default function Events() {
             formatTime={formatTime}
             formatDuration={formatDuration}
             formatPrice={formatPrice}
+            mode="events"
           />
           {filteredEvents.length === 0 && !loadingPage && (
             <div className="py-12 text-center">

@@ -13,6 +13,7 @@ export interface EventCardProps {
   formatTime: (d?: string) => string;
   formatDuration: (dur?: { horas?: number; minutos?: number } | null) => string;
   formatPrice: (p?: number) => string;
+  mode: "events" | "my-inscriptions"; // "events" para ver eventos y "my-inscriptions" para ver mis inscripciones
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
@@ -21,6 +22,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   formatTime,
   formatDuration,
   formatPrice,
+  mode,
 }) => {
   const handleInscribirse = async () => {
     try {
@@ -40,6 +42,16 @@ export const EventCard: React.FC<EventCardProps> = ({
     } catch (err) {
       console.error(err);
       toast.error("Error inesperado al inscribirse");
+    }
+  };
+
+  const handleDesinscribirse = async () => {
+    try {
+      await api.eventos({ id: event.id }).register.delete();
+      toast.success("Te has desinscripto del evento.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Error al desinscribirse");
     }
   };
 
@@ -95,13 +107,21 @@ export const EventCard: React.FC<EventCardProps> = ({
             </span>
           </div>
           <div className="flex gap-3">
-            {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
-            <button
-              onClick={handleInscribirse}
-              className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"
-            >
-              Inscribirse
-            </button>
+            {mode === "ver-eventos" ? (
+              <button
+                onClick={handleInscribirse}
+                className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"
+              >
+                Inscribirse
+              </button>
+            ) : (
+              <button
+                onClick={handleDesinscribirse}
+                className="rounded-lg bg-red-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-red-700"
+              >
+                Desinscribirse
+              </button>
+            )}
           </div>
         </div>
       </div>

@@ -13,6 +13,7 @@ export interface EventsListProps {
   formatTime: (d?: string) => string;
   formatDuration: (dur?: { horas?: number; minutos?: number } | null) => string;
   formatPrice: (p?: number) => string;
+  mode?: "events" | "my-inscriptions";
 }
 
 export const EventsList: React.FC<EventsListProps> = ({
@@ -22,6 +23,7 @@ export const EventsList: React.FC<EventsListProps> = ({
   formatTime,
   formatDuration,
   formatPrice,
+  mode
 }) => {
   return (
     <div className="relative">
@@ -39,6 +41,7 @@ export const EventsList: React.FC<EventsListProps> = ({
             formatTime={formatTime}
             formatDuration={formatDuration}
             formatPrice={formatPrice}
+            mode={mode}
           />
         ))}
       </div>

@@ -102,6 +102,7 @@ export default function MyInscriptions() {
             formatTime={formatTime}
             formatDuration={formatDuration}
             formatPrice={formatPrice}
+            mode="my-inscriptions"
           />
           {events.length === 0 && (
             <div className="py-12 text-center">
