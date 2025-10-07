@@ -16,6 +16,7 @@ export default function ProtectedLayout() {
     }
   }, [isLoading, user, navigate, location.pathname]);
 
+  // If we're loading, show loader
   if (isLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">

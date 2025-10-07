@@ -266,22 +266,18 @@ export default function Contact() {
           </div>
 
           {/* Mapa */}
-          <div className="mt-16">
+          <div className="my-16 h-96">
             <h2 className="mb-8 text-center font-bold text-3xl text-gray-900">
               Nuestra Ubicación
             </h2>
-            <div className="rounded-xl bg-gradient-to-r from-blue-100 to-purple-100 p-8 text-center">
-              <div className="mx-auto max-w-2xl">
-                <div className="mb-4 text-6xl">🗺️</div>
-                <p className="mb-4 text-gray-700 text-lg">
-                  Aquí iría un mapa interactivo mostrando nuestra ubicación
-                </p>
-                <p className="text-gray-600">
-                  Puedes integrar Google Maps, Mapbox u otro servicio de mapas
-                  aquí
-                </p>
-              </div>
-            </div>
+            <iframe
+              width="425"
+              className="h-full w-full"
+              height="350"
+              src="https://www.openstreetmap.org/export/embed.html?bbox=-80.1340413093567%2C25.852803110851806%2C-80.12399911880495%2C25.859976606537835&amp;layer=mapnik"
+              style={{ border: "1px solid black" }}
+              title="Mapa de la ubicación"
+            />
           </div>
         </div>
       </section>

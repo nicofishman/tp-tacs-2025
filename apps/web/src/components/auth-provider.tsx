@@ -15,25 +15,35 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: ReactNode }) {
+export function AuthProvider({
+  children,
+  serverUser,
+}: {
+  children: ReactNode;
+  serverUser?: Treaty.Data<(typeof api.auth)["sign-in"]["post"]>["user"] | null;
+}) {
   const [user, setUser] = useState<
     Treaty.Data<(typeof api.auth)["sign-in"]["post"]>["user"] | null
   >(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from localStorage on app start
+  // Load user from localStorage on app start (only if no server user provided)
   useEffect(() => {
-    const userData = localStorage.getItem("user");
-    if (userData) {
-      try {
-        setUser(JSON.parse(userData));
-      } catch {
-        // If there's an error parsing the stored user data, remove it
-        localStorage.removeItem("user");
+    if (!serverUser) {
+      setIsLoading(true);
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        try {
+          setUser(JSON.parse(userData));
+        } catch {
+          // If there's an error parsing the stored user data, remove it
+          localStorage.removeItem("user");
+        }
       }
+      setIsLoading(false);
     }
     setIsLoading(false);
-  }, []);
+  }, [serverUser]);
 
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
