@@ -1,6 +1,6 @@
 import type { Treaty } from "@elysiajs/eden";
 import type { api } from "@web/lib/fetch";
-import { PlusIcon } from "lucide-react";
+import { PencilIcon, PlusIcon } from "lucide-react";
 import { Link } from "react-router";
 
 interface EventsListProps {
@@ -24,11 +24,23 @@ export function EventsList({ events }: EventsListProps) {
         <div className="mt-4 space-y-4">
           {events.map((event) => (
             <div key={event.id} className="rounded-lg border p-4">
-              <h3 className="font-semibold text-lg">{event.titulo}</h3>
-              <p className="text-gray-600">{event.descripcion}</p>
-              <p className="text-gray-500 text-sm">
-                Fecha: {new Date(event.fechaInicio).toLocaleDateString()}
-              </p>
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <h3 className="font-semibold text-lg">{event.titulo}</h3>
+                  <p className="text-gray-600">{event.descripcion}</p>
+                  <p className="text-gray-500 text-sm">
+                    Fecha: {new Date(event.fechaInicio).toLocaleDateString()}
+                  </p>
+                </div>
+                <Link
+                  to={`/edit-event/${event.id}`}
+                  title="Editar evento"
+                  className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-sm hover:bg-gray-50"
+                >
+                  <PencilIcon className="size-4" />
+                  Editar
+                </Link>
+              </div>
             </div>
           ))}
         </div>

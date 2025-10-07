@@ -22,7 +22,7 @@ export const app = new Elysia()
     cors({
       allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
       credentials: true, // Allow cookies to be sent
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
       origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Frontend URL
     }),
   )

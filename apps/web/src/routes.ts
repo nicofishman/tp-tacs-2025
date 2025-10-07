@@ -19,6 +19,7 @@ export default [
   layout("./routes/organizador-layout.tsx", [
     route("/dashboard", "./routes/organizador/dashboard.tsx"),
     route("/create-event", "./routes/organizador/create-event.tsx"),
+    route("/edit-event/:id", "./routes/organizador/edit-event.tsx"),
   ]),
 
   // Protected routes - PARTICIPANTE

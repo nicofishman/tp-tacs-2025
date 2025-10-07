@@ -62,7 +62,6 @@ export const EventosService = {
       priceMin: f.priceMin,
       q: f.q,
     });
-    console.log(f, filtrados);
 
     return {
       count: filtrados.length,
@@ -224,7 +223,11 @@ export const EventosService = {
       }
     }
 
-    if (data.fechaInicio) {
+    if (
+      data.fechaInicio &&
+      new Date(data.fechaInicio).toISOString() !==
+        eventoExistente.fechaInicio.toISOString()
+    ) {
       const nuevaFecha = new Date(data.fechaInicio);
       if (nuevaFecha < new Date()) {
         throw new ValidationError(
@@ -235,7 +238,6 @@ export const EventosService = {
 
     const cupoExistente = eventoExistente.cupoMaximo;
     if (data.cupoMaximo !== null && data.cupoMaximo !== undefined) {
-      console.log({ cupoExistente, nuevoCupo: data.cupoMaximo });
       if (data.cupoMaximo < cupoExistente) {
         const inscripcionesConfirmadas =
           await InscripcionesRepository.findConfirmedRegistrationsByEvent(id);
