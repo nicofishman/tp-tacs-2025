@@ -15,10 +15,13 @@ export default [
   route("/sign-in", "./routes/sign-in.tsx"),
   route("/sign-up", "./routes/sign-up.tsx"),
   route("/logout", "./routes/logout.tsx"),
-  route("/create-event", "./routes/create-event.tsx"),
 
   // Protected routes
-  layout("./routes/protected-layout.tsx", [
-    route("/dashboard", "./routes/protected/dashboard.tsx"),
+  layout("./routes/organizador-layout.tsx", [
+    route("/organizador/dashboard", "./routes/organizador/dashboard.tsx"),
+    route("/organizador/create-event", "./routes/organizador/create-event.tsx"),
+  ]),
+  layout("./routes/participante-layout.tsx", [
+    route("/my-inscriptions", "./routes/participante/my-inscriptions.tsx"),
   ]),
 ] satisfies RouteConfig;

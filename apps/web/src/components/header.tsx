@@ -24,7 +24,7 @@ export default function Header() {
   ] as const;
 
   const protectedLinks = [
-    { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
+    { icon: LayoutDashboard, label: "Dashboard", to: "/organizador/dashboard" },
   ] as const;
 
   const links = isAuthenticated
