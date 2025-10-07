@@ -1,9 +1,11 @@
 import type { Treaty } from "@elysiajs/eden";
-import type { api } from "@web/lib/fetch";
+import { api } from "@web/lib/fetch";
 import type React from "react";
+import { toast } from "sonner";
 
 type EventosGetResponse = Treaty.Data<typeof api.eventos.get>;
 type Evento = EventosGetResponse extends { items: (infer E)[] } ? E : never;
+type InscripcionResponse = Treaty.Data<typeof api.eventos.post>;
 
 export interface EventCardProps {
   event: Evento;
@@ -20,6 +22,27 @@ export const EventCard: React.FC<EventCardProps> = ({
   formatDuration,
   formatPrice,
 }) => {
+  const handleInscribirse = async () => {
+    try {
+      const _response: InscripcionResponse = await api
+        .eventos({ id: event.id })
+        .register.post();
+      // const enListaDeEspera = response.estado === "WAITLIST";
+      // if (enListaDeEspera) {
+      //   toast.success(
+      //     "Inscripción realizada con éxito! Estás en lista de espera.",
+      //   );
+      // } else {
+      toast.success(
+        "Inscripción realizada con éxito! Tu inscripción está confirmada.",
+      );
+      // }
+    } catch (err) {
+      console.error(err);
+      toast.error("Error inesperado al inscribirse");
+    }
+  };
+
   return (
     <div className="hover:-translate-y-1 overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl">
       <div className="relative h-48 overflow-hidden bg-gradient-to-r from-blue-400 to-purple-500">
@@ -72,7 +95,11 @@ export const EventCard: React.FC<EventCardProps> = ({
             </span>
           </div>
           <div className="flex gap-3">
-            <button className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700">
+            {/** biome-ignore lint/a11y/useButtonType: <explanation> */}
+            <button
+              onClick={handleInscribirse}
+              className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"
+            >
               Inscribirse
             </button>
           </div>
