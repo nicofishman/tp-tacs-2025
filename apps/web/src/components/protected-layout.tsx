@@ -1,17 +1,20 @@
 import { useEffect } from "react";
-import { Outlet, useNavigate } from "react-router";
+import { Outlet, useLocation, useNavigate } from "react-router";
 import { useAuth } from "./auth-provider";
 import Loader from "./loader";
 
 export default function ProtectedLayout() {
   const { user, isLoading } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
-    if (!isLoading && !user) {
-      navigate("/sign-in", { replace: true });
+    if (!isLoading && !user && location.pathname !== "/sign-in") {
+      navigate(`/sign-in?redirect=${encodeURIComponent(location.pathname)}`, {
+        replace: true,
+      });
     }
-  }, [user, isLoading, navigate]);
+  }, [isLoading, user, navigate, location.pathname]);
 
   if (isLoading) {
     return (
@@ -21,9 +24,7 @@ export default function ProtectedLayout() {
     );
   }
 
-  if (!user) {
-    return null; // Will redirect in useEffect
-  }
+  if (!user) return null; // Mientras se redirige
 
-  return <Outlet />;
+  return <Outlet />; // Usuario logueado → renderiza dashboard
 }

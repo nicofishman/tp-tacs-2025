@@ -19,7 +19,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<
     Treaty.Data<(typeof api.auth)["sign-in"]["post"]>["user"] | null
   >(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   // Load user from localStorage on app start
   useEffect(() => {
@@ -32,6 +32,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem("user");
       }
     }
+    setIsLoading(false);
   }, []);
 
   const signIn = async (email: string, password: string) => {
