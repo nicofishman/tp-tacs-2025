@@ -35,7 +35,7 @@ export default function MyInscriptions() {
   const events = inscriptions.map((inscription) => ({
     ...inscription.evento,
     // Podemos agregar el estado de la inscripción si queremos mostrarlo en la lista
-    inscriptionEstado: inscription.estado,
+    inscriptionState: inscription.estado,
   }));
 
   const formatDate = (d?: string) =>

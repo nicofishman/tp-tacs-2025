@@ -13,7 +13,9 @@ export interface EventCardProps {
   formatTime: (d?: string) => string;
   formatDuration: (dur?: { horas?: number; minutos?: number } | null) => string;
   formatPrice: (p?: number) => string;
-  mode: "events" | "my-inscriptions"; // "events" para ver eventos y "my-inscriptions" para ver mis inscripciones
+  mode: "events" | "my-inscriptions";
+  state: "CANCELADO" | "FINALIZADO" | "EN_PROCESO" | "PENDIENTE";
+  inscriptionState?: "CONFIRMADO" | "WAITLIST" | "CANCELADO";
 }
 
 export const EventCard: React.FC<EventCardProps> = ({
@@ -23,22 +25,17 @@ export const EventCard: React.FC<EventCardProps> = ({
   formatDuration,
   formatPrice,
   mode,
+  state,
+  inscriptionState
 }) => {
   const handleInscribirse = async () => {
     try {
       const _response: InscripcionResponse = await api
         .eventos({ id: event.id })
         .register.post();
-      // const enListaDeEspera = response.estado === "WAITLIST";
-      // if (enListaDeEspera) {
-      //   toast.success(
-      //     "Inscripción realizada con éxito! Estás en lista de espera.",
-      //   );
-      // } else {
       toast.success(
-        "Inscripción realizada con éxito! Tu inscripción está confirmada.",
+        "Inscripción realizada con éxito! Tu inscripción está confirmada."
       );
-      // }
     } catch (err) {
       console.error(err);
       toast.error("Error inesperado al inscribirse");
@@ -47,12 +44,30 @@ export const EventCard: React.FC<EventCardProps> = ({
 
   const handleDesinscribirse = async () => {
     try {
-      await api.eventos({ id: event.id }).register.delete();
+      await api.eventos({ id: event.id }).unregister.post();
       toast.success("Te has desinscripto del evento.");
     } catch (err) {
       console.error(err);
       toast.error("Error al desinscribirse");
     }
+  };
+
+  // 🔹 Colores por estado del evento
+  const stateColors: Record<typeof state, string> = {
+    CANCELADO: "text-red-600",
+    FINALIZADO: "text-gray-500",
+    EN_PROCESO: "text-blue-600",
+    PENDIENTE: "text-yellow-500",
+  };
+
+  // 🔹 Colores por estado de inscripción
+  const inscriptionColors: Record<
+    NonNullable<typeof inscriptionState>,
+    string
+  > = {
+    CONFIRMADO: "text-green-600",
+    WAITLIST: "text-yellow-500",
+    CANCELADO: "text-red-600",
   };
 
   return (
@@ -65,13 +80,12 @@ export const EventCard: React.FC<EventCardProps> = ({
           </span>
         </div>
       </div>
+
       <div className="p-6">
-        <h3 className="mb-3 font-bold text-2xl text-gray-900">
-          {event.titulo}
-        </h3>
+        <h3 className="mb-3 font-bold text-2xl text-gray-900">{event.titulo}</h3>
+
         <div className="mb-4 space-y-2 text-gray-600 text-sm">
           <div className="flex items-center gap-2">
-            {/* Calendar icon placeholder */}
             <span className="inline-block h-4 w-4 rounded-full bg-gray-300" />
             {formatDate(event.fechaInicio)}
           </div>
@@ -89,9 +103,11 @@ export const EventCard: React.FC<EventCardProps> = ({
             {event.cupoMinimo ? ` • Mínimo ${event.cupoMinimo}` : ""}
           </div>
         </div>
+
         <p className="mb-4 line-clamp-3 text-gray-700 text-sm leading-relaxed">
           {event.descripcion ?? ""}
         </p>
+
         <div className="mb-4 text-gray-500 text-xs">
           Organizado por{" "}
           <span className="font-medium">
@@ -100,29 +116,49 @@ export const EventCard: React.FC<EventCardProps> = ({
               "Organizador"}
           </span>
         </div>
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-1">
-            <span className="font-bold text-2xl text-blue-600">
-              {formatPrice(event.precio)}
+
+        {/* 🔹 Estado del evento */}
+        <div className="flex items-center gap-2 mb-1">
+          <span className="text-gray-600 text-sm font-medium">Estado Evento:</span>
+          <span className={`font-bold text-lg ${stateColors[state]}`}>
+            {state}
+          </span>
+        </div>
+
+        {/* 🔹 Estado de inscripción (solo si existe) */}
+        {inscriptionState && (
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-gray-600 text-sm font-medium">
+              Estado de la inscripción:
+            </span>
+            <span
+              className={`font-bold text-lg ${inscriptionColors[inscriptionState]}`}
+            >
+              {inscriptionState}
             </span>
           </div>
-          <div className="flex gap-3">
-            {mode === "events" ? (
-              <button
-                onClick={handleInscribirse}
-                className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"
-              >
-                Inscribirse
-              </button>
-            ) : (
-              <button
-                onClick={handleDesinscribirse}
-                className="rounded-lg bg-red-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-red-700"
-              >
-                Desinscribirse
-              </button>
-            )}
-          </div>
+        )}
+
+        <div className="flex items-center justify-between mt-4">
+          <span className="font-bold text-2xl text-blue-600">
+            {formatPrice(event.precio)}
+          </span>
+
+          {mode === "events" ? (
+            <button
+              onClick={handleInscribirse}
+              className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"
+            >
+              Inscribirse
+            </button>
+          ) : (
+            <button
+              onClick={handleDesinscribirse}
+              className="rounded-lg bg-red-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-red-700"
+            >
+              Desinscribirse
+            </button>
+          )}
         </div>
       </div>
     </div>
