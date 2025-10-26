@@ -10,18 +10,30 @@ import { EventosRepository } from "../repositories/eventos.repository.js";
 import { InscripcionesRepository } from "../repositories/inscripciones.repository";
 
 export const EventosService = {
-  async create(data: CreateEventoInput) {
+  async create(organizadorId: string, data: CreateEventoInput) {
     const categoria = await CategoriasRepository.findById(data.categoriaId);
     if (!categoria) {
       throw new NotFoundError("Categoría no encontrada");
     }
-    const organizador = await UsuariosRepository.findById(data.organizadorId);
+    const organizador = await UsuariosRepository.findById(organizadorId);
     if (!organizador) {
       throw new NotFoundError("Organizador no encontrado");
     }
-    const eventoParaCrear: Omit<Evento, "id" | "createdAt" | "updatedAt"> = {
+    if (data.fechaInicio) {
+      const nuevaFecha = new Date(data.fechaInicio);
+      if (nuevaFecha < new Date()) {
+        throw new ValidationError(
+          "La fecha de inicio no puede ser una fecha pasada",
+        );
+      }
+    }
+    const eventoParaCrear: Omit<
+      Evento,
+      "id" | "createdAt" | "updatedAt" | "estado"
+    > = {
       ...data,
       fechaInicio: new Date(data.fechaInicio),
+      organizadorId,
     };
     const evento = await EventosRepository.create(eventoParaCrear);
     return evento;
@@ -71,6 +83,11 @@ export const EventosService = {
       ...evento,
       fechaInicio: evento.fechaInicio.toISOString(),
     };
+  },
+
+  async findByOrganizadorId(organizadorId: string) {
+    const eventos = await EventosRepository.findByUserId(organizadorId);
+    return eventos;
   },
 
   async findParticipantsByEvent(eventId: string) {
@@ -203,6 +220,40 @@ export const EventosService = {
       organizador = await UsuariosRepository.findById(data.organizadorId);
       if (!organizador) {
         throw new NotFoundError("Organizador no encontrado");
+      }
+    }
+
+    if (
+      data.fechaInicio &&
+      new Date(data.fechaInicio).toISOString() !==
+        eventoExistente.fechaInicio.toISOString()
+    ) {
+      const nuevaFecha = new Date(data.fechaInicio);
+      if (nuevaFecha < new Date()) {
+        throw new ValidationError(
+          "La fecha de inicio no puede ser una fecha pasada",
+        );
+      }
+    }
+
+    const cupoExistente = eventoExistente.cupoMaximo;
+    if (data.cupoMaximo !== null && data.cupoMaximo !== undefined) {
+      if (data.cupoMaximo < cupoExistente) {
+        const inscripcionesConfirmadas =
+          await InscripcionesRepository.findConfirmedRegistrationsByEvent(id);
+        if (data.cupoMaximo < inscripcionesConfirmadas.length) {
+          throw new ValidationError(
+            `El cupo máximo no puede ser menor a la cantidad de inscripciones confirmadas (${inscripcionesConfirmadas.length})`,
+          );
+        }
+      }
+
+      if (data.cupoMaximo > cupoExistente) {
+        const lugaresNuevos = data.cupoMaximo - cupoExistente;
+        const waitlist = await InscripcionesRepository.findWaitlistByEvent(id);
+        for (let i = 0; i < lugaresNuevos && i < waitlist.length; i++) {
+          await InscripcionesRepository.promoteFromWaitlist(waitlist[i].id);
+        }
       }
     }
 

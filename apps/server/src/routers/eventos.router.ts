@@ -1,3 +1,4 @@
+import { RolUsuario } from "@prisma/client";
 import { ConflictError } from "@server/exceptions/ConflictError";
 import {
   createEventoInputSchema,
@@ -15,13 +16,13 @@ import {
   updateEventoOutputSchema,
 } from "@server/schemas/eventos/update-evento.schema";
 import { inscripcionSchema } from "@server/schemas/inscripciones/inscripcion.schema";
-import type Elysia from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { EventosController } from "../controllers/eventos.controller";
 
 const RUTA_EVENTOS = "/eventos";
 
-export const EventosRouter = (app: Elysia) =>
+export const EventosRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_EVENTOS, { tags: ["Eventos"] }, (app) =>
     app
       .get(
@@ -44,11 +45,10 @@ export const EventosRouter = (app: Elysia) =>
       )
       .post(
         "/:id/register",
-        async ({ params, query, status }) => {
+        async ({ params, user, status }) => {
           const { id } = params;
-          const { user_id } = query;
 
-          const evento = await EventosController.registerToEvent(id, user_id);
+          const evento = await EventosController.registerToEvent(id, user.id);
 
           const resFechaRegistro = inscripcionSchema.shape.fechaRegistro.parse(
             evento.fechaRegistro,
@@ -62,20 +62,22 @@ export const EventosRouter = (app: Elysia) =>
           params: z.object({
             id: z.string().min(1).describe("El ID del evento"),
           }),
-          query: z.object({
-            user_id: z.string().min(1).describe("El ID del usuario"),
-          }),
           response: {
             200: registerEventoOutputSchema,
             400: z.object({ error: z.string() }),
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: [RolUsuario.PARTICIPANTE, RolUsuario.ORGANIZADOR],
         },
       )
       .get(
         "/:id/participants",
-        async ({ params, status }) => {
+        async ({ params, status, user }) => {
+          const evento = await EventosController.findById(params.id);
+          if (evento.organizadorId !== user.id) {
+            return status(403, { error: "No estas Autorizado" });
+          }
           const eventoConParticipantes =
             await EventosController.findParticipantsByEvent(params.id);
           return status(200, eventoConParticipantes);
@@ -86,9 +88,11 @@ export const EventosRouter = (app: Elysia) =>
           }),
           response: {
             200: findParticipantsEventosOutputSchema,
+            403: z.object({ error: z.string() }),
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .get(
@@ -110,8 +114,8 @@ export const EventosRouter = (app: Elysia) =>
       )
       .post(
         "/",
-        async ({ body, status }) => {
-          const evento = await EventosController.create(body);
+        async ({ body, status, user }) => {
+          const evento = await EventosController.create(user.id, body);
           if (!evento) {
             throw new ConflictError("Error al crear el evento");
           }
@@ -129,6 +133,7 @@ export const EventosRouter = (app: Elysia) =>
             400: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .patch(
@@ -148,6 +153,7 @@ export const EventosRouter = (app: Elysia) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .delete(
@@ -165,26 +171,30 @@ export const EventosRouter = (app: Elysia) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
-      .patch(
-        "/:id/register/:userid",
-        async ({ params, status }) => {
-          await EventosController.unregisterFromEvent(params.id, params.userid);
-
-          return status(204, null);
+      .post(
+        "/:id/unregister/",
+        async ({ params, status, user }) => {
+          const response = await EventosController.unregisterFromEvent(
+            params.id,
+            user.id,
+          );
+          console.log(response);
+          return status(200, response);
         },
         {
           params: z.object({
             id: z.string().min(1).describe("El ID del evento"),
-            userid: z.string().min(1).describe("El ID del usuario"),
           }),
           response: {
-            204: z.null(),
+            200: z.object({ message: z.string() }),
             400: z.object({ error: z.string() }),
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: [RolUsuario.PARTICIPANTE, RolUsuario.ORGANIZADOR],
         },
       ),
   );

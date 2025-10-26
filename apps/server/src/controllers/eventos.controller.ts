@@ -4,8 +4,8 @@ import type { UpdateEventoInput } from "@server/schemas/eventos/update-evento.sc
 import { EventosService } from "../services/eventos.service";
 
 export const EventosController = {
-  async create(data: CreateEventoInput) {
-    return await EventosService.create(data);
+  async create(organizadorId: string, data: CreateEventoInput) {
+    return await EventosService.create(organizadorId, data);
   },
 
   async delete(id: string) {

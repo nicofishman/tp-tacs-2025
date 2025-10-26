@@ -1,16 +1,17 @@
+import { RolUsuario } from "@prisma/client";
 import {
   createCategoriaOutputSchema,
   createCategoriaSchema,
 } from "@server/schemas/categorias/create-categoria.schema";
 import { findAllCategoriaOutputSchema } from "@server/schemas/categorias/findAll-categoria.schema";
 import { findByIdCategoriaOutputSchema } from "@server/schemas/categorias/findById-categoria.schema";
-import type { Elysia } from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { CategoriasController } from "../controllers/categorias.controller";
 
 const RUTA_CATEGORIAS = "/categorias";
 
-export const CategoriasRouter = (app: Elysia) =>
+export const CategoriasRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_CATEGORIAS, { tags: ["Categorias"] }, (app) =>
     app
       .get(
@@ -56,6 +57,7 @@ export const CategoriasRouter = (app: Elysia) =>
             409: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .delete(
@@ -73,6 +75,7 @@ export const CategoriasRouter = (app: Elysia) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .delete(
@@ -90,6 +93,7 @@ export const CategoriasRouter = (app: Elysia) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       ),
   );

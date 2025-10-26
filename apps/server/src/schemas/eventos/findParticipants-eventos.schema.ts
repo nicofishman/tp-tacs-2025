@@ -8,5 +8,5 @@ export const findParticipantsEventosOutputSchema = eventoSchema
     titulo: true,
   })
   .extend({
-    participantes: z.array(usuarioSchema.omit({ password: true })).optional(),
+    participantes: z.array(usuarioSchema).optional(),
   });

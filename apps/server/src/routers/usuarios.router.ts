@@ -1,7 +1,4 @@
-import {
-  createUsuarioInputSchema,
-  createUsuarioOutputSchema,
-} from "@server/schemas/usuarios/create-usuario.schema";
+import { RolUsuario } from "@prisma/client";
 import { findAllUsuariosOutputSchema } from "@server/schemas/usuarios/findAll-usuarios.schema";
 import { findByIdUsuariosOutputSchema } from "@server/schemas/usuarios/findById-usuarios.schema";
 import { findEventsByUserIdUsuariosOutputSchema } from "@server/schemas/usuarios/findEventsByUserId-usuarios.schema";
@@ -9,13 +6,13 @@ import {
   updateUsuarioInputSchema,
   updateUsuarioOutputSchema,
 } from "@server/schemas/usuarios/update-usuario.schema";
-import type { Elysia } from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { UsuariosController } from "../controllers/usuarios.controller";
 
 const RUTA_USUARIOS = "/usuarios";
 
-export const UsuariosRouter = (app: Elysia) =>
+export const UsuariosRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_USUARIOS, { tags: ["Usuarios"] }, (app) =>
     app
       .get(
@@ -28,6 +25,7 @@ export const UsuariosRouter = (app: Elysia) =>
           response: {
             200: findAllUsuariosOutputSchema,
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .get(
@@ -62,20 +60,6 @@ export const UsuariosRouter = (app: Elysia) =>
           },
         },
       )
-      .post(
-        "/",
-        async ({ body, status }) => {
-          const usuario = await UsuariosController.register(body);
-          return status(201, usuario);
-        },
-        {
-          body: createUsuarioInputSchema,
-          response: {
-            201: createUsuarioOutputSchema,
-          },
-        },
-      )
-
       .patch(
         "/:id",
         async ({ params, body, status }) => {

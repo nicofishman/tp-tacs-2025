@@ -1,5 +1,6 @@
 import { Heart, Lightbulb, Target, Users } from "lucide-react";
 
+// biome-ignore lint/suspicious/noExplicitAny: temporal
 export function meta(): any[] {
   return [
     { title: "Acerca de Nosotros - Mi Aplicación" },
@@ -17,8 +18,8 @@ const teamMembers = [
     id: 1,
     image: "/api/placeholder/200/200",
     linkedin: "#",
-    name: "Ana García",
-    position: "CEO & Fundadora",
+    name: "Gad Stamati",
+    position: "PM",
     twitter: "#",
   },
   {
@@ -26,8 +27,8 @@ const teamMembers = [
     id: 2,
     image: "/api/placeholder/200/200",
     linkedin: "#",
-    name: "Carlos López",
-    position: "CTO",
+    name: "Nicolas Fishman",
+    position: "Tech Lead",
     twitter: "#",
   },
   {
@@ -35,8 +36,35 @@ const teamMembers = [
     id: 3,
     image: "/api/placeholder/200/200",
     linkedin: "#",
-    name: "María Rodriguez",
-    position: "Directora de Marketing",
+    name: "Alan Garber",
+    position: "Sr Backend Engineer",
+    twitter: "#",
+  },
+  {
+    bio: "Especialista en estrategias digitales y comunicación efectiva",
+    id: 3,
+    image: "/api/placeholder/200/200",
+    linkedin: "#",
+    name: "Ramiro Remesaro",
+    position: "Sr Backend Engineer",
+    twitter: "#",
+  },
+  {
+    bio: "Especialista en estrategias digitales y comunicación efectiva",
+    id: 3,
+    image: "/api/placeholder/200/200",
+    linkedin: "#",
+    name: "Eitan Fiszer",
+    position: "Sr Backend Engineer",
+    twitter: "#",
+  },
+  {
+    bio: "Especialista en estrategias digitales y comunicación efectiva",
+    id: 3,
+    image: "/api/placeholder/200/200",
+    linkedin: "#",
+    name: "Agustin TACS",
+    position: "Sr Backend Engineer",
     twitter: "#",
   },
 ];

@@ -1,3 +1,4 @@
+import { RolUsuario } from "@prisma/client";
 import { ConflictError } from "@server/exceptions/ConflictError";
 import {
   createInscripcionInputSchema,
@@ -9,13 +10,13 @@ import {
   updateInscripcionInputSchema,
   updateInscripcionOutputSchema,
 } from "@server/schemas/inscripciones/update-inscripcion.schema";
-import type { Elysia } from "elysia";
+import type { ElysiaWithLogger } from "@server/types";
 import z from "zod";
 import { InscripcionesController } from "../controllers/inscripciones.controller";
 
 const RUTA_INSCRIPCIONES = "/inscripciones";
 
-export const InscripcionesRouter = (app: Elysia) =>
+export const InscripcionesRouter = (app: ElysiaWithLogger) =>
   app.group(RUTA_INSCRIPCIONES, { tags: ["Inscripciones"] }, (app) =>
     app
       .get(
@@ -29,6 +30,7 @@ export const InscripcionesRouter = (app: Elysia) =>
             200: findAllInscripcionOutputSchema,
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .get(
@@ -46,6 +48,7 @@ export const InscripcionesRouter = (app: Elysia) =>
             404: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .post(
@@ -72,6 +75,7 @@ export const InscripcionesRouter = (app: Elysia) =>
             400: z.object({ error: z.string() }),
             500: z.object({ error: z.string() }),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       )
       .patch(
@@ -109,6 +113,7 @@ export const InscripcionesRouter = (app: Elysia) =>
           response: {
             204: z.null(),
           },
+          role: RolUsuario.ORGANIZADOR,
         },
       ),
   );

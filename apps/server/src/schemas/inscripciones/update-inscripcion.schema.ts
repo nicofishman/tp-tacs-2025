@@ -21,5 +21,5 @@ export const updateInscripcionOutputSchema = inscripcionSchema
   })
   .extend({
     evento: eventoSchema,
-    usuario: usuarioSchema.omit({ password: true }),
+    usuario: usuarioSchema,
   });

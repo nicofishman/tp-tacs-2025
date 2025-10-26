@@ -3,8 +3,8 @@ import { Link } from "react-router";
 
 export function meta() {
   return [
-    { title: "Inicio - Mi Aplicación" },
-    { content: "Bienvenido a nuestra aplicación", name: "description" },
+    { title: "Inicio - EventApp" },
+    { content: "Bienvenido a EventApp", name: "description" },
   ];
 }
 
@@ -16,7 +16,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-black/20" />
         <div className="container relative mx-auto px-4 py-24 text-center">
           <h1 className="mb-6 bg-gradient-to-r from-white to-gray-200 bg-clip-text font-bold text-5xl text-transparent md:text-7xl">
-            Bienvenido a Mi Aplicación
+            Bienvenido a EventApp
           </h1>
           <p className="mx-auto mb-8 max-w-2xl text-gray-100 text-xl md:text-2xl">
             Descubre todo lo que tenemos para ofrecerte en un solo lugar

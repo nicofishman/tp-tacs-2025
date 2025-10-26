@@ -40,6 +40,7 @@ export const InscripcionesService = {
       throw new NotFoundError("Inscripción no encontrada");
     }
   },
+
   async findAll() {
     const inscripciones = await InscripcionesRepository.findAll();
     return inscripciones.map((inscripcion) => ({
@@ -65,6 +66,11 @@ export const InscripcionesService = {
       },
       fechaRegistro: inscripcion.fechaRegistro.toISOString(),
     };
+  },
+
+  async findByUserId(userId: string) {
+    const inscripciones = await InscripcionesRepository.findByUserId(userId);
+    return inscripciones;
   },
 
   async update(id: string, data: updateInscripcionInput) {
