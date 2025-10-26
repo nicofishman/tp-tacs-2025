@@ -7,7 +7,9 @@ type EventosGetResponse = Treaty.Data<typeof api.eventos.get>;
 type Evento = EventosGetResponse extends { items: (infer E)[] } ? E : never;
 
 export interface EventsListProps {
-  events: (Evento & { inscriptionState?: "CONFIRMADO" | "WAITLIST" | "CANCELADO" })[];
+  events: (Evento & {
+    inscriptionState?: "CONFIRMADO" | "WAITLIST" | "CANCELADO";
+  })[];
   loadingPage: boolean;
   formatDate: (d?: string) => string;
   formatTime: (d?: string) => string;
@@ -23,7 +25,7 @@ export const EventsList: React.FC<EventsListProps> = ({
   formatTime,
   formatDuration,
   formatPrice,
-  mode
+  mode,
 }) => {
   return (
     <div className="relative">

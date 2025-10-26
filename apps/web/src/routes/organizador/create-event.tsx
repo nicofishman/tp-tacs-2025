@@ -5,9 +5,6 @@ import { api } from "@web/lib/fetch";
 import { useNavigate } from "react-router";
 import { toast } from "sonner";
 
-// Tipos inferidos automáticamente desde Treaty
-type CreateEventBody = Parameters<typeof api.eventos.post>[0];
-
 export function meta(): Array<Record<string, string>> {
   return [
     { title: "Crear Evento - Mi Aplicación" },
@@ -34,7 +31,7 @@ export default function CreateEvent() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <section className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 text-white">
+      <section className="bg-linear-to-r from-blue-600 to-purple-600 py-16 text-white">
         <div className="container mx-auto px-4 text-center">
           <h1 className="mb-4 font-bold text-5xl">Crear Nuevo Evento</h1>
           <p className="mx-auto max-w-2xl text-blue-100 text-xl">

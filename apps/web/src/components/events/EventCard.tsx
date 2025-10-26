@@ -26,7 +26,7 @@ export const EventCard: React.FC<EventCardProps> = ({
   formatPrice,
   mode,
   state,
-  inscriptionState
+  inscriptionState,
 }) => {
   const handleInscribirse = async () => {
     try {
@@ -34,7 +34,7 @@ export const EventCard: React.FC<EventCardProps> = ({
         .eventos({ id: event.id })
         .register.post();
       toast.success(
-        "Inscripción realizada con éxito! Tu inscripción está confirmada."
+        "Inscripción realizada con éxito! Tu inscripción está confirmada.",
       );
     } catch (err) {
       console.error(err);
@@ -55,8 +55,8 @@ export const EventCard: React.FC<EventCardProps> = ({
   // 🔹 Colores por estado del evento
   const stateColors: Record<typeof state, string> = {
     CANCELADO: "text-red-600",
-    FINALIZADO: "text-gray-500",
     EN_PROCESO: "text-blue-600",
+    FINALIZADO: "text-gray-500",
     PENDIENTE: "text-yellow-500",
   };
 
@@ -65,14 +65,14 @@ export const EventCard: React.FC<EventCardProps> = ({
     NonNullable<typeof inscriptionState>,
     string
   > = {
+    CANCELADO: "text-red-600",
     CONFIRMADO: "text-green-600",
     WAITLIST: "text-yellow-500",
-    CANCELADO: "text-red-600",
   };
 
   return (
     <div className="hover:-translate-y-1 overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:shadow-xl">
-      <div className="relative h-48 overflow-hidden bg-gradient-to-r from-blue-400 to-purple-500">
+      <div className="relative h-48 overflow-hidden bg-linear-to-r from-blue-400 to-purple-500">
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute bottom-4 left-4 text-white">
           <span className="rounded-full bg-black/30 px-3 py-1 font-medium text-sm backdrop-blur-sm">
@@ -82,7 +82,9 @@ export const EventCard: React.FC<EventCardProps> = ({
       </div>
 
       <div className="p-6">
-        <h3 className="mb-3 font-bold text-2xl text-gray-900">{event.titulo}</h3>
+        <h3 className="mb-3 font-bold text-2xl text-gray-900">
+          {event.titulo}
+        </h3>
 
         <div className="mb-4 space-y-2 text-gray-600 text-sm">
           <div className="flex items-center gap-2">
@@ -118,8 +120,10 @@ export const EventCard: React.FC<EventCardProps> = ({
         </div>
 
         {/* 🔹 Estado del evento */}
-        <div className="flex items-center gap-2 mb-1">
-          <span className="text-gray-600 text-sm font-medium">Estado Evento:</span>
+        <div className="mb-1 flex items-center gap-2">
+          <span className="font-medium text-gray-600 text-sm">
+            Estado Evento:
+          </span>
           <span className={`font-bold text-lg ${stateColors[state]}`}>
             {state}
           </span>
@@ -127,8 +131,8 @@ export const EventCard: React.FC<EventCardProps> = ({
 
         {/* 🔹 Estado de inscripción (solo si existe) */}
         {inscriptionState && (
-          <div className="flex items-center gap-2 mb-2">
-            <span className="text-gray-600 text-sm font-medium">
+          <div className="mb-2 flex items-center gap-2">
+            <span className="font-medium text-gray-600 text-sm">
               Estado de la inscripción:
             </span>
             <span
@@ -139,13 +143,14 @@ export const EventCard: React.FC<EventCardProps> = ({
           </div>
         )}
 
-        <div className="flex items-center justify-between mt-4">
+        <div className="mt-4 flex items-center justify-between">
           <span className="font-bold text-2xl text-blue-600">
             {formatPrice(event.precio)}
           </span>
 
           {mode === "events" ? (
             <button
+              type="button"
               onClick={handleInscribirse}
               className="rounded-lg bg-blue-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-blue-700"
             >
@@ -153,6 +158,7 @@ export const EventCard: React.FC<EventCardProps> = ({
             </button>
           ) : (
             <button
+              type="button"
               onClick={handleDesinscribirse}
               className="rounded-lg bg-red-600 px-6 py-2 font-medium text-sm text-white transition-colors hover:bg-red-700"
             >

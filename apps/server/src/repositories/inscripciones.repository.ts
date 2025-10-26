@@ -1,4 +1,5 @@
 import { EstadoInscripcion, type Prisma } from "@prisma/client";
+import { QueryError } from "@server/exceptions/QueryError";
 import { prisma } from "@server/lib/prisma";
 import { mapPrismaEventoToEvento } from "./eventos.repository";
 
@@ -42,8 +43,17 @@ export const InscripcionesRepository = {
         },
       });
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró la inscripción para cancelar.");
+        return null;
+      }
       console.error("Error al cancelar inscripción:", error);
-      return null;
+      throw new QueryError("Error al cancelar inscripción.");
     }
   },
   async create(
@@ -69,8 +79,28 @@ export const InscripcionesRepository = {
       });
       return mapPrismaInscripcionToInscripcion(prismaInscripcion);
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        throw new QueryError(
+          "Ya existe una inscripción para este usuario y evento.",
+        );
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "Error de integridad referencial al crear la inscripción.",
+        );
+      }
       console.error("Error al crear inscripción:", error);
-      return null;
+      throw new QueryError("Error al crear inscripción.");
     }
   },
 
@@ -92,8 +122,27 @@ export const InscripcionesRepository = {
         ? mapPrismaInscripcionToInscripcion(prismaInscripcion)
         : null;
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró la inscripción para eliminar.");
+        return null;
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "No se puede eliminar la inscripción porque está siendo referenciada por otros registros.",
+        );
+      }
       console.error("Error al eliminar inscripción:", error);
-      return null;
+      throw new QueryError("Error al eliminar inscripción.");
     }
   },
 
@@ -106,8 +155,27 @@ export const InscripcionesRepository = {
         },
       });
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró la inscripción para eliminar.");
+        return null;
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "No se puede eliminar la inscripción porque está siendo referenciada por otros registros.",
+        );
+      }
       console.error("Error al eliminar inscripción:", error);
-      throw new Error("Error al eliminar inscripción");
+      throw new QueryError("Error al eliminar inscripción.");
     }
   },
 
@@ -127,7 +195,7 @@ export const InscripcionesRepository = {
       return inscripciones;
     } catch (error) {
       console.error("Error al buscar inscripciones:", error);
-      return [];
+      throw new QueryError("Error al buscar inscripciones.");
     }
   },
 
@@ -149,7 +217,7 @@ export const InscripcionesRepository = {
       });
     } catch (error) {
       console.error("Error al buscar inscripciones del evento:", error);
-      return [];
+      throw new QueryError("Error al buscar inscripciones del evento.");
     }
   },
 
@@ -169,8 +237,17 @@ export const InscripcionesRepository = {
       });
       return prismaInscripcion;
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró la inscripción con el ID proporcionado.");
+        return null;
+      }
       console.error("Error al buscar inscripción por ID:", error);
-      return null;
+      throw new QueryError("Error al buscar inscripción por ID.");
     }
   },
 
@@ -193,7 +270,7 @@ export const InscripcionesRepository = {
       return inscripciones.map(mapPrismaInscripcionToInscripcion);
     } catch (error) {
       console.error("Error al buscar inscripciones del usuario:", error);
-      return [];
+      throw new QueryError("Error al buscar inscripciones del usuario.");
     }
   },
 
@@ -207,7 +284,7 @@ export const InscripcionesRepository = {
       });
     } catch (error) {
       console.error("Error al obtener inscripciones del evento:", error);
-      throw new Error("Error al obtener inscripciones del evento");
+      throw new QueryError("Error al obtener inscripciones del evento");
     }
   },
 
@@ -223,8 +300,17 @@ export const InscripcionesRepository = {
         },
       });
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró usuario en waitlist.");
+        return null;
+      }
       console.error("Error al buscar primer usuario en waitlist:", error);
-      return null;
+      throw new QueryError("Error al buscar primer usuario en waitlist.");
     }
   },
 
@@ -238,7 +324,7 @@ export const InscripcionesRepository = {
       });
     } catch (error) {
       console.error("Error al verificar inscripción:", error);
-      throw new Error("Error al verificar inscripción");
+      throw new QueryError("Error al verificar inscripción");
     }
   },
 
@@ -270,8 +356,17 @@ export const InscripcionesRepository = {
         },
       });
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró la inscripción para promover.");
+        return null;
+      }
       console.error("Error al promover usuario desde waitlist:", error);
-      return null;
+      throw new QueryError("Error al promover usuario desde waitlist.");
     }
   },
 
@@ -298,8 +393,28 @@ export const InscripcionesRepository = {
         },
       });
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        throw new QueryError(
+          "Ya existe una inscripción para este usuario y evento.",
+        );
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "Error de integridad referencial al registrar usuario en el evento.",
+        );
+      }
       console.error("Error al registrar usuario en el evento:", error);
-      throw new Error("Error al registrar usuario en el evento");
+      throw new QueryError("Error al registrar usuario en el evento");
     }
   },
 
@@ -328,8 +443,17 @@ export const InscripcionesRepository = {
         ? mapPrismaInscripcionToInscripcion(prismaInscripcion)
         : null;
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró la inscripción para actualizar.");
+        return null;
+      }
       console.error("Error al actualizar inscripción:", error);
-      return null;
+      throw new QueryError("Error al actualizar inscripción.");
     }
   },
 
@@ -348,7 +472,7 @@ export const InscripcionesRepository = {
       });
     } catch (error) {
       console.error("Error al actualizar el estado de la inscripción:", error);
-      throw new Error("Error al actualizar el estado de la inscripción");
+      throw new QueryError("Error al actualizar el estado de la inscripción");
     }
   },
 };

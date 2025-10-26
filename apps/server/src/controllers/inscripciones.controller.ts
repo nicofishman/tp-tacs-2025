@@ -1,11 +1,10 @@
-import type { CreateInscripcionInput } from "@server/schemas/inscripciones/create-inscripcion.schema";
 import type { updateInscripcionInput } from "@server/schemas/inscripciones/update-inscripcion.schema";
 import { InscripcionesService } from "@server/services/inscripciones.service";
 
 export const InscripcionesController = {
-  async create(data: CreateInscripcionInput) {
-    return await InscripcionesService.create(data);
-  },
+  // async create(data: CreateInscripcionInput) {
+  //   return await InscripcionesService.create(data);
+  // },
 
   async delete(id: string) {
     await InscripcionesService.delete(id);

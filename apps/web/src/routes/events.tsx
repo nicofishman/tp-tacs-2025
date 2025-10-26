@@ -1,60 +1,74 @@
-
-import { useEffect, useMemo, useState } from "react";
-import { EventsHeader } from "@web/components/events/EventsHeader";
+import type { Treaty } from "@elysiajs/eden";
 import { EventsFilters } from "@web/components/events/EventsFilters";
+import { EventsHeader } from "@web/components/events/EventsHeader";
 import { EventsList } from "@web/components/events/EventsList";
 import { EventsPagination } from "@web/components/events/EventsPagination";
 import { api } from "@web/lib/fetch";
-import type { Treaty } from "@elysiajs/eden";
+import { useEffect, useMemo, useState } from "react";
 
 type EventosGetResponse = Treaty.Data<typeof api.eventos.get>;
 type Evento = EventosGetResponse extends { items: (infer E)[] } ? E : never;
 
+const defaultFilters = {
+  categoriaId: undefined,
+  dateFrom: undefined,
+  dateTo: undefined,
+  limit: 10,
+  order: "asc",
+  orderBy: "fechaInicio",
+  page: 1,
+  priceMax: undefined,
+  priceMin: undefined,
+  q: undefined,
+} satisfies Filters;
+export type Filters = {
+  categoriaId: string | undefined;
+  dateFrom: string | undefined;
+  dateTo: string | undefined;
+  limit: number;
+  order: "asc" | "desc";
+  orderBy: "fechaInicio" | "precio";
+  page: number;
+  priceMax: number | undefined;
+  priceMin: number | undefined;
+  q: string | undefined;
+};
+
 export default function Events() {
   // --- State and hooks ---
-  const defaultFilters = {
-    categoriaId: undefined,
-    dateFrom: undefined,
-    dateTo: undefined,
-    limit: 10,
-    order: "asc",
-    orderBy: "fechaInicio",
-    page: 1,
-    priceMax: undefined,
-    priceMin: undefined,
-    q: undefined,
-  };
-  const [filters, setFilters] = useState(defaultFilters);
-  const [pendingFilters, setPendingFilters] = useState(defaultFilters);
+  const [filters, setFilters] = useState<Filters>(defaultFilters);
+  const [pendingFilters, setPendingFilters] = useState<Filters>(defaultFilters);
   const [events, setEvents] = useState<Evento[]>([]);
-  const [eventsResponse, setEventsResponse] = useState<EventosGetResponse | null>(null);
+  const [eventsResponse, setEventsResponse] =
+    useState<EventosGetResponse | null>(null);
   const [page, setPage] = useState(1);
   const [limit, setLimit] = useState(10);
   const [showFilters, setShowFilters] = useState(false);
   const [loading, setLoading] = useState(true);
   const [loadingPage, setLoadingPage] = useState(false);
-  const [categories, setCategories] = useState<Array<{ label: string; value: string | undefined }>>([
-    { label: "Todas las categorías", value: undefined },
-  ]);
+  const [categories, setCategories] = useState<
+    Array<{ label: string; value: string | undefined }>
+  >([{ label: "Todas las categorías", value: undefined }]);
   const [loadingCategories, setLoadingCategories] = useState(true);
 
   // --- Fetch events and categories ---
   useEffect(() => {
-  const fetchEvents = async (p: number, l: number, isPageChange: boolean = false) => {
+    const fetchEvents = async (p: number, l: number, isPageChange = false) => {
       try {
         if (isPageChange) setLoadingPage(true);
         else setLoading(true);
-        const queryParams = { ...filters, page: p, limit: l };
+        const queryParams = { ...filters, limit: l, page: p };
         const result = await api.eventos.get({ query: queryParams });
-        if (result.error || result.status !== 200) throw new Error('Error fetching events');
+        if (result.error || result.status !== 200)
+          throw new Error("Error fetching events");
         const resp = result.data;
         setEventsResponse(resp);
         setEvents(resp.items || []);
         setPage(resp.page ?? p);
         setLimit(resp.limit ?? l);
-        if (isPageChange) window.scrollTo({ top: 0, behavior: "smooth" });
+        if (isPageChange) window.scrollTo({ behavior: "smooth", top: 0 });
       } catch {
-        setEventsResponse({ items: [], count: 0, page: p, limit: l });
+        setEventsResponse({ count: 0, items: [], limit: l, page: p });
         setEvents([]);
       } finally {
         setLoading(false);
@@ -69,7 +83,10 @@ export default function Events() {
         if (result && result.status === 200 && Array.isArray(result.data)) {
           setCategories([
             { label: "Todas las categorías", value: undefined },
-            ...result.data.map((cat: any) => ({ label: cat.nombre, value: cat.id })),
+            ...result.data.map((cat) => ({
+              label: cat.nombre,
+              value: cat.id,
+            })),
           ]);
         }
       } catch {
@@ -80,7 +97,7 @@ export default function Events() {
     };
     fetchCategories();
     // eslint-disable-next-line
-  }, []);
+  }, [filters]);
 
   useEffect(() => {
     if (!loading && eventsResponse) {
@@ -88,11 +105,11 @@ export default function Events() {
       // Refetch events with new filters
       const fetchEvents = async () => {
         setLoading(true);
-        const queryParams = { ...filters, page: 1, limit };
+        const queryParams = { ...filters, limit, page: 1 };
         const result = await api.eventos.get({ query: queryParams });
         if (result.error || result.status !== 200) {
           setEvents([]);
-          setEventsResponse({ items: [], count: 0, page: 1, limit });
+          setEventsResponse({ count: 0, items: [], limit, page: 1 });
         } else {
           setEvents(result.data.items || []);
           setEventsResponse(result.data);
@@ -101,24 +118,18 @@ export default function Events() {
       };
       fetchEvents();
     }
-    // eslint-disable-next-line
-  }, [
-    filters.categoriaId,
-    filters.dateFrom,
-    filters.dateTo,
-    filters.priceMin,
-    filters.priceMax,
-    filters.q,
-    filters.order,
-    filters.orderBy,
-    filters.limit,
-    filters.page,
-  ]);
+  }, [filters, eventsResponse, limit, loading]);
 
   // --- Filter helpers ---
-  const updatePendingFilter = (key: string, value: any) => setPendingFilters(prev => ({ ...prev, [key]: value }));
+  const updatePendingFilter = <K extends keyof typeof pendingFilters>(
+    key: K,
+    value: (typeof pendingFilters)[K],
+  ) => setPendingFilters((prev) => ({ ...prev, [key]: value }));
   const applyFilters = () => setFilters({ ...pendingFilters, page: 1 });
-  const clearFilters = () => { setFilters(defaultFilters); setPendingFilters(defaultFilters); };
+  const clearFilters = () => {
+    setFilters(defaultFilters);
+    setPendingFilters(defaultFilters);
+  };
   const getActiveFiltersCount = () => {
     let count = 0;
     if (filters.categoriaId) count++;
@@ -135,16 +146,49 @@ export default function Events() {
   // --- Pagination helpers ---
   const totalCount = eventsResponse?.count ?? 0;
   const totalPages = Math.max(1, Math.ceil(totalCount / limit));
-  const prevPage = () => { if (page > 1) setPage(page - 1); };
-  const nextPage = () => { if (page < totalPages) setPage(page + 1); };
-  const goToPage = (p: number) => { if (p >= 1 && p <= totalPages && p !== page) setPage(p); };
-  const changeLimit = (newLimit: number) => { setLimit(newLimit); setPage(1); };
+  const prevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+  const nextPage = () => {
+    if (page < totalPages) setPage(page + 1);
+  };
+  const goToPage = (p: number) => {
+    if (p >= 1 && p <= totalPages && p !== page) setPage(p);
+  };
+  const changeLimit = (newLimit: number) => {
+    setLimit(newLimit);
+    setPage(1);
+  };
 
   // --- Formatters ---
-  const formatDate = (d?: string) => d ? new Date(d).toLocaleDateString("es-ES", { day: "numeric", month: "long", weekday: "long", year: "numeric" }) : "-";
-  const formatTime = (d?: string) => d ? new Date(d).toLocaleTimeString("es-ES", { hour: "2-digit", minute: "2-digit" }) : "-";
-  const formatPrice = (p?: number) => p == null ? "-" : p === 0 ? "Gratis" : new Intl.NumberFormat("es-AR", { style: "currency", currency: "ARS" }).format(p);
-  const formatDuration = (dur?: { horas?: number; minutos?: number } | null) => {
+  const formatDate = (d?: string) =>
+    d
+      ? new Date(d).toLocaleDateString("es-ES", {
+          day: "numeric",
+          month: "long",
+          weekday: "long",
+          year: "numeric",
+        })
+      : "-";
+  const formatTime = (d?: string) =>
+    d
+      ? new Date(d).toLocaleTimeString("es-ES", {
+          hour: "2-digit",
+          minute: "2-digit",
+        })
+      : "-";
+  const formatPrice = (p?: number) =>
+    p == null
+      ? "-"
+      : p === 0
+        ? "Gratis"
+        : new Intl.NumberFormat("es-AR", {
+            currency: "ARS",
+            style: "currency",
+          }).format(p);
+  const formatDuration = (
+    dur?: { horas?: number; minutos?: number } | null,
+  ) => {
     if (!dur) return "-";
     const { horas = 0, minutos = 0 } = dur;
     if (horas === 0 && minutos === 0) return "-";
@@ -161,7 +205,7 @@ export default function Events() {
     return (
       <div className="min-h-screen bg-gray-50">
         <EventsHeader title="Eventos Disponibles" />
-        <div className="flex justify-center items-center py-20">
+        <div className="flex items-center justify-center py-20">
           <div className="text-gray-600 text-xl">Cargando eventos...</div>
         </div>
       </div>
@@ -206,6 +250,7 @@ export default function Events() {
                 No hay eventos que coincidan con los filtros seleccionados
               </p>
               <button
+                type="button"
                 onClick={clearFilters}
                 className="rounded-lg bg-blue-600 px-6 py-2 text-white transition-colors hover:bg-blue-700"
               >

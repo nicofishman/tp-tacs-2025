@@ -53,6 +53,7 @@ export const EventsPagination: React.FC<EventsPaginationProps> = ({
     <div className="flex flex-col gap-4 py-8 md:flex-row md:items-center md:justify-between">
       <div className="flex items-center gap-2">
         <button
+          type="button"
           onClick={prevPage}
           disabled={page === 1 || loadingPage}
           className="rounded border border-gray-300 bg-white px-3 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-50"
@@ -61,11 +62,15 @@ export const EventsPagination: React.FC<EventsPaginationProps> = ({
         </button>
         {getPageNumbers().map((p, idx) =>
           p === "..." ? (
-            <span key={`ellipsis-${idx}`} className="px-2 text-gray-400">
+            <span
+              key={`ellipsis-${String(idx)}`}
+              className="px-2 text-gray-400"
+            >
               ...
             </span>
           ) : (
             <button
+              type="button"
               key={p}
               onClick={() => goToPage(Number(p))}
               disabled={p === page || loadingPage}
@@ -76,6 +81,7 @@ export const EventsPagination: React.FC<EventsPaginationProps> = ({
           ),
         )}
         <button
+          type="button"
           onClick={nextPage}
           disabled={page === totalPages || loadingPage}
           className="rounded border border-gray-300 bg-white px-3 py-1 text-gray-700 hover:bg-gray-100 disabled:opacity-50"
@@ -87,8 +93,11 @@ export const EventsPagination: React.FC<EventsPaginationProps> = ({
         <span className="text-gray-600 text-sm">
           Total: {totalCount} eventos
         </span>
-        <label className="ml-4 text-gray-600 text-sm">Por página:</label>
+        <label htmlFor="limit" className="ml-4 text-gray-600 text-sm">
+          Por página:
+        </label>
         <select
+          id="limit"
           value={limit}
           onChange={(e) => changeLimit(Number(e.target.value))}
           disabled={loadingPage}

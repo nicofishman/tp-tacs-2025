@@ -5,9 +5,6 @@ import { api } from "@web/lib/fetch";
 import { useEffect, useState } from "react";
 
 type InscriptionsGetResponse = Treaty.Data<typeof api.me.inscriptions.get>;
-type Inscripcion = InscriptionsGetResponse extends { items: (infer I)[] }
-  ? I
-  : never;
 
 export default function MyInscriptions() {
   const [inscriptions, setInscriptions] = useState<InscriptionsGetResponse>([]);
