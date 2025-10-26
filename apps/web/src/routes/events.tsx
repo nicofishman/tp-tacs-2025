@@ -4,7 +4,7 @@ import { EventsHeader } from "@web/components/events/EventsHeader";
 import { EventsList } from "@web/components/events/EventsList";
 import { EventsPagination } from "@web/components/events/EventsPagination";
 import { api } from "@web/lib/fetch";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type EventosGetResponse = Treaty.Data<typeof api.eventos.get>;
 type Evento = EventosGetResponse extends { items: (infer E)[] } ? E : never;
@@ -50,32 +50,11 @@ export default function Events() {
     Array<{ label: string; value: string | undefined }>
   >([{ label: "Todas las categorías", value: undefined }]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const hasInitialData = useRef(false);
 
   // --- Fetch events and categories ---
+  // Fetch categories on mount
   useEffect(() => {
-    const fetchEvents = async (p: number, l: number, isPageChange = false) => {
-      try {
-        if (isPageChange) setLoadingPage(true);
-        else setLoading(true);
-        const queryParams = { ...filters, limit: l, page: p };
-        const result = await api.eventos.get({ query: queryParams });
-        if (result.error || result.status !== 200)
-          throw new Error("Error fetching events");
-        const resp = result.data;
-        setEventsResponse(resp);
-        setEvents(resp.items || []);
-        setPage(resp.page ?? p);
-        setLimit(resp.limit ?? l);
-        if (isPageChange) window.scrollTo({ behavior: "smooth", top: 0 });
-      } catch {
-        setEventsResponse({ count: 0, items: [], limit: l, page: p });
-        setEvents([]);
-      } finally {
-        setLoading(false);
-        setLoadingPage(false);
-      }
-    };
-    fetchEvents(1, 10);
     const fetchCategories = async () => {
       setLoadingCategories(true);
       try {
@@ -96,29 +75,45 @@ export default function Events() {
       }
     };
     fetchCategories();
-    // eslint-disable-next-line
-  }, [filters]);
+  }, []);
 
+  // Fetch events when filters or page changes
   useEffect(() => {
-    if (!loading && eventsResponse) {
-      setPage(1);
-      // Refetch events with new filters
-      const fetchEvents = async () => {
-        setLoading(true);
-        const queryParams = { ...filters, limit, page: 1 };
-        const result = await api.eventos.get({ query: queryParams });
-        if (result.error || result.status !== 200) {
-          setEvents([]);
-          setEventsResponse({ count: 0, items: [], limit, page: 1 });
+    const fetchEvents = async () => {
+      try {
+        // Determine if this is just a page change
+        const isOnlyPageChange = hasInitialData.current && page !== 1;
+
+        if (isOnlyPageChange) {
+          setLoadingPage(true);
         } else {
-          setEvents(result.data.items || []);
-          setEventsResponse(result.data);
+          setLoading(true);
         }
+
+        const queryParams = { ...filters, limit, page };
+        const result = await api.eventos.get({ query: queryParams });
+        if (result.error || result.status !== 200)
+          throw new Error("Error fetching events");
+        const resp = result.data;
+        setEventsResponse(resp);
+        setEvents(resp.items || []);
+        setPage(resp.page ?? page);
+        setLimit(resp.limit ?? limit);
+        hasInitialData.current = true;
+
+        if (isOnlyPageChange) window.scrollTo({ behavior: "smooth", top: 0 });
+      } catch {
+        setEventsResponse({ count: 0, items: [], limit, page });
+        setEvents([]);
+        hasInitialData.current = true;
+      } finally {
         setLoading(false);
-      };
-      fetchEvents();
-    }
-  }, [filters, eventsResponse, limit, loading]);
+        setLoadingPage(false);
+      }
+    };
+    fetchEvents();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters, page, limit]);
 
   // --- Filter helpers ---
   const updatePendingFilter = <K extends keyof typeof pendingFilters>(
