@@ -1,72 +1,107 @@
+import type { Treaty } from "@elysiajs/eden";
 import type { Usuario } from "@server/types";
-import {
-  createContext,
-  type ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
+import { api } from "@web/lib/fetch";
+import type { ReactNode } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 interface AuthContextType {
-  user: Usuario | null;
+  user: Pick<Usuario, "id" | "nombre" | "email" | "rol"> | null;
   isLoading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, name: string) => Promise<void>;
+  signUp: (email: string, password: string, nombre: string) => Promise<void>;
   signOut: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Fallback auth provider that works without Better Auth
-export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<Usuario | null>(null);
-  const [isLoading, setIsLoading] = useState(false); // Start with false for now
+export function AuthProvider({
+  children,
+  serverUser,
+}: {
+  children: ReactNode;
+  serverUser?: Treaty.Data<(typeof api.auth)["sign-in"]["post"]>["user"] | null;
+}) {
+  const [user, setUser] = useState<
+    Treaty.Data<(typeof api.auth)["sign-in"]["post"]>["user"] | null
+  >(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // Load user from localStorage on app start (only if no server user provided)
   useEffect(() => {
-    // For now, we'll start in an unauthenticated state
-    // Later, you can integrate with Better Auth once the server is properly set up
+    if (!serverUser) {
+      setIsLoading(true);
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        try {
+          setUser(JSON.parse(userData));
+        } catch {
+          // If there's an error parsing the stored user data, remove it
+          localStorage.removeItem("user");
+        }
+      }
+      setIsLoading(false);
+    }
     setIsLoading(false);
-  }, []);
+  }, [serverUser]);
 
   const signIn = async (email: string, password: string) => {
+    setIsLoading(true);
     try {
-      // Import auth client dynamically to avoid initialization errors
-      const { authClient } = await import("@web/lib/auth-client");
-      await authClient.signIn.email({
+      const { data, error } = await api.auth["sign-in"].post({
         email,
         password,
       });
-    } catch (error) {
-      console.error("Sign in error:", error);
-      throw new Error(
-        "Sign in failed. Please check your credentials and try again.",
-      );
+      if (error) {
+        type ErrorValue = { message?: string; summary?: string };
+        const value = (error as { value?: ErrorValue })?.value;
+        const msg = value?.message || value?.summary || "Sign in failed";
+        throw new Error(msg);
+      }
+
+      // Set user data - cookies are automatically handled by the server
+      setUser(data.user);
+
+      // Store token and user data in localStorage for persistence
+      localStorage.setItem("user", JSON.stringify(data.user));
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  const signUp = async (email: string, password: string, name: string) => {
+  const signUp = async (email: string, password: string, nombre: string) => {
+    setIsLoading(true);
     try {
-      const { authClient } = await import("@web/lib/auth-client");
-      await authClient.signUp.email({
+      const { data, error } = await api.auth["sign-up"].post({
         email,
-        name,
+        nombre,
         password,
       });
-    } catch (error) {
-      console.error("Sign up error:", error);
-      throw new Error("Sign up failed. Please try again.");
+      if (error) {
+        type ErrorValue = { message?: string; summary?: string };
+        const value = (error as { value?: ErrorValue })?.value;
+        const msg = value?.message || value?.summary || "Sign up failed";
+        throw new Error(msg);
+      }
+
+      const { token, ...user } = data;
+
+      setUser(user);
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(user));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const signOut = async () => {
+    setIsLoading(true);
     try {
-      const { authClient } = await import("@web/lib/auth-client");
-      await authClient.signOut();
-    } catch (error) {
-      console.error("Sign out error:", error);
-    } finally {
+      localStorage.removeItem("token");
+      localStorage.removeItem("user");
       setUser(null);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -84,8 +119,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 }

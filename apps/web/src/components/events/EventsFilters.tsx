@@ -1,9 +1,13 @@
+import type { Filters } from "@web/routes/events";
 import type React from "react";
 
 export interface EventsFiltersProps {
   categories: Array<{ label: string; value: string | undefined }>;
-  pendingFilters: any;
-  updatePendingFilter: (key: string, value: any) => void;
+  pendingFilters: Filters;
+  updatePendingFilter: <K extends keyof Filters>(
+    key: K,
+    value: Filters[K],
+  ) => void;
   applyFilters: () => void;
   clearFilters: () => void;
   showFilters: boolean;
@@ -56,7 +60,10 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
         <div className="space-y-4 rounded-lg border border-gray-200 bg-white p-6">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div>
-              <label className="mb-2 block font-medium text-gray-700 text-sm">
+              <label
+                htmlFor="categoria"
+                className="mb-2 block font-medium text-gray-700 text-sm"
+              >
                 Categoría
               </label>
               <select
@@ -64,11 +71,12 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
                 onChange={(e) =>
                   updatePendingFilter(
                     "categoriaId",
-                    e.target.value || undefined,
+                    e.target.value ? e.target.value : undefined,
                   )
                 }
                 className="w-full rounded-lg border border-gray-300 p-2 focus:border-transparent focus:ring-2 focus:ring-blue-500"
                 disabled={loadingCategories}
+                id="categoria"
               >
                 {categories.map((c) => (
                   <option key={c.value ?? "all"} value={c.value ?? ""}>
@@ -80,11 +88,15 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
           </div>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <div>
-              <label className="mb-2 block font-medium text-gray-700 text-sm">
+              <label
+                htmlFor="dateFrom"
+                className="mb-2 block font-medium text-gray-700 text-sm"
+              >
                 Fecha desde
               </label>
               <input
                 type="date"
+                id="dateFrom"
                 value={pendingFilters.dateFrom ?? ""}
                 onChange={(e) =>
                   updatePendingFilter("dateFrom", e.target.value || undefined)
@@ -93,11 +105,15 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
               />
             </div>
             <div>
-              <label className="mb-2 block font-medium text-gray-700 text-sm">
+              <label
+                htmlFor="dateTo"
+                className="mb-2 block font-medium text-gray-700 text-sm"
+              >
                 Fecha hasta
               </label>
               <input
                 type="date"
+                id="dateTo"
                 value={pendingFilters.dateTo ?? ""}
                 onChange={(e) =>
                   updatePendingFilter("dateTo", e.target.value || undefined)
@@ -106,11 +122,15 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
               />
             </div>
             <div>
-              <label className="mb-2 block font-medium text-gray-700 text-sm">
+              <label
+                htmlFor="priceMin"
+                className="mb-2 block font-medium text-gray-700 text-sm"
+              >
                 Precio mínimo (ARS)
               </label>
               <input
                 type="number"
+                id="priceMin"
                 placeholder="0"
                 value={pendingFilters.priceMin ?? ""}
                 onChange={(e) =>
@@ -123,11 +143,15 @@ export const EventsFilters: React.FC<EventsFiltersProps> = ({
               />
             </div>
             <div>
-              <label className="mb-2 block font-medium text-gray-700 text-sm">
+              <label
+                htmlFor="priceMax"
+                className="mb-2 block font-medium text-gray-700 text-sm"
+              >
                 Precio máximo (ARS)
               </label>
               <input
                 type="number"
+                id="priceMax"
                 placeholder="Sin límite"
                 value={pendingFilters.priceMax ?? ""}
                 onChange={(e) =>

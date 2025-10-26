@@ -5,6 +5,7 @@ import {
   LayoutDashboard,
   Mail,
   Menu,
+  UserCircle,
   X,
 } from "lucide-react";
 import { useState } from "react";
@@ -14,7 +15,7 @@ import UserMenu from "./user-menu";
 
 export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { user, isAuthenticated } = useAuth();
 
   const publicLinks = [
     { icon: Home, label: "Home", to: "/" },
@@ -23,122 +24,91 @@ export default function Header() {
     { icon: Mail, label: "Contacto", to: "/contact" },
   ] as const;
 
-  const protectedLinks = [
-    { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
-  ] as const;
+  const roleLinks =
+    user?.rol === "ORGANIZADOR"
+      ? [{ icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" }]
+      : user?.rol === "PARTICIPANTE"
+        ? [
+            {
+              icon: UserCircle,
+              label: "Mis inscripciones",
+              to: "/my-inscriptions",
+            },
+          ]
+        : [];
 
-  const links = isAuthenticated
-    ? [...protectedLinks, ...publicLinks]
-    : publicLinks;
+  const links = isAuthenticated ? [...roleLinks, ...publicLinks] : publicLinks;
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
-
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const closeMobileMenu = () => setIsMobileMenuOpen(false);
 
   return (
     <header className="sticky top-0 z-50 border-gray-200 border-b bg-white shadow-sm">
-      <div className="container mx-auto px-4">
-        {/* Desktop & Mobile Header */}
-        <div className="flex h-16 items-center justify-between">
-          {/* Logo/Brand */}
-          <div className="flex-shrink-0">
+      <div className="container mx-auto flex h-16 items-center justify-between px-4">
+        {/* Logo */}
+        <NavLink
+          to="/"
+          className="flex items-center space-x-2 font-bold text-gray-900 text-xl hover:text-blue-600"
+          onClick={closeMobileMenu}
+        >
+          <Calendar className="h-6 w-6 text-blue-600" />
+          <span>EventApp</span>
+        </NavLink>
+
+        {/* Links Desktop */}
+        <nav className="hidden space-x-6 md:flex">
+          {links.map(({ to, label, icon: Icon }) => (
             <NavLink
-              to="/"
-              className="flex items-center space-x-2 font-bold text-gray-900 text-xl transition-colors hover:text-blue-600"
-              onClick={closeMobileMenu}
+              key={to}
+              to={to}
+              className={({ isActive }) =>
+                `flex items-center space-x-1 rounded-lg px-3 py-2 transition ${
+                  isActive
+                    ? "bg-blue-50 font-semibold text-blue-600"
+                    : "text-gray-700 hover:bg-gray-100 hover:text-gray-900"
+                }`
+              }
             >
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-blue-600 to-purple-600">
-                <Calendar className="h-5 w-5 text-white" />
-              </div>
-              <span className="hidden sm:block">EventApp</span>
+              <Icon className="h-4 w-4" />
+              <span>{label}</span>
             </NavLink>
-          </div>
+          ))}
+        </nav>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden items-center space-x-8 md:flex">
-            {links.map(({ to, label, icon: Icon }) => (
-              <NavLink
-                key={to}
-                to={to}
-                className={({ isActive }) =>
-                  `flex items-center space-x-1 rounded-lg px-3 py-2 font-medium text-sm transition-all duration-200 hover:bg-gray-100 ${
-                    isActive
-                      ? "bg-blue-50 font-semibold text-blue-600"
-                      : "text-gray-700 hover:text-gray-900"
-                  }`
-                }
-                end
-              >
-                <Icon className="h-4 w-4" />
-                <span>{label}</span>
-              </NavLink>
-            ))}
-          </nav>
-
-          {/* Desktop Actions */}
-          <div className="hidden items-center space-x-3 md:flex">
-            {/* <ModeToggle /> */}
-            <UserMenu />
-          </div>
-
-          {/* Mobile Actions */}
-          <div className="flex items-center space-x-3 md:hidden">
-            {/* <ModeToggle /> */}
-            <UserMenu />
-            <button
-              onClick={toggleMobileMenu}
-              type="button"
-              className="rounded-lg p-2 text-gray-700 transition-colors hover:bg-gray-100 hover:text-gray-900"
-              aria-label="Toggle mobile menu"
-            >
-              {isMobileMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+        {/* User menu + mobile */}
+        <div className="flex items-center space-x-3">
+          <UserMenu />
+          <button
+            type="button"
+            className="rounded-lg p-2 hover:bg-gray-100 md:hidden"
+            onClick={toggleMobileMenu}
+          >
+            {isMobileMenuOpen ? <X /> : <Menu />}
+          </button>
         </div>
-
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <div className="relative z-50 border-gray-200 border-t bg-white md:hidden">
-            <div className="space-y-2 py-4">
-              {links.map(({ to, label, icon: Icon }) => (
-                <NavLink
-                  key={to}
-                  to={to}
-                  onClick={closeMobileMenu}
-                  className={({ isActive }) =>
-                    `flex items-center space-x-3 rounded-lg px-4 py-3 font-medium text-base transition-all duration-200 ${
-                      isActive
-                        ? "border-blue-600 border-l-4 bg-blue-50 font-semibold text-blue-600"
-                        : "text-gray-700 hover:bg-gray-50 hover:text-gray-900"
-                    }`
-                  }
-                  end
-                >
-                  <Icon className="h-5 w-5" />
-                  <span>{label}</span>
-                </NavLink>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
 
-      {/* Mobile Menu Overlay - solo para cerrar al tocar fuera */}
+      {/* Mobile menu */}
       {isMobileMenuOpen && (
-        <button
-          type="button"
-          className="fixed inset-0 z-30 bg-black bg-opacity-25 md:hidden"
-          onClick={closeMobileMenu}
-          style={{ top: "64px" }} // Empieza después del header
-        />
+        <div className="border-gray-200 border-t bg-white md:hidden">
+          {links.map(({ to, label, icon: Icon }) => (
+            <NavLink
+              key={to}
+              to={to}
+              onClick={closeMobileMenu}
+              className={({ isActive }) =>
+                `flex items-center space-x-2 px-4 py-3 ${
+                  isActive
+                    ? "bg-blue-50 font-semibold text-blue-600"
+                    : "text-gray-700 hover:bg-gray-50"
+                }`
+              }
+            >
+              <Icon className="h-5 w-5" />
+              <span>{label}</span>
+            </NavLink>
+          ))}
+        </div>
       )}
     </header>
   );

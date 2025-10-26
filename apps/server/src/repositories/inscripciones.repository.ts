@@ -328,6 +328,23 @@ export const InscripcionesRepository = {
     }
   },
 
+  async findWaitlistByEvent(eventId: string) {
+    try {
+      return await prisma.inscripcion.findMany({
+        orderBy: {
+          fechaRegistro: "asc",
+        },
+        where: {
+          estado: EstadoInscripcion.WAITLIST,
+          eventoId: eventId,
+        },
+      });
+    } catch (error) {
+      console.error("Error al obtener waitlist del evento:", error);
+      return [];
+    }
+  },
+
   async promoteFromWaitlist(inscripcionId: string) {
     try {
       return await prisma.inscripcion.update({

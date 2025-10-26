@@ -5,7 +5,7 @@ import type { AuthMacro, AuthMacroFn } from "./lib/auth";
 import type { createContextualLogger } from "./lib/logger";
 
 export type App = typeof app;
-export type { Usuario } from "@prisma/client";
+export type { RolUsuario, Usuario } from "@prisma/client";
 
 export type ElysiaWithLogger = Elysia<
   "",

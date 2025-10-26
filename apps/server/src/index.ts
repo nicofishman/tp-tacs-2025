@@ -1,7 +1,7 @@
+import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
 import z from "zod";
-import { cors } from "@elysiajs/cors";
 import { ConflictError } from "./exceptions/ConflictError";
 import { NotFoundError } from "./exceptions/NotFoundError";
 import { ValidationError } from "./exceptions/ValidationError";
@@ -12,17 +12,19 @@ import { CategoriasRouter } from "./routers/categorias.router";
 import { EventosRouter } from "./routers/eventos.router";
 import { HealthRouter } from "./routers/health.router";
 import { InscripcionesRouter } from "./routers/inscripciones.router";
+import { MeRouter } from "./routers/me.router";
 import { UsuariosRouter } from "./routers/usuarios.router";
 
 z.config(z.locales.es());
 
 export const app = new Elysia()
- .use(
+  .use(
     cors({
-      origin: "*", // Durante desarrollo. Para producción usar el dominio de tu front
-      methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
-    })
+      allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+      credentials: true, // Allow cookies to be sent
+      methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Frontend URL
+    }),
   )
   .use(
     openapi({
@@ -75,6 +77,7 @@ export const app = new Elysia()
   .use(EventosRouter)
   .use(CategoriasRouter)
   .use(InscripcionesRouter)
+  .use(MeRouter)
   .use(AuthRouter)
   .listen(3000);
 

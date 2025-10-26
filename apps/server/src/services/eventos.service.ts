@@ -85,6 +85,11 @@ export const EventosService = {
     };
   },
 
+  async findByOrganizadorId(organizadorId: string) {
+    const eventos = await EventosRepository.findByUserId(organizadorId);
+    return eventos;
+  },
+
   async findParticipantsByEvent(eventId: string) {
     const evento = await EventosRepository.findById(eventId);
     if (!evento) {
@@ -218,7 +223,11 @@ export const EventosService = {
       }
     }
 
-    if (data.fechaInicio) {
+    if (
+      data.fechaInicio &&
+      new Date(data.fechaInicio).toISOString() !==
+        eventoExistente.fechaInicio.toISOString()
+    ) {
       const nuevaFecha = new Date(data.fechaInicio);
       if (nuevaFecha < new Date()) {
         throw new ValidationError(
@@ -229,7 +238,6 @@ export const EventosService = {
 
     const cupoExistente = eventoExistente.cupoMaximo;
     if (data.cupoMaximo !== null && data.cupoMaximo !== undefined) {
-      console.log({ cupoExistente, nuevoCupo: data.cupoMaximo });
       if (data.cupoMaximo < cupoExistente) {
         const inscripcionesConfirmadas =
           await InscripcionesRepository.findConfirmedRegistrationsByEvent(id);
@@ -237,6 +245,14 @@ export const EventosService = {
           throw new ValidationError(
             `El cupo máximo no puede ser menor a la cantidad de inscripciones confirmadas (${inscripcionesConfirmadas.length})`,
           );
+        }
+      }
+
+      if (data.cupoMaximo > cupoExistente) {
+        const lugaresNuevos = data.cupoMaximo - cupoExistente;
+        const waitlist = await InscripcionesRepository.findWaitlistByEvent(id);
+        for (let i = 0; i < lugaresNuevos && i < waitlist.length; i++) {
+          await InscripcionesRepository.promoteFromWaitlist(waitlist[i].id);
         }
       }
     }

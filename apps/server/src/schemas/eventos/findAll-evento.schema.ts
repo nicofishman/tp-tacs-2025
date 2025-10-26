@@ -15,17 +15,20 @@ export const findAllEventoQuerySchema = z.object({
     .optional(z.union([z.literal("fechaInicio"), z.literal("precio")]))
     .describe("El campo por el que se ordenará los eventos"),
   page: z.optional(z.coerce.number()).describe("La página de los eventos"),
-  priceMax: z.optional(z.coerce.number()).describe("El precio máximo de los eventos"),
-  priceMin: z.optional(z.coerce.number()).describe("El precio mínimo de los eventos"),
+  priceMax: z
+    .optional(z.coerce.number())
+    .describe("El precio máximo de los eventos"),
+  priceMin: z
+    .optional(z.coerce.number())
+    .describe("El precio mínimo de los eventos"),
   q: z.optional(z.string()).describe("La consulta de los eventos"),
 });
 
 export type FindAllEventoQuery = z.infer<typeof findAllEventoQuerySchema>;
 
 export const findAllEventoOutputSchema = z.array(
-  eventoSchema
-    .extend({
-      categoria: categoriaSchema,
-      organizador: usuarioSchema,
-    }),
+  eventoSchema.extend({
+    categoria: categoriaSchema,
+    organizador: usuarioSchema,
+  }),
 );

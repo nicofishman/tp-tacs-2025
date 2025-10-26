@@ -1,13 +1,14 @@
 import type React from "react";
 
-export const EventsHeader: React.FC = () => (
+interface EventsHeaderProps {
+  /** Texto principal del encabezado */
+  title: string;
+}
+
+export const EventsHeader: React.FC<EventsHeaderProps> = ({ title }) => (
   <section className="bg-gradient-to-r from-blue-600 to-purple-600 py-16 text-white">
     <div className="container mx-auto px-4 text-center">
-      <h1 className="mb-4 font-bold text-5xl">Próximos Eventos</h1>
-      <p className="mx-auto max-w-2xl text-blue-100 text-xl">
-        Únete a nosotros en estas increíbles experiencias de aprendizaje y
-        networking
-      </p>
+      <h1 className="mb-4 font-bold text-5xl">{title}</h1>
     </div>
   </section>
 );

@@ -13,12 +13,17 @@ export default [
   route("/events", "./routes/events.tsx"),
   route("/sign-in", "./routes/sign-in.tsx"),
   route("/sign-up", "./routes/sign-up.tsx"),
-  route("/login", "./routes/login.tsx"), // Redirect to sign-in for backward compatibility
   route("/logout", "./routes/logout.tsx"),
-  route("/create-event", "./routes/create-event.tsx"),
 
-  // Protected routes
-  layout("./routes/protected-layout.tsx", [
-    route("/dashboard", "./routes/protected/dashboard.tsx"),
+  // Protected routes - ORGANIZADOR
+  layout("./routes/organizador-layout.tsx", [
+    route("/dashboard", "./routes/organizador/dashboard.tsx"),
+    route("/create-event", "./routes/organizador/create-event.tsx"),
+    route("/edit-event/:id", "./routes/organizador/edit-event.tsx"),
+  ]),
+
+  // Protected routes - PARTICIPANTE
+  layout("./routes/participante-layout.tsx", [
+    route("/my-inscriptions", "./routes/participante/my-inscriptions.tsx"),
   ]),
 ] satisfies RouteConfig;
