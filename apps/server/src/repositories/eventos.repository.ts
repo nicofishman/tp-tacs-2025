@@ -1,4 +1,5 @@
 import type { Evento, Prisma } from "@prisma/client";
+import { QueryError } from "@server/exceptions/QueryError";
 import { prisma } from "@server/lib/prisma";
 
 export type EventoWithCategoriaAndOrganizador = Prisma.EventoGetPayload<{
@@ -66,8 +67,26 @@ export const EventosRepository = {
       });
       return prismaEvento;
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        throw new QueryError("Ya existe un evento con ese título.");
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "Error de integridad referencial al crear el evento.",
+        );
+      }
       console.error("Error al crear evento:", error);
-      return null;
+      throw new QueryError("Error al crear evento.");
     }
   },
 
@@ -82,8 +101,27 @@ export const EventosRepository = {
       });
       return prismaEvento;
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró el evento con el ID proporcionado.");
+        return null;
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "No se puede eliminar el evento porque está siendo referenciado por otros registros.",
+        );
+      }
       console.error("Error al eliminar evento:", error);
-      return null;
+      throw new QueryError("Error al eliminar evento.");
     }
   },
 
@@ -129,7 +167,7 @@ export const EventosRepository = {
       return rows;
     } catch (error) {
       console.error("Error al buscar eventos con filtros:", error);
-      return [];
+      throw new QueryError("Error al buscar eventos con filtros.");
     }
   },
 
@@ -146,8 +184,17 @@ export const EventosRepository = {
       });
       return prismaEvento;
     } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error("No se encontró el evento con el ID proporcionado.");
+        return null;
+      }
       console.error("Error al buscar evento por ID:", error);
-      return null;
+      throw new QueryError("Error al buscar evento por ID.");
     }
   },
   async findByUserId(
@@ -186,7 +233,37 @@ export const EventosRepository = {
       });
       return prismaEvento;
     } catch (error) {
-      throw new Error("Error al actualizar evento", { cause: error });
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2025"
+      ) {
+        console.error(
+          "No se encontró el evento con el ID proporcionado para actualizar.",
+        );
+        return null;
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        throw new QueryError("Ya existe un evento con ese título.");
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "Error de integridad referencial al actualizar el evento.",
+        );
+      }
+      console.error("Error al actualizar evento:", error);
+      throw new QueryError("Error al actualizar evento.");
     }
   },
 };
