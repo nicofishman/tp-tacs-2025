@@ -14,10 +14,10 @@ RUN bun install
 COPY . .
 
 # Generamos Prisma Client dentro del contenedor
-RUN bunx prisma generate --schema=prisma/schema.prisma
+RUN bunx prisma generate --schema=apps/server/prisma/schema.prisma
 
 # Exponemos el puerto de la API
 EXPOSE 3000
 
 # Comando por defecto
-CMD ["bun", "run", "src/index.ts"]
+CMD ["bun", "run", "apps/server/src/index.ts"]

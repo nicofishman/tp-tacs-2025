@@ -32,12 +32,12 @@ const teamMembers = [
     twitter: "#",
   },
   {
-    bio: "Especialista en estrategias digitales y comunicación efectiva",
+    bio: "Especialista en infraestructura y DevOps con pasión por la automatización",
     id: 3,
     image: "/api/placeholder/200/200",
     linkedin: "#",
     name: "Alan Garber",
-    position: "Sr Backend Engineer",
+    position: "Infrastructure Manager",
     twitter: "#",
   },
   {
