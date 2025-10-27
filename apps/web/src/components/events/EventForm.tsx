@@ -1,3 +1,7 @@
+import {
+  GeoapifyContext,
+  GeoapifyGeocoderAutocomplete,
+} from "@geoapify/react-geocoder-autocomplete";
 import { Button } from "@web/components/ui/button";
 import {
   Card,
@@ -8,7 +12,7 @@ import {
 } from "@web/components/ui/card";
 import { Input } from "@web/components/ui/input";
 import { Label } from "@web/components/ui/label";
-import { api } from "@web/lib/fetch";
+import type { api } from "@web/lib/fetch";
 import { format } from "date-fns";
 import {
   Calendar,
@@ -21,6 +25,7 @@ import {
   X,
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 
 type CreateEventBody = Parameters<typeof api.eventos.post>[0];
 export interface EventFormProps {
@@ -28,6 +33,8 @@ export interface EventFormProps {
   initialValues?: Partial<CreateEventBody>;
   onSubmit: (data: CreateEventBody) => Promise<void> | void;
   submitLabel?: string;
+  categories: { label: string; value?: string }[];
+  loadingCategories?: boolean;
 }
 
 export function EventForm({
@@ -35,6 +42,8 @@ export function EventForm({
   initialValues,
   onSubmit,
   submitLabel,
+  categories,
+  loadingCategories = false,
 }: EventFormProps) {
   const defaultValues: CreateEventBody = useMemo(
     () => ({
@@ -54,10 +63,6 @@ export function EventForm({
 
   const [formData, setFormData] = useState<CreateEventBody>(defaultValues);
 
-  const [categories, setCategories] = useState<
-    { label: string; value?: string }[]
-  >([]);
-  const [loadingCategories, setLoadingCategories] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -65,53 +70,27 @@ export function EventForm({
     setFormData(defaultValues);
   }, [defaultValues]);
 
-  useEffect(() => {
-    (async () => {
-      setLoadingCategories(true);
-      try {
-        const result = await api.categorias.get();
-        if (result && result.status === 200 && Array.isArray(result.data)) {
-          setCategories(
-            result.data.map((cat: { id: string; nombre: string }) => ({
-              label: cat.nombre,
-              value: cat.id,
-            })),
-          );
-        }
-      } catch {
-        setCategories([]);
-      } finally {
-        setLoadingCategories(false);
-      }
-    })();
-  }, []);
+  // categories are provided by the parent route (server-side fetched)
 
-  const updateField = (
-    field: keyof CreateEventBody,
-    value: CreateEventBody[keyof CreateEventBody],
-  ) => {
+  function updateField<T extends keyof CreateEventBody>(
+    field: T,
+    value: CreateEventBody[T],
+  ) {
     setFormData((prev) => ({ ...prev, [field]: value }));
-    if (errors[field as string]) {
+    if (errors[field]) {
       setErrors((prev) => ({ ...prev, [field]: "" }));
     }
-  };
+  }
 
-  const updateDuracion = (field: "horas" | "minutos", value: number) => {
+  function updateDuracion<T extends "horas" | "minutos">(
+    field: T,
+    value: CreateEventBody["duracion"][T],
+  ) {
     setFormData((prev) => ({
       ...prev,
       duracion: { ...prev.duracion, [field]: value },
     }));
-  };
-
-  const updateUbicacion = (
-    field: "direccion" | "lat" | "lng",
-    value: string | number,
-  ) => {
-    setFormData((prev) => ({
-      ...prev,
-      ubicacion: { ...prev.ubicacion, [field]: value },
-    }));
-  };
+  }
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
@@ -147,6 +126,24 @@ export function EventForm({
       setIsSubmitting(false);
     }
   };
+
+  function onPlaceSelect(value: {
+    properties: {
+      formatted: string;
+      lat: number;
+      lon: number;
+    };
+  }) {
+    setFormData((prev) => ({
+      ...prev,
+      ubicacion: {
+        ...prev.ubicacion,
+        direccion: value.properties.formatted,
+        lat: value.properties.lat,
+        lng: value.properties.lon,
+      },
+    }));
+  }
 
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
@@ -298,6 +295,7 @@ export function EventForm({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* 
           <div className="space-y-2">
             <Label htmlFor="direccion">Dirección *</Label>
             <Input
@@ -310,8 +308,7 @@ export function EventForm({
             {errors.direccion && (
               <p className="text-red-500 text-sm">{errors.direccion}</p>
             )}
-          </div>
-          <div className="grid gap-6 md:grid-cols-2">
+          </div><div className="grid gap-6 md:grid-cols-2">
             <div className="space-y-2">
               <Label htmlFor="lat">Latitud</Label>
               <Input
@@ -338,7 +335,14 @@ export function EventForm({
                 }
               />
             </div>
-          </div>
+          </div> */}
+          <GeoapifyContext apiKey={import.meta.env.VITE_GEOAPIFY_API_KEY}>
+            <GeoapifyGeocoderAutocomplete
+              placeSelect={onPlaceSelect}
+              placeholder="Buscar ubicación"
+              value={formData.ubicacion.direccion}
+            />
+          </GeoapifyContext>
         </CardContent>
       </Card>
 
