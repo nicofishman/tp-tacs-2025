@@ -1,4 +1,4 @@
-import { EstadoEvento, EstadoInscripcion } from "@prisma/client";
+import { EstadoEvento, EstadoInscripcion, RolUsuario } from "@prisma/client";
 import { prisma } from "@server/lib/prisma";
 
 export const EstadisticasService = {
@@ -15,6 +15,8 @@ export const EstadisticasService = {
       eventosCancelados,
       eventosPendientes,
       eventosCapacidades,
+      usuariosOrganizadores,
+      usuariosParticipantes,
     ] = await Promise.all([
       prisma.evento.count(),
       prisma.usuario.count(),
@@ -33,6 +35,8 @@ export const EstadisticasService = {
       prisma.evento.count({ where: { estado: EstadoEvento.CANCELADO } }),
       prisma.evento.count({ where: { estado: EstadoEvento.PENDIENTE } }),
       prisma.evento.findMany({ select: { cupoMaximo: true } }),
+      prisma.usuario.count({ where: { rol: RolUsuario.ORGANIZADOR } }),
+      prisma.usuario.count({ where: { rol: RolUsuario.PARTICIPANTE } }),
     ]);
 
     const capacidadTotal = eventosCapacidades.reduce(
@@ -76,6 +80,8 @@ export const EstadisticasService = {
       resumen: {
         eventosTotal,
         inscripcionesTotal,
+        usuariosOrganizadores,
+        usuariosParticipantes,
         usuariosTotal,
       },
     };

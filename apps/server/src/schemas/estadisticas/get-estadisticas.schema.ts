@@ -21,6 +21,8 @@ export const getEstadisticasSchema = z.object({
   resumen: z.object({
     eventosTotal: z.number(),
     inscripcionesTotal: z.number(),
+    usuariosOrganizadores: z.number(),
+    usuariosParticipantes: z.number(),
     usuariosTotal: z.number(),
   }),
 });
