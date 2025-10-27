@@ -1,7 +1,7 @@
 import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
-import z from "zod";
+import * as z from "zod";
 import { ConflictError } from "./exceptions/ConflictError";
 import { NotFoundError } from "./exceptions/NotFoundError";
 import { ValidationError } from "./exceptions/ValidationError";
@@ -35,6 +35,9 @@ export const app = new Elysia()
           title: "TP-TACS API",
           version: "1.0.1",
         },
+      },
+      mapJsonSchema: {
+        zod: z.toJSONSchema,
       },
       path: "/swagger",
     }),
@@ -81,6 +84,13 @@ export const app = new Elysia()
   .use(MeRouter)
   .use(AuthRouter)
   .use(EstadisticasRouter)
-  .listen(3000);
+  .get("/", () => {
+    return {
+      message: "Hello World",
+    };
+  })
+  .listen(process.env.PORT ?? 3000);
 
-console.log("🚀 Servidor corriendo en http://localhost:3000");
+console.log(
+  `🚀 Servidor corriendo en http://localhost:${process.env.PORT ?? 3000}`,
+);

@@ -1,44 +1,44 @@
 generator client {
-  provider = "prisma-client-js"
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
-  directUrl = env("DATABASE_URL") 
+  provider  = "mongodb"
+  url       = env("DATABASE_URL")
+  directUrl = env("DATABASE_URL")
 }
 
 model Evento {
-  id                  String        @id @default(auto()) @map("_id") @db.ObjectId
-  titulo              String
-  descripcion         String
-  fechaInicio         DateTime
-  duracion            Duracion
-  ubicacion           Ubicacion
-  cupoMaximo          Int
-  cupoMinimo          Int
-  precio              Float
-  estado              EstadoEvento @default(PENDIENTE)
-  categoria           Categoria    @relation(fields: [categoriaId], references: [id])
-  categoriaId         String       @db.ObjectId
-  organizador         Usuario      @relation("EventosOrganizados", fields: [organizadorId], references: [id])
-  organizadorId       String       @db.ObjectId
-  inscripciones       Inscripcion[]
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  titulo        String
+  descripcion   String
+  fechaInicio   DateTime
+  duracion      Duracion
+  ubicacion     Ubicacion
+  cupoMaximo    Int
+  cupoMinimo    Int
+  precio        Float
+  estado        EstadoEvento  @default(PENDIENTE)
+  categoria     Categoria     @relation(fields: [categoriaId], references: [id])
+  categoriaId   String        @db.ObjectId
+  organizador   Usuario       @relation("EventosOrganizados", fields: [organizadorId], references: [id])
+  organizadorId String        @db.ObjectId
+  inscripciones Inscripcion[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 }
 
 type Duracion {
-  horas Int
+  horas   Int
   minutos Int
 }
 
 type Ubicacion {
   direccion String
-  lat Float
-  lng Float
+  lat       Float
+  lng       Float
 }
-
 
 enum EstadoEvento {
   FINALIZADO
@@ -47,26 +47,26 @@ enum EstadoEvento {
   PENDIENTE
 }
 
-model Categoria {   
-  id                  String   @id @default(auto()) @map("_id") @db.ObjectId
-  nombre              String   @unique
-  eventos             Evento[]
+model Categoria {
+  id      String   @id @default(auto()) @map("_id") @db.ObjectId
+  nombre  String   @unique
+  eventos Evento[]
 }
 
 model Usuario {
-  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
-  nombre              String
-  email               String    @unique
-  emailVerified       Boolean   @default(false)
-  rol                 RolUsuario @default(PARTICIPANTE)
-  eventos             Evento[]  @relation("EventosOrganizados")
-  inscripciones       Inscripcion[]
-  sessions            Session[]
-  accounts            Account[]
+  id            String        @id @default(auto()) @map("_id") @db.ObjectId
+  nombre        String
+  email         String        @unique
+  emailVerified Boolean       @default(false)
+  rol           RolUsuario    @default(PARTICIPANTE)
+  eventos       Evento[]      @relation("EventosOrganizados")
+  inscripciones Inscripcion[]
+  sessions      Session[]
+  accounts      Account[]
 
-  createdAt           DateTime  @default(now())
-  updatedAt           DateTime  @updatedAt
-}   
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
 
 enum RolUsuario {
   ORGANIZADOR
@@ -74,15 +74,14 @@ enum RolUsuario {
 }
 
 model Inscripcion {
-  id                  String    @id @default(auto()) @map("_id") @db.ObjectId
-  usuario             Usuario   @relation(fields: [usuarioId], references: [id])
-  usuarioId           String    @db.ObjectId
-  evento              Evento    @relation(fields: [eventoId], references: [id])
-  eventoId            String    @db.ObjectId
-  estado              EstadoInscripcion
-  fechaRegistro       DateTime  @default(now())
+  id            String            @id @default(auto()) @map("_id") @db.ObjectId
+  usuario       Usuario           @relation(fields: [usuarioId], references: [id])
+  usuarioId     String            @db.ObjectId
+  evento        Evento            @relation(fields: [eventoId], references: [id])
+  eventoId      String            @db.ObjectId
+  estado        EstadoInscripcion
+  fechaRegistro DateTime          @default(now())
 }
-
 
 enum EstadoInscripcion {
   CONFIRMADO
@@ -90,30 +89,29 @@ enum EstadoInscripcion {
   CANCELADO
 }
 
-
 // AUTH
 
 model Session {
-  id        String   @id @map("_id") @db.ObjectId @default(auto())
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
   expiresAt DateTime
   token     String
   createdAt DateTime
   updatedAt DateTime
   ipAddress String?
   userAgent String?
-  userId    String  @db.ObjectId
-  user      Usuario     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String   @db.ObjectId
+  user      Usuario  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([token])
   @@map("session")
 }
 
 model Account {
-  id                    String    @id @map("_id") @db.ObjectId @default(auto())
+  id                    String    @id @default(auto()) @map("_id") @db.ObjectId
   accountId             String
   providerId            String
-  userId                String  @db.ObjectId
-  user                  Usuario      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                String    @db.ObjectId
+  user                  Usuario   @relation(fields: [userId], references: [id], onDelete: Cascade)
   accessToken           String?
   refreshToken          String?
   idToken               String?
@@ -128,7 +126,7 @@ model Account {
 }
 
 model Verification {
-  id         String    @id @map("_id") @db.ObjectId @default(auto())
+  id         String    @id @default(auto()) @map("_id") @db.ObjectId
   identifier String
   value      String
   expiresAt  DateTime
