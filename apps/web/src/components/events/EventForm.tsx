@@ -134,15 +134,27 @@ export function EventForm({
       lon: number;
     };
   }) {
-    setFormData((prev) => ({
-      ...prev,
-      ubicacion: {
-        ...prev.ubicacion,
-        direccion: value.properties.formatted,
-        lat: value.properties.lat,
-        lng: value.properties.lon,
-      },
-    }));
+    if (!value) {
+      setFormData((prev) => ({
+        ...prev,
+        ubicacion: {
+          ...prev.ubicacion,
+          direccion: "",
+          lat: 0,
+          lng: 0,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        ubicacion: {
+          ...prev.ubicacion,
+          direccion: value.properties.formatted,
+          lat: value.properties.lat,
+          lng: value.properties.lon,
+        },
+      }));
+    }
   }
 
   return (
@@ -295,50 +307,11 @@ export function EventForm({
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* 
-          <div className="space-y-2">
-            <Label htmlFor="direccion">Dirección *</Label>
-            <Input
-              id="direccion"
-              placeholder="Ej: Av. Libertador 1234, CABA"
-              value={formData.ubicacion.direccion}
-              onChange={(e) => updateUbicacion("direccion", e.target.value)}
-              className={errors.direccion ? "border-red-500" : ""}
-            />
-            {errors.direccion && (
-              <p className="text-red-500 text-sm">{errors.direccion}</p>
-            )}
-          </div><div className="grid gap-6 md:grid-cols-2">
-            <div className="space-y-2">
-              <Label htmlFor="lat">Latitud</Label>
-              <Input
-                id="lat"
-                type="number"
-                step="any"
-                placeholder="-34.6037"
-                value={formData.ubicacion.lat || ""}
-                onChange={(e) =>
-                  updateUbicacion("lat", Number.parseFloat(e.target.value) || 0)
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="lng">Longitud</Label>
-              <Input
-                id="lng"
-                type="number"
-                step="any"
-                placeholder="-58.3816"
-                value={formData.ubicacion.lng || ""}
-                onChange={(e) =>
-                  updateUbicacion("lng", Number.parseFloat(e.target.value) || 0)
-                }
-              />
-            </div>
-          </div> */}
           <GeoapifyContext apiKey={import.meta.env.VITE_GEOAPIFY_API_KEY}>
             <GeoapifyGeocoderAutocomplete
               placeSelect={onPlaceSelect}
+              debounceDelay={2000}
+              biasByCountryCode={["ar"]}
               placeholder="Buscar ubicación"
               value={formData.ubicacion.direccion}
             />
