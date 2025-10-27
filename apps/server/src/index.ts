@@ -9,6 +9,7 @@ import { betterAuthElysia } from "./lib/auth";
 import { createContextualLogger, logger } from "./lib/logger";
 import { AuthRouter } from "./routers/auth.router";
 import { CategoriasRouter } from "./routers/categorias.router";
+import { EstadisticasRouter } from "./routers/estadisticas.router";
 import { EventosRouter } from "./routers/eventos.router";
 import { HealthRouter } from "./routers/health.router";
 import { InscripcionesRouter } from "./routers/inscripciones.router";
@@ -79,6 +80,7 @@ export const app = new Elysia()
   .use(InscripcionesRouter)
   .use(MeRouter)
   .use(AuthRouter)
+  .use(EstadisticasRouter)
   .listen(3000);
 
 console.log("🚀 Servidor corriendo en http://localhost:3000");
