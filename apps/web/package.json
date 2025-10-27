@@ -43,7 +43,7 @@
   "scripts": {
     "build": "react-router build",
     "dev": "react-router dev",
-    "start": "react-router-serve ./build/server/index.js",
+    "start": "react-router-serve ./build/server/index.js --port 8080",
     "typecheck": "react-router typegen && tsc"
   },
   "type": "module"
