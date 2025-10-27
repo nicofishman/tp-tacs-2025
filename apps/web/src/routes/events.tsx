@@ -1,14 +1,12 @@
-import type { Treaty } from "@elysiajs/eden";
 import { EventsFilters } from "@web/components/events/EventsFilters";
 import { EventsHeader } from "@web/components/events/EventsHeader";
 import { EventsList } from "@web/components/events/EventsList";
 import { EventsPagination } from "@web/components/events/EventsPagination";
 import { api } from "@web/lib/fetch";
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { Await, useNavigate, useNavigation } from "react-router";
 import type { Route } from "./+types/events";
 
-type EventosGetResponse = Treaty.Data<typeof api.eventos.get>;
 // Removed unused Evento alias
 export type Filters = {
   categoriaId: string | undefined;
@@ -94,20 +92,11 @@ export default function Events({ loaderData }: Route.ComponentProps) {
   const navigation = useNavigation();
 
   // --- Derived from loader ---
-  const { eventsResponse, categories, filters } = loaderData as unknown as {
-    eventsResponse: Promise<EventosGetResponse>;
-    categories: Promise<Array<{ label: string; value: string | undefined }>>;
-    filters: Filters;
-  };
+  const { eventsResponse, categories, filters } = loaderData;
 
   // --- Local UI state ---
   const [pendingFilters, setPendingFilters] = useState<Filters>(filters);
   const [showFilters, setShowFilters] = useState(false);
-
-  // Sync pending filters when applied filters change
-  useEffect(() => {
-    setPendingFilters(filters);
-  }, [filters]);
 
   // --- Helpers ---
   function updatePendingFilter<K extends keyof typeof pendingFilters>(
@@ -231,7 +220,8 @@ export default function Events({ loaderData }: Route.ComponentProps) {
             }
           >
             <Await resolve={eventsResponse}>
-              {(resp: EventosGetResponse) => {
+              {(resp) => {
+                if (!resp) return null;
                 const page = resp.page ?? 1;
                 const limit = resp.limit ?? 10;
                 const totalCount = resp.count ?? 0;

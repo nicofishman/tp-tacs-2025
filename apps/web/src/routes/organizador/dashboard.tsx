@@ -25,6 +25,15 @@ export async function loader({ request }: Route.LoaderArgs) {
   }
 }
 
+export function meta(): Array<Record<string, string>> {
+  return [
+    {
+      content: "Dashboard del organizador",
+      title: "Dashboard - EventApp",
+    },
+  ];
+}
+
 export default function Dashboard({ loaderData }: Route.ComponentProps) {
   const { user, isLoading } = useAuth();
   const { events } = loaderData;

@@ -28,9 +28,7 @@ export async function loader({ request }: Route.LoaderArgs) {
 
 export default function CreateEvent({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
-  const { categories } = loaderData as unknown as {
-    categories: Promise<Array<{ label: string; value: string }>>;
-  };
+  const { categories } = loaderData;
 
   const handleCreate = async (
     data: Parameters<typeof api.eventos.post>[0] | undefined,

@@ -24,7 +24,7 @@ import {
   Users,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import "@geoapify/geocoder-autocomplete/styles/minimal.css";
 
 type CreateEventBody = Parameters<typeof api.eventos.post>[0];
@@ -65,11 +65,6 @@ export function EventForm({
 
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  useEffect(() => {
-    setFormData(defaultValues);
-  }, [defaultValues]);
-
   // categories are provided by the parent route (server-side fetched)
 
   function updateField<T extends keyof CreateEventBody>(

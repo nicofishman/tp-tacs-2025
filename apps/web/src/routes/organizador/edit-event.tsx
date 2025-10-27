@@ -2,8 +2,9 @@ import { EventForm } from "@web/components/events/EventForm";
 import { api } from "@web/lib/fetch";
 import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { Await, useLoaderData, useNavigate, useParams } from "react-router";
+import { Await, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
+import type { Route } from "./+types/edit-event";
 
 type EditEventBody = Partial<Parameters<typeof api.eventos.post>[0]>;
 
@@ -35,7 +36,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
         ? cRes.data.map((c) => ({ label: c.nombre, value: c.id }))
         : [],
     );
-  return { categories, initialValues } as const;
+  return { categories, initialValues };
 }
 
 export function meta(): Array<Record<string, string>> {
@@ -45,9 +46,9 @@ export function meta(): Array<Record<string, string>> {
   ];
 }
 
-export default function EditEvent() {
+export default function EditEvent({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
-  const { initialValues, categories } = useLoaderData<typeof loader>();
+  const { initialValues, categories } = loaderData;
   const { id } = useParams();
 
   const handleSave = async (data: EditEventBody | undefined) => {
