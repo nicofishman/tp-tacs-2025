@@ -47,6 +47,16 @@ export function AuthProvider({
 
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
+    const apiUrl = import.meta.env.SSR
+      ? process.env.API_URL
+      : import.meta.env.VITE_API_URL;
+    console.log(
+      import.meta.env.SSR,
+      apiUrl,
+      import.meta.env.VITE_API_URL,
+      process.env.API_URL,
+    );
+
     try {
       const { data, error } = await api.auth["sign-in"].post({
         email,
