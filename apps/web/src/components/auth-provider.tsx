@@ -47,10 +47,6 @@ export function AuthProvider({
 
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
-    console.log({
-      import: import.meta.env.VITE_TE_LA_RE_PONGO,
-      process: process.env.VITE_TE_LA_RE_PONGO,
-    });
 
     try {
       const { data, error } = await api.auth["sign-in"].post({
