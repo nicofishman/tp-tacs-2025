@@ -25,6 +25,7 @@ model Evento {
   organizador   Usuario       @relation("EventosOrganizados", fields: [organizadorId], references: [id])
   organizadorId String        @db.ObjectId
   inscripciones Inscripcion[]
+  version       Int           @default(0)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 }

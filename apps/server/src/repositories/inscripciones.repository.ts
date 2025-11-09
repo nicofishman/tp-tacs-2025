@@ -418,6 +418,88 @@ export const InscripcionesRepository = {
     }
   },
 
+  async registerUserToEventWithVersion(
+    eventId: string,
+    userId: string,
+    estado: EstadoInscripcion,
+    expectedVersion: number,
+  ) {
+    try {
+      // Usar transacción interactiva para garantizar atomicidad
+      return await prisma.$transaction(async (tx) => {
+        // Primero intentar actualizar el evento incrementando la versión solo si la versión coincide
+        // Esto previene condiciones de carrera: si otro proceso modificó el evento,
+        // la versión habrá cambiado y esta actualización no afectará ningún documento
+        const updateResult = await tx.evento.updateMany({
+          data: {
+            version: {
+              increment: 1,
+            },
+          } as any,
+          where: {
+            id: eventId,
+            version: expectedVersion, // Solo actualiza si la versión coincide
+          },
+        });
+
+        // Si no se actualizó ningún documento, significa que otro proceso modificó el evento
+        // Esto indica una condición de carrera - otro usuario se inscribió primero
+        if (updateResult.count === 0) {
+          throw new QueryError(
+            "El cupo del evento ha cambiado. Por favor, intenta nuevamente.",
+          );
+        }
+
+        // Solo crear la inscripción si la actualización del evento fue exitosa
+        const inscripcion = await tx.inscripcion.create({
+          data: {
+            estado: estado,
+            eventoId: eventId,
+            usuarioId: userId,
+          },
+          include: {
+            evento: {
+              include: {
+                categoria: true,
+                organizador: true,
+              },
+            },
+            usuario: true,
+          },
+        });
+
+        return inscripcion;
+      });
+    } catch (error) {
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2002"
+      ) {
+        throw new QueryError(
+          "Ya existe una inscripción para este usuario y evento.",
+        );
+      }
+      if (
+        typeof error === "object" &&
+        error !== null &&
+        "code" in error &&
+        error.code === "P2003"
+      ) {
+        throw new QueryError(
+          "Error de integridad referencial al registrar usuario en el evento.",
+        );
+      }
+      // Si el error ya es un QueryError, re-lanzarlo
+      if (error instanceof QueryError) {
+        throw error;
+      }
+      console.error("Error al registrar usuario en el evento:", error);
+      throw new QueryError("Error al registrar usuario en el evento");
+    }
+  },
+
   async update(
     id: string,
     data: Partial<InscripcionWithEventoAndUsuario>,
