@@ -34,8 +34,10 @@
     "db:studio": "turbo -F server db:studio",
     "db:watch": "turbo -F server db:watch",
     "dev": "bun run /apps/server/src/index.ts",
-    "dev:all": "turbo run server#dev web#dev",
+    "dev:all": "turbo run server#dev web#dev telegram-bot#dev",
     "dev:server": "turbo -F server dev",
+    "dev:server-bot": "turbo run server#dev telegram-bot#dev",
+    "dev:telegram-bot": "turbo -F telegram-bot dev",
     "dev:web": "turbo -F web dev",
     "prepare": "bunx husky",
     "start": "bun run /apps/server/src/index.ts"

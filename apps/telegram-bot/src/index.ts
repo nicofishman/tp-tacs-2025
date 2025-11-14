@@ -1,33 +1,55 @@
+import "dotenv/config";
 import { Telegraf } from "telegraf";
-import { registerCommand, setUpLoginCommand } from "./commands/auth";
-import { setUpIntroCommand } from "./commands/intro";
+import { handleCallback } from "./handlers/callbacks";
+import { handleHelp, handleLogout, handleStart } from "./handlers/commands";
+import { handleText } from "./handlers/text";
 
-export const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || "");
+const BOT_TOKEN = process.env.BOT_TOKEN;
 
-// Intro
-setUpIntroCommand(bot);
-
-// Auth
-setUpLoginCommand(bot);
-
-// Acción para el botón "Registrarse"
-bot.action("REGISTER", (ctx) => {
-  registerCommand(ctx);
-});
-
-// Manejo de errores global
-bot.catch((err, ctx) => {
-  console.error(`Error capturado: ${err}`);
-  ctx.reply(
-    "Ocurrió un error inesperado. Por favor, intenta nuevamente más tarde.",
+if (!BOT_TOKEN) {
+  console.error(
+    "Error: BOT_TOKEN no está definido en las variables de entorno",
   );
+  process.exit(1);
+}
+
+const bot = new Telegraf(BOT_TOKEN);
+
+// Manejar errores
+bot.catch((err, ctx) => {
+  console.error(`Error para el usuario ${ctx.from?.id}:`, err);
+  ctx.reply("Ocurrió un error. Por favor, intenta nuevamente.");
 });
 
-// Manejo del cierre del proceso
-process.once("SIGINT", () => bot.stop("SIGINT"));
-process.once("SIGTERM", () => bot.stop("SIGTERM"));
+// Comandos
+bot.command("start", handleStart);
+bot.command("help", handleHelp);
+bot.command("logout", handleLogout);
 
-// Lanzar el bot
-bot.launch();
+// Callbacks (botones inline)
+bot.on("callback_query", handleCallback);
 
-console.log("Bot de Telegram iniciado...");
+// Mensajes de texto
+bot.on("text", handleText);
+
+// Iniciar el bot
+bot
+  .launch()
+  .then(() => {
+    console.log("Bot de Telegram iniciado correctamente");
+  })
+  .catch((error) => {
+    console.error("Error al iniciar el bot:", error);
+    process.exit(1);
+  });
+
+// Manejar cierre graceful
+process.once("SIGINT", () => {
+  bot.stop("SIGINT");
+  console.log("Bot detenido");
+});
+
+process.once("SIGTERM", () => {
+  bot.stop("SIGTERM");
+  console.log("Bot detenido");
+});

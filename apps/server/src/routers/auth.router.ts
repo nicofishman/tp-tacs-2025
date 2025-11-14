@@ -46,11 +46,20 @@ export const AuthRouter = (app: ElysiaWithLogger) =>
       .post(
         "/sign-up",
         async ({ body, status, query }) => {
-          const { email, password, nombre } = body;
+          const { email, password, nombre, rol } = body;
+
+          // Si se proporciona rol en el body, usarlo. Si no, verificar adminToken
+          // Si hay adminToken válido, usar ORGANIZADOR, sino PARTICIPANTE
+          let isAdmin = false;
+          if (rol) {
+            isAdmin = rol === RolUsuario.ORGANIZADOR;
+          } else if (query.adminToken === process.env.ADMIN_TOKEN) {
+            isAdmin = true;
+          }
 
           const user = await AuthController.signUp({
             email,
-            isAdmin: query.adminToken === process.env.ADMIN_TOKEN,
+            isAdmin,
             nombre,
             password,
           });

@@ -1,21 +1,19 @@
 {
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "allowJs": true,
     "baseUrl": ".",
     "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ES2022",
+    "isolatedModules": true,
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "noEmit": true,
-    "paths": {
-      "@server/*": ["../server/src/*"],
-      "@telegram-bot/*": ["../telegram-bot/src/*"]
-    },
     "resolveJsonModule": true,
-    "rootDirs": ["."],
     "skipLibCheck": true,
     "strict": true,
     "target": "ES2022",
-    "types": ["node"],
-    "verbatimModuleSyntax": true
-  }
+    "types": ["node"]
+  },
+  "exclude": ["node_modules", "dist"],
+  "include": ["src"]
 }
