@@ -36,7 +36,8 @@
       "!**/wrangler.jsonc",
       "!**/.source",
       "!**/generated",
-      "!**/.react-router"
+      "!**/.react-router",
+      "!**/bun.lock"
     ]
   },
   "formatter": {

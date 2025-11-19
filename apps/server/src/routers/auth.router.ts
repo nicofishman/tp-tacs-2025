@@ -48,6 +48,9 @@ export const AuthRouter = (app: ElysiaWithLogger) =>
         async ({ body, status, query }) => {
           const { email, password, nombre } = body;
 
+          console.log(body);
+          console.log(query, process.env.ADMIN_TOKEN);
+
           const user = await AuthController.signUp({
             email,
             isAdmin: query.adminToken === process.env.ADMIN_TOKEN,

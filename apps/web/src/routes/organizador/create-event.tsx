@@ -2,8 +2,10 @@
 
 import { EventForm } from "@web/components/events/EventForm";
 import { api } from "@web/lib/fetch";
-import { useNavigate } from "react-router";
+import { Suspense } from "react";
+import { Await, useNavigate } from "react-router";
 import { toast } from "sonner";
+import type { Route } from "./+types/create-event";
 
 export function meta(): Array<Record<string, string>> {
   return [
@@ -12,8 +14,21 @@ export function meta(): Array<Record<string, string>> {
   ];
 }
 
-export default function CreateEvent() {
+export async function loader({ request }: Route.LoaderArgs) {
+  const headers = { Cookie: request.headers.get("Cookie") || "" };
+  const categories = api.categorias
+    .get({ headers })
+    .then((res) =>
+      res.status === 200 && Array.isArray(res.data)
+        ? res.data.map((c) => ({ label: c.nombre, value: c.id }))
+        : [],
+    );
+  return { categories };
+}
+
+export default function CreateEvent({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
+  const { categories } = loaderData;
 
   const handleCreate = async (
     data: Parameters<typeof api.eventos.post>[0] | undefined,
@@ -44,7 +59,26 @@ export default function CreateEvent() {
       {/* Form */}
       <section className="py-12">
         <div className="container mx-auto max-w-4xl px-4">
-          <EventForm mode="create" onSubmit={handleCreate} />
+          <Suspense
+            fallback={
+              <EventForm
+                mode="create"
+                onSubmit={handleCreate}
+                categories={[]}
+                loadingCategories
+              />
+            }
+          >
+            <Await resolve={categories}>
+              {(cats) => (
+                <EventForm
+                  mode="create"
+                  onSubmit={handleCreate}
+                  categories={cats}
+                />
+              )}
+            </Await>
+          </Suspense>
         </div>
       </section>
     </div>

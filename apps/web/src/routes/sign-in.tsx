@@ -1,23 +1,24 @@
-import { useLocation, useNavigate } from "react-router";
-import { useAuth } from "../components/auth-provider";
-import Loader from "../components/loader";
+import { api } from "@web/lib/fetch";
+import { redirect } from "react-router";
 import SignInForm from "../components/sign-in-form";
-export default function SignIn() {
-  const { user, isLoading } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
-  const redirectTo =
-    new URLSearchParams(location.search).get("redirect") || "/";
+import type { Route } from "./+types/sign-in";
 
-  // Mientras se carga el usuario, mostrar loader
-  if (isLoading) return <Loader />;
+export async function loader({ request }: Route.LoaderArgs) {
+  const headers = { Cookie: request.headers.get("Cookie") || "" };
+  const redirectTo = new URL(request.url).searchParams.get("redirect") || "/";
 
-  // Si ya está logueado, redirigir al destino
+  const me = await api.me.get({ headers }); // or api.auth["sign-in"].post, etc.
+  const user = me.status === 200 ? me.data : null;
+
+  // use user for SSR decisions, data fetching, redirects, etc.
   if (user) {
-    navigate(redirectTo, { replace: true });
-    return null;
+    throw redirect(redirectTo, { status: 302 });
   }
 
+  return null;
+}
+
+export default function SignIn() {
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <SignInForm />

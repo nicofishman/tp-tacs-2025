@@ -26,6 +26,7 @@ export function mapPrismaEventoToEvento(
     titulo: prismaEvento.titulo,
     ubicacion: prismaEvento.ubicacion,
     updatedAt: prismaEvento.updatedAt,
+    version: prismaEvento.version ?? 0,
   };
 }
 
@@ -44,7 +45,7 @@ type FindManyDBFilters = {
 
 export const EventosRepository = {
   async create(
-    data: Omit<Evento, "id" | "createdAt" | "updatedAt" | "estado">,
+    data: Omit<Evento, "id" | "createdAt" | "updatedAt" | "estado" | "version">,
   ): Promise<EventoWithCategoriaAndOrganizador | null> {
     try {
       const prismaEvento = await prisma.evento.create({
@@ -224,6 +225,10 @@ export const EventosRepository = {
           ...(data.estado && { estado: data.estado }),
           ...(data.categoria && { categoriaId: data.categoria.id }),
           ...(data.organizador && { organizadorId: data.organizador.id }),
+          // Incrementar la versión en cada actualización para mantener la consistencia
+          version: {
+            increment: 1,
+          },
         },
         include: {
           categoria: true,

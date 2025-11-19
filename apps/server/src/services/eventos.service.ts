@@ -1,5 +1,6 @@
 import { type Categoria, EstadoInscripcion, type Evento } from "@prisma/client";
 import { NotFoundError } from "@server/exceptions/NotFoundError";
+import { QueryError } from "@server/exceptions/QueryError";
 import { ValidationError } from "@server/exceptions/ValidationError";
 import { CategoriasRepository } from "@server/repositories/categorias.repository.js";
 import { UsuariosRepository } from "@server/repositories/usuarios.repository.js";
@@ -29,7 +30,7 @@ export const EventosService = {
     }
     const eventoParaCrear: Omit<
       Evento,
-      "id" | "createdAt" | "updatedAt" | "estado"
+      "id" | "createdAt" | "updatedAt" | "estado" | "version"
     > = {
       ...data,
       fechaInicio: new Date(data.fechaInicio),
@@ -117,47 +118,77 @@ export const EventosService = {
   },
 
   async registerToEvent(eventId: string, userId: string) {
-    const evento = await EventosRepository.findById(eventId);
-    if (!evento) {
-      throw new NotFoundError(`El evento con ID ${eventId} no existe.`);
+    // Función auxiliar para realizar el intento de inscripción
+    async function attemptRegistration(_isRetry = false) {
+      const evento = await EventosRepository.findById(eventId);
+      if (!evento) {
+        throw new NotFoundError(`El evento con ID ${eventId} no existe.`);
+      }
+
+      const usuario = await UsuariosRepository.findById(userId);
+      if (!usuario) {
+        throw new NotFoundError(`El usuario con ID ${userId} no existe.`);
+      }
+
+      // Verificar si el usuario ya está registrado en el evento
+      const existingRegistration =
+        await InscripcionesRepository.findUserRegistration(eventId, userId);
+      if (existingRegistration) {
+        throw new ValidationError(
+          "El usuario ya está registrado en este evento.",
+        );
+      }
+
+      // Optimistic Concurrency Control: usar versión para prevenir condiciones de carrera
+      const currentVersion = evento.version ?? 0;
+
+      // Contar inscripciones confirmadas para determinar el estado
+      const confirmedRegistrations =
+        await InscripcionesRepository.findConfirmedRegistrationsByEvent(
+          eventId,
+        );
+      const hasAvailableSpots =
+        confirmedRegistrations.length < evento.cupoMaximo;
+      const estado: EstadoInscripcion = hasAvailableSpots
+        ? EstadoInscripcion.CONFIRMADO
+        : EstadoInscripcion.WAITLIST;
+
+      // Intentar crear la inscripción y actualizar el evento con verificación de versión
+      // Solo se actualiza si la versión no ha cambiado desde que la leímos
+      const response =
+        await InscripcionesRepository.registerUserToEventWithVersion(
+          eventId,
+          userId,
+          estado,
+          currentVersion,
+        );
+
+      return {
+        ...response,
+        evento: {
+          ...response.evento,
+          fechaInicio: response.evento.fechaInicio.toISOString(),
+        },
+        fechaRegistro: response.fechaRegistro.toISOString(),
+      };
     }
 
-    const usuario = await UsuariosRepository.findById(userId);
-    if (!usuario) {
-      throw new NotFoundError(`El usuario con ID ${userId} no existe.`);
+    try {
+      // Primer intento de inscripción
+      return await attemptRegistration(false);
+    } catch (error) {
+      // Si falla por discordancia de versión, hacer un retry una vez
+      if (
+        error instanceof QueryError &&
+        error.message ===
+          "El cupo del evento ha cambiado. Por favor, intenta nuevamente."
+      ) {
+        // Retry: leer nuevamente el evento con la versión actualizada y reintentar
+        return await attemptRegistration(true);
+      }
+      // Si es otro tipo de error, re-lanzarlo
+      throw error;
     }
-
-    // Verificar si el usuario ya está registrado en el evento
-    const existingRegistration =
-      await InscripcionesRepository.findUserRegistration(eventId, userId);
-    if (existingRegistration) {
-      throw new ValidationError(
-        "El usuario ya está registrado en este evento.",
-      );
-    }
-
-    // Verificar si hay cupo
-    let estado: EstadoInscripcion = EstadoInscripcion.CONFIRMADO;
-    const confirmedRegistrations =
-      await InscripcionesRepository.findConfirmedRegistrationsByEvent(eventId);
-    if (confirmedRegistrations.length >= evento.cupoMaximo) {
-      estado = EstadoInscripcion.WAITLIST;
-    }
-
-    const response = await InscripcionesRepository.registerUserToEvent(
-      eventId,
-      userId,
-      estado,
-    );
-
-    return {
-      ...response,
-      evento: {
-        ...response.evento,
-        fechaInicio: response.evento.fechaInicio.toISOString(),
-      },
-      fechaRegistro: response.fechaRegistro.toISOString(),
-    };
   },
 
   async unregisterFromEvent(eventId: string, userId: string) {

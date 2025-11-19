@@ -2,38 +2,27 @@ import type { Treaty } from "@elysiajs/eden";
 import { EventsHeader } from "@web/components/events/EventsHeader";
 import { EventsList } from "@web/components/events/EventsList";
 import { api } from "@web/lib/fetch";
-import { useEffect, useState } from "react";
+import { Suspense } from "react";
+import { Await, useNavigation } from "react-router";
+import type { Route } from "./+types/my-inscriptions";
 
 type InscriptionsGetResponse = Treaty.Data<typeof api.me.inscriptions.get>;
 
-export default function MyInscriptions() {
-  const [inscriptions, setInscriptions] = useState<InscriptionsGetResponse>([]);
-  const [loading, setLoading] = useState(true);
+export async function loader({ request }: Route.LoaderArgs) {
+  const headers = { Cookie: request.headers.get("Cookie") || "" };
+  const inscriptions = api.me.inscriptions
+    .get({ headers })
+    .then((res) =>
+      res.status === 200 && Array.isArray(res.data) ? res.data : [],
+    );
+  return { inscriptions };
+}
 
-  useEffect(() => {
-    const fetchInscriptions = async () => {
-      try {
-        setLoading(true);
-        const result = await api.me.inscriptions.get();
-        if (result.error || result.status !== 200)
-          throw new Error("Error fetching inscriptions");
-        setInscriptions(result.data || []);
-      } catch {
-        setInscriptions([]);
-      } finally {
-        setLoading(false);
-      }
-    };
+export default function MyInscriptions({ loaderData }: Route.ComponentProps) {
+  const navigation = useNavigation();
+  const { inscriptions } = loaderData;
 
-    fetchInscriptions();
-  }, []);
-
-  // Extraemos los eventos
-  const events = inscriptions.map((inscription) => ({
-    ...inscription.evento,
-    // Podemos agregar el estado de la inscripción si queremos mostrarlo en la lista
-    inscriptionState: inscription.estado,
-  }));
+  // Events are derived inside <Await>
 
   const formatDate = (d?: string) =>
     d
@@ -74,44 +63,55 @@ export default function MyInscriptions() {
     return `${horas}h ${minutos}min`;
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-gray-50">
-        <EventsHeader title="Mis Inscripciones" />
-        <div className="flex items-center justify-center py-20">
-          <div className="text-gray-600 text-xl">
-            Cargando tus inscripciones...
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const loadingPage = navigation.state !== "idle";
 
   return (
     <div className="min-h-screen bg-gray-50">
       <EventsHeader title="Mis Inscripciones" />
       <section className="py-12">
         <div className="container mx-auto px-4">
-          <EventsList
-            events={events}
-            loadingPage={false}
-            formatDate={formatDate}
-            formatTime={formatTime}
-            formatDuration={formatDuration}
-            formatPrice={formatPrice}
-            mode="my-inscriptions"
-          />
-          {events.length === 0 && (
-            <div className="py-12 text-center">
-              <div className="mb-4 text-6xl">🎟️</div>
-              <h3 className="mb-2 font-bold text-2xl text-gray-900">
-                No estás inscrito a ningún evento
-              </h3>
-              <p className="mb-4 text-gray-600">
-                Una vez que te inscribas a eventos, aparecerán aquí.
-              </p>
-            </div>
-          )}
+          <Suspense
+            fallback={
+              <div className="flex items-center justify-center py-20">
+                <div className="text-gray-600 text-xl">
+                  Cargando tus inscripciones...
+                </div>
+              </div>
+            }
+          >
+            <Await resolve={inscriptions}>
+              {(ins: InscriptionsGetResponse) => {
+                const events = ins.map((inscription) => ({
+                  ...inscription.evento,
+                  inscriptionState: inscription.estado,
+                }));
+                return (
+                  <>
+                    <EventsList
+                      events={events}
+                      loadingPage={loadingPage}
+                      formatDate={formatDate}
+                      formatTime={formatTime}
+                      formatDuration={formatDuration}
+                      formatPrice={formatPrice}
+                      mode="my-inscriptions"
+                    />
+                    {events.length === 0 && (
+                      <div className="py-12 text-center">
+                        <div className="mb-4 text-6xl">🎟️</div>
+                        <h3 className="mb-2 font-bold text-2xl text-gray-900">
+                          No estás inscrito a ningún evento
+                        </h3>
+                        <p className="mb-4 text-gray-600">
+                          Una vez que te inscribas a eventos, aparecerán aquí.
+                        </p>
+                      </div>
+                    )}
+                  </>
+                );
+              }}
+            </Await>
+          </Suspense>
         </div>
       </section>
     </div>
