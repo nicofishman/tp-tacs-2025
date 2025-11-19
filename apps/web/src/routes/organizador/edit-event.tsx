@@ -1,8 +1,10 @@
 import { EventForm } from "@web/components/events/EventForm";
 import { api } from "@web/lib/fetch";
+import { Suspense } from "react";
 import type { LoaderFunctionArgs } from "react-router";
-import { useLoaderData, useNavigate, useParams } from "react-router";
+import { Await, useNavigate, useParams } from "react-router";
 import { toast } from "sonner";
+import type { Route } from "./+types/edit-event";
 
 type EditEventBody = Partial<Parameters<typeof api.eventos.post>[0]>;
 
@@ -27,7 +29,14 @@ export async function loader({ params }: LoaderFunctionArgs) {
     titulo: e.titulo ?? "",
     ubicacion: e.ubicacion,
   };
-  return { initialValues } as const;
+  const categories = api.categorias
+    .get()
+    .then((cRes) =>
+      cRes.status === 200 && Array.isArray(cRes.data)
+        ? cRes.data.map((c) => ({ label: c.nombre, value: c.id }))
+        : [],
+    );
+  return { categories, initialValues };
 }
 
 export function meta(): Array<Record<string, string>> {
@@ -37,9 +46,9 @@ export function meta(): Array<Record<string, string>> {
   ];
 }
 
-export default function EditEvent() {
+export default function EditEvent({ loaderData }: Route.ComponentProps) {
   const navigate = useNavigate();
-  const { initialValues } = useLoaderData<typeof loader>();
+  const { initialValues, categories } = loaderData;
   const { id } = useParams();
 
   const handleSave = async (data: EditEventBody | undefined) => {
@@ -73,12 +82,30 @@ export default function EditEvent() {
       <section className="py-12">
         <div className="container mx-auto max-w-4xl px-4">
           {initialValues ? (
-            <EventForm
-              mode="edit"
-              initialValues={initialValues}
-              onSubmit={handleSave}
-              submitLabel="Guardar Cambios"
-            />
+            <Suspense
+              fallback={
+                <EventForm
+                  mode="edit"
+                  initialValues={initialValues}
+                  onSubmit={handleSave}
+                  submitLabel="Guardar Cambios"
+                  categories={[]}
+                  loadingCategories
+                />
+              }
+            >
+              <Await resolve={categories}>
+                {(cats) => (
+                  <EventForm
+                    mode="edit"
+                    initialValues={initialValues}
+                    onSubmit={handleSave}
+                    submitLabel="Guardar Cambios"
+                    categories={cats}
+                  />
+                )}
+              </Await>
+            </Suspense>
           ) : (
             <div className="text-center text-gray-600">Cargando...</div>
           )}

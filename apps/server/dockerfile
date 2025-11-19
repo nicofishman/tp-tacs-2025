@@ -1,23 +1,46 @@
-# Imagen base oficial de Bun
-FROM oven/bun:1.1
+FROM oven/bun:debian AS build
 
-# Carpeta de trabajo
 WORKDIR /app
 
-# Copiamos package.json y lockfile
-COPY package.json bun.lockb* ./
+# Cache packages
+COPY package.json package.json
+COPY bun.lock bun.lock
 
-# Instalamos dependencias
+COPY /apps/server/package.json ./apps/server/package.json
+
 RUN bun install
 
-# Copiamos el resto del código
-COPY . .
+COPY /apps/server ./apps/server
 
-# Generamos Prisma Client dentro del contenedor
-RUN bunx prisma generate --schema=prisma/schema.prisma
+RUN bunx prisma generate --schema=apps/server/prisma/schema.prisma
 
-# Exponemos el puerto de la API
+# Extract Prisma query engine (debian-openssl-3.0.x) to a stable path
+RUN set -eux; \
+    ENGINE_PATH=$(find /app -type f -name 'libquery_engine-debian-openssl-3.0.x.so.node' -print -quit || true); \
+    if [ -z "$ENGINE_PATH" ]; then exit 1; fi; \
+    cp "$ENGINE_PATH" /app/libquery_engine-debian-openssl-3.0.x.so.node
+
+ENV NODE_ENV=production
+
+RUN bun build \
+	--compile \
+	--minify-whitespace \
+	--minify-syntax \
+	--outfile server \
+	apps/server/src/index.ts
+
+FROM gcr.io/distroless/cc-debian12
+
+WORKDIR /app
+
+COPY --from=build /app/server server
+
+# Prisma engine required by Prisma Client at runtime
+COPY --from=build /app/libquery_engine-debian-openssl-3.0.x.so.node ./
+
+ENV NODE_ENV=production
+ENV PRISMA_QUERY_ENGINE_LIBRARY=/app/libquery_engine-debian-openssl-3.0.x.so.node
+
+CMD ["./server"]
+
 EXPOSE 3000
-
-# Comando por defecto
-CMD ["bun", "run", "src/index.ts"]

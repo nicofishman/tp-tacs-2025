@@ -47,6 +47,7 @@ export function AuthProvider({
 
   const signIn = async (email: string, password: string) => {
     setIsLoading(true);
+
     try {
       const { data, error } = await api.auth["sign-in"].post({
         email,

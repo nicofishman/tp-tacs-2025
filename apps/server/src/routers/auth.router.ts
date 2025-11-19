@@ -57,6 +57,9 @@ export const AuthRouter = (app: ElysiaWithLogger) =>
             isAdmin = true;
           }
 
+          console.log(body);
+          console.log(query, process.env.ADMIN_TOKEN);
+
           const user = await AuthController.signUp({
             email,
             isAdmin,

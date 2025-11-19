@@ -1,18 +1,23 @@
-import { useAuth } from "@web/components/auth-provider";
 import SignUpForm from "@web/components/sign-up-form";
-import { useEffect } from "react";
-import { useNavigate } from "react-router";
+import { api } from "@web/lib/fetch";
+import { redirect } from "react-router";
+import type { Route } from "./+types/sign-up";
+
+export async function loader({ request }: Route.LoaderArgs) {
+  const headers = { Cookie: request.headers.get("Cookie") || "" };
+
+  const me = await api.me.get({ headers }); // or api.auth["sign-in"].post, etc.
+  const user = me.status === 200 ? me.data : null;
+
+  // use user for SSR decisions, data fetching, redirects, etc.
+  if (user) {
+    throw redirect("/", { status: 302 });
+  }
+
+  return null;
+}
 
 export default function SignUp() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (user) {
-      navigate("/", { replace: true });
-    }
-  }, [user, navigate]);
-
   return (
     <div className="flex min-h-full items-center justify-center px-4 py-12 sm:px-6 lg:px-8">
       <SignUpForm />

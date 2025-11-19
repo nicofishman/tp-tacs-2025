@@ -1,7 +1,7 @@
 import { cors } from "@elysiajs/cors";
 import { openapi } from "@elysiajs/openapi";
 import { Elysia } from "elysia";
-import z from "zod";
+import * as z from "zod";
 import { ConflictError } from "./exceptions/ConflictError";
 import { NotFoundError } from "./exceptions/NotFoundError";
 import { ValidationError } from "./exceptions/ValidationError";
@@ -9,6 +9,7 @@ import { betterAuthElysia } from "./lib/auth";
 import { createContextualLogger, logger } from "./lib/logger";
 import { AuthRouter } from "./routers/auth.router";
 import { CategoriasRouter } from "./routers/categorias.router";
+import { EstadisticasRouter } from "./routers/estadisticas.router";
 import { EventosRouter } from "./routers/eventos.router";
 import { HealthRouter } from "./routers/health.router";
 import { InscripcionesRouter } from "./routers/inscripciones.router";
@@ -23,7 +24,7 @@ export const app = new Elysia()
       allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
       credentials: true, // Allow cookies to be sent
       methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-      origin: process.env.CORS_ORIGIN || "http://localhost:5173", // Frontend URL
+      origin: true,
     }),
   )
   .use(
@@ -34,6 +35,9 @@ export const app = new Elysia()
           title: "TP-TACS API",
           version: "1.0.1",
         },
+      },
+      mapJsonSchema: {
+        zod: z.toJSONSchema,
       },
       path: "/swagger",
     }),
@@ -79,6 +83,14 @@ export const app = new Elysia()
   .use(InscripcionesRouter)
   .use(MeRouter)
   .use(AuthRouter)
-  .listen(3000);
+  .use(EstadisticasRouter)
+  .get("/", () => {
+    return {
+      message: "Hello World",
+    };
+  })
+  .listen(process.env.PORT ?? 3000);
 
-console.log("🚀 Servidor corriendo en http://localhost:3000");
+console.log(
+  `🚀 Servidor corriendo en http://localhost:${process.env.PORT ?? 3000}`,
+);

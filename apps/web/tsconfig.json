@@ -9,7 +9,7 @@
     "noEmit": true,
     "paths": {
       "@server/*": ["../server/src/*"],
-      "@web/*": ["../web/src/*"]
+      "@web/*": ["src/*"]
     },
     "resolveJsonModule": true,
     "rootDirs": [".", "./.react-router/types"],
