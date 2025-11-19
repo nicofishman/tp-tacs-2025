@@ -68,7 +68,7 @@ export const app = new Elysia()
           logger.error(`${error.message}`, { route });
           return status(error.status, { error: error.message });
         }
-        logger.error("Error interno del servidor", { route });
+        logger.error("Error interno del servidor", { error, route });
         return status(500, { error: "Error interno del servidor" });
     }
   })

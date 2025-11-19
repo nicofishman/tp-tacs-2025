@@ -100,13 +100,21 @@ export const EventosService = {
     const inscripcionesDelEvento =
       await InscripcionesRepository.findByEventId(eventId);
 
-    const inscripcionesConfirmadas = inscripcionesDelEvento.filter(
-      (inscripcion) => inscripcion.estado === EstadoInscripcion.CONFIRMADO,
+    // Filtrar inscripciones canceladas
+    const inscripcionesActivas = inscripcionesDelEvento.filter(
+      (inscripcion) => inscripcion.estado !== EstadoInscripcion.CANCELADO,
     );
 
-    const participantes = inscripcionesConfirmadas.map(
-      (inscripcion) => inscripcion.usuario,
-    );
+    // Devolver inscripciones completas con usuario, estado y fechaRegistro
+    const participantes = inscripcionesActivas.map((inscripcion) => ({
+      estado: inscripcion.estado,
+      fechaRegistro: inscripcion.fechaRegistro.toISOString(),
+      usuario: {
+        email: inscripcion.usuario.email,
+        id: inscripcion.usuario.id,
+        nombre: inscripcion.usuario.nombre,
+      },
+    }));
 
     const eventoConParticipantes = {
       id: evento.id,
@@ -130,14 +138,16 @@ export const EventosService = {
         throw new NotFoundError(`El usuario con ID ${userId} no existe.`);
       }
 
-      // Verificar si el usuario ya está registrado en el evento
-      const existingRegistration =
-        await InscripcionesRepository.findUserRegistration(eventId, userId);
-      if (existingRegistration) {
+    // Verificar si el usuario ya está registrado en el evento
+    const existingRegistration =
+      await InscripcionesRepository.findUserRegistration(eventId, userId);
+    if (existingRegistration) {
+      if (existingRegistration.estado !== EstadoInscripcion.CANCELADO) {
         throw new ValidationError(
           "El usuario ya está registrado en este evento.",
         );
       }
+    }
 
       // Optimistic Concurrency Control: usar versión para prevenir condiciones de carrera
       const currentVersion = evento.version ?? 0;
